@@ -1,0 +1,18 @@
+{
+    "name": "shop/addressbook",
+    "type": "laravel-bundle",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Gustavo Ocanto",
+            "email": "gustavoocanto@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Antvel\\AddressBook\\": ""
+        }
+    },
+    "require": {}
+}

@@ -1,0 +1,43 @@
+{
+    "license": "MIT",
+    "name": "antvel/shop",
+    "homepage": "http://antvel.com/",
+    "type": "laravel-bundle",
+    "description": "The Laravel e-commerce core",
+    "keywords": ["antvel", "laravel", "e-commerce", "ecommerce", "shop", "portal", "market", "store"],
+    "minimum-stability": "dev",
+
+    "support": {
+        "source": "https://github.com/ant-vel/Shop",
+        "issues": "https://github.com/ant-vel/Shop/issues"
+    },
+
+    "require": {
+        "php": "~7.0|~7.1",
+        "illuminate/support": "5.3.*"
+    },
+
+    "require-dev": {
+        "phpunit/phpunit" : "~4.0||~5.0",
+        "orchestra/testbench": "~3.0"
+    },
+
+    "autoload": {
+        "psr-4": {
+            "Antvel\\": "src"
+        }
+    },
+
+    "autoload-dev": {
+        "psr-4": {
+            "Antvel\\Tests\\": "tests"
+        },
+        "classmap": [
+            "tests/TestCase.php"
+        ]
+    },
+
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
+    }
+}
