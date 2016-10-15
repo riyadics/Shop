@@ -13,8 +13,7 @@
     },
 
     "require": {
-        "php": "~7.0|~7.1",
-        "illuminate/support": "5.3.*"
+        "php": "~7.0|~7.1"
     },
 
     "require-dev": {
@@ -25,7 +24,10 @@
     "autoload": {
         "psr-4": {
             "Antvel\\": "src"
-        }
+        },
+         "files": [
+            "src/Support/helpers.php"
+        ]
     },
 
     "autoload-dev": {
