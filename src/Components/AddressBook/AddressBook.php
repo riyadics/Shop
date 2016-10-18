@@ -108,7 +108,7 @@ class AddressBook
 	 * @param int $id [description]
 	 * @return void
 	 */
-	public function destroy(int$id)
+	public function destroy(int $id)
 	{
 		Address::destroy($id);
 	}
