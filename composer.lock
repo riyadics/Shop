@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "3c2fce8865fd496f2690c43d4f79d750",
+    "hash": "d9b7689f2b5710ca7c0217b08b4d3a51",
     "content-hash": "5368531fbc295c6b60077ed910a87c0c",
     "packages": [],
     "packages-dev": [
@@ -222,12 +222,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fzaninotto/Faker.git",
-                "reference": "bb4be1c1878da6baf18a9cc3d9fad1e3ff73a4cd"
+                "reference": "87c9003bc4dadd245a62979a1e35396d6bbf3edf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/bb4be1c1878da6baf18a9cc3d9fad1e3ff73a4cd",
-                "reference": "bb4be1c1878da6baf18a9cc3d9fad1e3ff73a4cd",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/87c9003bc4dadd245a62979a1e35396d6bbf3edf",
+                "reference": "87c9003bc4dadd245a62979a1e35396d6bbf3edf",
                 "shasum": ""
             },
             "require": {
@@ -264,7 +264,7 @@
                 "faker",
                 "fixtures"
             ],
-            "time": "2016-10-13 12:34:10"
+            "time": "2016-10-17 12:45:45"
         },
         {
             "name": "jakub-onderka/php-console-color",
@@ -417,12 +417,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "4683c79bb7dcbfba885c9affab1afc7fb0b30b8a"
+                "reference": "48820f4a6ef9c44bd3731f9b1684afbd0e4cc0bd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/4683c79bb7dcbfba885c9affab1afc7fb0b30b8a",
-                "reference": "4683c79bb7dcbfba885c9affab1afc7fb0b30b8a",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/48820f4a6ef9c44bd3731f9b1684afbd0e4cc0bd",
+                "reference": "48820f4a6ef9c44bd3731f9b1684afbd0e4cc0bd",
                 "shasum": ""
             },
             "require": {
@@ -536,7 +536,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2016-10-13 21:07:32"
+            "time": "2016-10-17 13:40:03"
         },
         {
             "name": "league/flysystem",
@@ -949,12 +949,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/orchestral/testbench.git",
-                "reference": "05191f04b2a5111aa29cb842ec694489867540b6"
+                "reference": "14ce5649edcdd76f7d28db88f9ec87351f8aefb6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/orchestral/testbench/zipball/05191f04b2a5111aa29cb842ec694489867540b6",
-                "reference": "05191f04b2a5111aa29cb842ec694489867540b6",
+                "url": "https://api.github.com/repos/orchestral/testbench/zipball/14ce5649edcdd76f7d28db88f9ec87351f8aefb6",
+                "reference": "14ce5649edcdd76f7d28db88f9ec87351f8aefb6",
                 "shasum": ""
             },
             "require": {
@@ -994,7 +994,7 @@
                     "homepage": "https://github.com/crynobone"
                 }
             ],
-            "description": "Laravel Package Unit Testing Helper",
+            "description": "Laravel Testing Helper for Packages Development",
             "homepage": "http://orchestraplatform.com/docs/latest/components/testbench/",
             "keywords": [
                 "BDD",
@@ -1004,20 +1004,20 @@
                 "orchestral",
                 "testing"
             ],
-            "time": "2016-08-28 22:55:59"
+            "time": "2016-10-16 13:53:55"
         },
         {
             "name": "paragonie/random_compat",
-            "version": "v2.0.2",
+            "version": "v2.0.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/paragonie/random_compat.git",
-                "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf"
+                "reference": "c0125896dbb151380ab47e96c621741e79623beb"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/088c04e2f261c33bed6ca5245491cfca69195ccf",
-                "reference": "088c04e2f261c33bed6ca5245491cfca69195ccf",
+                "url": "https://api.github.com/repos/paragonie/random_compat/zipball/c0125896dbb151380ab47e96c621741e79623beb",
+                "reference": "c0125896dbb151380ab47e96c621741e79623beb",
                 "shasum": ""
             },
             "require": {
@@ -1052,7 +1052,7 @@
                 "pseudorandom",
                 "random"
             ],
-            "time": "2016-04-03 06:00:07"
+            "time": "2016-10-17 15:23:22"
         },
         {
             "name": "phpdocumentor/reflection-common",
@@ -3416,12 +3416,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/webmozart/assert.git",
-                "reference": "9350cea5bf343b657f24e68980490021791935d8"
+                "reference": "c0c92082a2ffef8fab7941d4f6fd6a6a72ed627c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webmozart/assert/zipball/9350cea5bf343b657f24e68980490021791935d8",
-                "reference": "9350cea5bf343b657f24e68980490021791935d8",
+                "url": "https://api.github.com/repos/webmozart/assert/zipball/c0c92082a2ffef8fab7941d4f6fd6a6a72ed627c",
+                "reference": "c0c92082a2ffef8fab7941d4f6fd6a6a72ed627c",
                 "shasum": ""
             },
             "require": {
@@ -3458,7 +3458,7 @@
                 "check",
                 "validate"
             ],
-            "time": "2016-10-14 13:57:37"
+            "time": "2016-10-17 06:50:33"
         }
     ],
     "aliases": [],

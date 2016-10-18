@@ -1,16 +1,10 @@
 <?php
-/**
- * This file is part of the Antvel user's addresses component.
- *
- * @license https://github.com/ant-vel/antVel/blob/development/LICENSE MIT
- * @author Gustavo Ocanto <gustavoocanto@gmail.com>
- */
 
-namespace Antvel\AddressBook;
+namespace Antvel\Components\AddressBook;
 
 use App\User;
-use Antvel\AddressBook\Address;
 use Illuminate\Support\Collection;
+use Antvel\Components\AddressBook\Models\Address;
 
 class AddressBook
 {

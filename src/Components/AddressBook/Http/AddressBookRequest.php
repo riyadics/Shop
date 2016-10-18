@@ -1,10 +1,10 @@
 <?php
 
-namespace Antvel\AddressBook;
+namespace Antvel\Components\AddressBook\Http;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Antvel\Http\Requests\Request;
 
-class AddressBookFormRequest extends FormRequest
+class AddressBookRequest extends Request
 {
     /**
      * Determine if the user is authorized to make this request.

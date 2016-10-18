@@ -2,6 +2,7 @@
 
 namespace Antvel;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider as IlluminateServiceProvider;
 
 class ServiceProvider extends IlluminateServiceProvider
@@ -30,7 +31,7 @@ class ServiceProvider extends IlluminateServiceProvider
      */
     public function register()
     {
-        //
+        $this->mapWebRoutes();
     }
 
     /**
@@ -41,5 +42,15 @@ class ServiceProvider extends IlluminateServiceProvider
     public function provides()
     {
         return ['Antvel'];
+    }
+
+     /**
+     * Define the "web" routes for the application.
+     *
+     * @return void
+     */
+    protected function mapWebRoutes()
+    {
+        require __DIR__ . '/Http/Routes.php';
     }
 }

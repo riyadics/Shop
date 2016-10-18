@@ -1,5 +1,5 @@
 {
-    "name": "shop/addressbook",
+    "name": "antvel/addressbook",
     "type": "laravel-bundle",
     "license": "MIT",
     "authors": [
@@ -8,11 +8,11 @@
             "email": "gustavoocanto@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "Antvel\\AddressBook\\": ""
+            "Antvel\\Components\\AddressBook\\": ""
         }
     },
-    "require": {}
+    "require": {},
+    "minimum-stability": "dev"
 }
