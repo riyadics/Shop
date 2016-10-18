@@ -10,7 +10,7 @@
     ],
     "autoload": {
         "psr-4": {
-            "Antvel\\Components\\AddressBook\\": ""
+            "Antvel\\AddressBook\\": ""
         }
     },
     "require": {},
