@@ -1,11 +1,20 @@
 <?php
 
-namespace Antvel\Components\AddressBook\Http;
+/*
+ * This file is part of the Antvel Shop package.
+ *
+ * (c) Gustavo Ocanto <gustavoocanto@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Antvel\AddressBook\Http;
 
 use Illuminate\Http\Request;
-use Antvel\Http\Controllers\Controller;
-use Antvel\Components\AddressBook\AddressBook;
-use Antvel\Components\AddressBook\Http\AddressBookRequest;
+use Antvel\Kernel\Http\Controller;
+use Antvel\AddressBook\AddressBook;
+use Antvel\AddressBook\Http\AddressBookRequest;
 
 class AddressBookController extends Controller
 {

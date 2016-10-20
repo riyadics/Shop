@@ -1,10 +1,19 @@
 <?php
 
-namespace Antvel\Components\AddressBook;
+/*
+ * This file is part of the Antvel Shop package.
+ *
+ * (c) Gustavo Ocanto <gustavoocanto@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace Antvel\AddressBook;
 
 use App\User;
 use Illuminate\Support\Collection;
-use Antvel\Components\AddressBook\Models\Address;
+use Antvel\AddressBook\Models\Address;
 
 class AddressBook
 {
