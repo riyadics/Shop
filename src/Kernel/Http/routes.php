@@ -11,10 +11,10 @@
 
 $baseDir = __DIR__ . '/../../';
 
-$routesMap = [
+$components = [
 	'AddressBook'
 ];
 
-foreach ($routesMap as $route) {
-	require $baseDir . $route . '/routes/web.php';
+foreach ($components as $component) {
+	require $baseDir . $component . '/routes/web.php';
 }

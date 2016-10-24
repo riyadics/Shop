@@ -58,7 +58,7 @@ class AddressBook
 	 * @param  array $data
 	 * @return Address
 	 */
-	public function create(array $data) : Address
+	public function create(array $data, User $user = null) : Address
 	{
 		$data = array_merge([
 			'user_id' => $this->user()->id

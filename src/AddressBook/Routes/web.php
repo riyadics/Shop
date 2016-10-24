@@ -10,9 +10,10 @@
  */
 
 Route::group([
+
 	'prefix' => 'user',
 	'middleware' => ['web', 'roles'],
-	'roles' => array_keys(trans('globals.roles')),
+	'roles' => trans('antvel::globals.roles'),
 	'namespace' => 'Antvel\AddressBook\Http'
 
 	], function ($router) {

@@ -11,23 +11,70 @@
 
 namespace Antvel\Tests;
 
-use Illuminate\Foundation\Testing\TestCase as IlluminateTestCase;
-
-abstract class TestCase extends IlluminateTestCase
+abstract class TestCase extends \Orchestra\Testbench\TestCase
 {
-
-	protected $baseUrl = 'http://antvel.com';
-
-	/**
-     * Creates the application.
+    /**
+     * Contains the database schema information.
      *
-     * @return \Illuminate\Foundation\Application
+     * @var array
      */
-    public function createApplication()
+    protected $schema = null;
+
+    /**
+     * Create a new Invitations instance.
+     *
+     * @return  void
+     */
+    public function __construct()
     {
-        $app = require __DIR__ . '/../bootstrap/app.php';
-        $app->make(Illuminate\Contracts\Console\Kernel::class)->bootstrap();
-        return $app;
+        $this->schema = require(__DIR__ . '/config/database.php');
     }
 
+    /**
+     * Setup the test environment
+     *
+     * @return void
+     */
+    public function setUp()
+    {
+        parent::setUp();
+        $this->loadMigrations();
+    }
+
+    /**
+     * Load the database migrations.
+     *
+     * @return void
+     */
+    protected function loadMigrations()
+    {
+        $this->artisan('migrate', [
+            '--database' => $this->schema['database'],
+            '--realpath' => __DIR__ . '/../database/migrations',
+        ]);
+    }
+
+    /**
+     * Define environment setup.
+     *
+     * @param  \Illuminate\Foundation\Application $app
+     * @return void
+     */
+    protected function getEnvironmentSetUp($app)
+    {
+        $app['config']->set('database.default', $this->schema['database']);
+        $app['config']->set('database.connections.antvel_testing', $this->schema);
+    }
+
+    /**
+     * Get package service providers.
+     *
+     * @return array
+     */
+    protected function getPackageProviders($app)
+    {
+        return [
+            \Antvel\AntvelServiceProvider::class
+        ];
+    }
 }

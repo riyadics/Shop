@@ -30,8 +30,9 @@ class AntvelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->loadMigrationsFrom(__DIR__ . '/Database/Migrations');
-        $this->loadSeeders();
+        $this->publishSeeders();
+        $this->loadMigrations();
+        $this->loadTranslations();
     }
 
     /**
@@ -66,15 +67,29 @@ class AntvelServiceProvider extends ServiceProvider
         }
     }
 
+    protected function loadMigrations()
+    {
+        $this->loadMigrationsFrom(
+            __DIR__ . '/Kernel/Database/Migrations'
+        );
+    }
+
+    protected function loadTranslations()
+    {
+        $this->loadTranslationsFrom(
+            __DIR__ . '/../resources/lang',
+        'antvel');
+    }
+
     /**
      * Publish the antvel seeders in the local seeds app folder.
      *
      * @return void
      */
-    protected function loadSeeders()
+    protected function publishSeeders()
     {
         $this->publishes([
-            __DIR__ . '/Database/Seeds' => database_path('seeds')
+            __DIR__ . '/Kernel/Database/Seeds' => database_path('seeds')
         ], 'seeds');
     }
 }

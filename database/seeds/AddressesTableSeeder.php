@@ -38,7 +38,7 @@ class AddressesTableSeeder extends Seeder
     protected function faker(int $pos) : array
     {
         $faker = Faker::create();
-        $user_id = $i <= 2 ? 4 :  $this->user()->id;
+        $user_id = $pos <= 2 ? 4 :  $this->user()->id;
 
         return [
             'default' => 0,

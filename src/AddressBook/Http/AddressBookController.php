@@ -14,7 +14,6 @@ namespace Antvel\AddressBook\Http;
 use Illuminate\Http\Request;
 use Antvel\Kernel\Http\Controller;
 use Antvel\AddressBook\AddressBook;
-use Antvel\AddressBook\Http\AddressBookRequest;
 
 class AddressBookController extends Controller
 {
