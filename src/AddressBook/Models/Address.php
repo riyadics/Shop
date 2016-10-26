@@ -11,6 +11,7 @@
 
 namespace Antvel\AddressBook\Models;
 
+use Antvel\Customer\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -37,4 +38,12 @@ class Address extends Model
     ];
 
     protected $hidden = ['id'];
+
+    /**
+     * Get the user that owns the address.
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

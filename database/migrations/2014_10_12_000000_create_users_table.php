@@ -37,9 +37,9 @@ class CreateUsersTable extends Migration
             $table->string('time_zone')->nullable();
             $table->integer('rate_val')->nullable();
             $table->integer('rate_count')->nullable();
-            $table->enum('role', array_keys(trans('antvel::globals.roles')))->default('person');
-            $table->enum('type', array_keys(trans('antvel::globals.type_user')))->default('normal');
-            $table->enum('verified', array_keys(trans('antvel::globals.verification')))->default('no');
+            $table->enum('role', array_keys(resolveTrans('globals.roles')))->default('person');
+            $table->enum('type', array_keys(resolveTrans('globals.type_user')))->default('normal');
+            $table->enum('verified', array_keys(resolveTrans('globals.verification')))->default('no');
             $table->json('preferences')->nullable();
             $table->rememberToken();
             $table->timestamps();

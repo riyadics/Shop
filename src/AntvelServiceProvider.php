@@ -67,13 +67,23 @@ class AntvelServiceProvider extends ServiceProvider
         }
     }
 
+    /**
+     * Load the Antvel shop migrations.
+     *
+     * @return void
+     */
     protected function loadMigrations()
     {
         $this->loadMigrationsFrom(
-            __DIR__ . '/Kernel/Database/Migrations'
+            __DIR__ . '/../database/migrations'
         );
     }
 
+    /**
+     * Load the Antvel shop translations.
+     *
+     * @return void
+     */
     protected function loadTranslations()
     {
         $this->loadTranslationsFrom(

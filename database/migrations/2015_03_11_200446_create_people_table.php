@@ -26,7 +26,7 @@ class CreatePeopleTable extends Migration
             $table->string('first_name');
             $table->string('last_name');
             $table->date('birthday')->nullable();
-            $table->enum('gender', array_keys(trans('antvel::globals.person_gender')));
+            $table->enum('gender', array_keys(resolveTrans('globals.person_gender')));
             $table->string('home_phone')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
         });
@@ -39,6 +39,6 @@ class CreatePeopleTable extends Migration
      */
     public function down()
     {
-        Schema::drop('persons');
+        Schema::drop('people');
     }
 }

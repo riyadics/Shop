@@ -11,8 +11,13 @@
 
 namespace Antvel\Tests;
 
-abstract class TestCase extends \Orchestra\Testbench\TestCase
+use Antvel\Tests\Traits\Environment;
+use Orchestra\Testbench\TestCase as Orchestra;
+
+abstract class TestCase extends Orchestra
 {
+    use Environment;
+
     /**
      * Contains the database schema information.
      *
@@ -38,43 +43,9 @@ abstract class TestCase extends \Orchestra\Testbench\TestCase
     public function setUp()
     {
         parent::setUp();
+        $this->loadFactories();
         $this->loadMigrations();
     }
 
-    /**
-     * Load the database migrations.
-     *
-     * @return void
-     */
-    protected function loadMigrations()
-    {
-        $this->artisan('migrate', [
-            '--database' => $this->schema['database'],
-            '--realpath' => __DIR__ . '/../database/migrations',
-        ]);
-    }
 
-    /**
-     * Define environment setup.
-     *
-     * @param  \Illuminate\Foundation\Application $app
-     * @return void
-     */
-    protected function getEnvironmentSetUp($app)
-    {
-        $app['config']->set('database.default', $this->schema['database']);
-        $app['config']->set('database.connections.antvel_testing', $this->schema);
-    }
-
-    /**
-     * Get package service providers.
-     *
-     * @return array
-     */
-    protected function getPackageProviders($app)
-    {
-        return [
-            \Antvel\AntvelServiceProvider::class
-        ];
-    }
 }

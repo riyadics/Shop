@@ -24,9 +24,15 @@
     },
 
     "autoload": {
+        "classmap": [
+            "database"
+        ],
         "psr-4": {
             "Antvel\\": "src/"
-        }
+        },
+        "files": [
+            "src/Support/helpers.php"
+        ]
     },
 
     "autoload-dev": {

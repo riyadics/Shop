@@ -11,18 +11,25 @@
 
 namespace Antvel\AddressBook;
 
-use App\User;
 use Illuminate\Support\Collection;
 use Antvel\AddressBook\Models\Address;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class AddressBook
 {
 	/**
+	 * The user who owns the address.
+	 *
+	 * @var Antvel\Customer\Models\User
+	 */
+	protected $user = null;
+
+	/**
 	 * Return the current user.
 	 *
-	 * @return User
+	 * @return Antvel\Customer\Models\User
 	 */
-	protected function user() : User
+	protected function user() : Authenticatable
 	{
 		return auth()->user();
 	}
@@ -34,7 +41,7 @@ class AddressBook
 	 * @param  string $sort
 	 * @return Collection
 	 */
-	public function forUser(User $user = null, string $sort = 'default') : Collection
+	public function forUser(Authenticatable $user = null, string $sort = 'default') : Collection
 	{
 		$user = is_null($user) ? $this->user() : $user;
 
@@ -58,10 +65,12 @@ class AddressBook
 	 * @param  array $data
 	 * @return Address
 	 */
-	public function create(array $data, User $user = null) : Address
+	public function create(array $data, Authenticatable $user = null) : Address
 	{
+		$this->user = $user;
+
 		$data = array_merge([
-			'user_id' => $this->user()->id
+			'user_id' => $this->user_id()
 		], $data);
 
 		return Address::create($data);
@@ -73,9 +82,9 @@ class AddressBook
 	 * @param  array $data
 	 * @return Address
 	 */
-	public function createAndSetToDefault(array $data) : Address
+	public function createAndSetToDefault(array $data, Authenticatable $user = null) : Address
 	{
-		$address = $this->create($data);
+		$address = $this->create($data, $user);
 		$this->setDefault($address);
 
 		return $address;
@@ -106,7 +115,7 @@ class AddressBook
 	 */
 	protected function resetDefault()
 	{
-		Address::where('user_id', $this->user()->id)
+		Address::where('user_id', $this->user_id())
 			->where('default', 1)
 			->update(['default' => 0]);
 	}
@@ -120,5 +129,15 @@ class AddressBook
 	public function destroy(int $id)
 	{
 		Address::destroy($id);
+	}
+
+	/**
+	 * Return the user id.
+	 *
+	 * @return int
+	 */
+	protected function user_id() : int
+	{
+		return is_null($this->user) ? $this->user()->id : $this->user->id;
 	}
 }
