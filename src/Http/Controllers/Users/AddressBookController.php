@@ -9,11 +9,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\AddressBook\Http;
+namespace Antvel\Http\Controllers\Users;
 
 use Illuminate\Http\Request;
-use Antvel\Kernel\Http\Controller;
 use Antvel\AddressBook\AddressBook;
+use Antvel\Http\Controllers\Controller;
+use Antvel\Http\Requests\Users\AddressBookRequest;
 
 class AddressBookController extends Controller
 {

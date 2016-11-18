@@ -16,13 +16,6 @@ use Illuminate\Support\ServiceProvider;
 
 class AntvelServiceProvider extends ServiceProvider
 {
-	/*
-    * Indicates if loading of the provider is deferred.
-    *
-    * @var bool
-    */
-    protected $defer = true;
-
     /**
      * Bootstrap the application services.
      *
@@ -30,9 +23,24 @@ class AntvelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishSeeders();
-        $this->loadMigrations();
-        $this->loadTranslations();
+         $this->loadTranslationsFrom(
+            realpath(__DIR__ . '/../resources/lang')
+        , 'antvel');
+
+        if ($this->app->runningInConsole()) {
+
+            $this->publishes([
+                __DIR__ . '/../resources/lang' => resource_path('lang/vendor/antvel'),
+            ], 'antvel-trans');
+
+            $this->loadMigrationsFrom(
+                __DIR__ . '/../database/migrations'
+            );
+
+             $this->publishes([
+                __DIR__ . '/../database/seeds' => database_path('seeds')
+            ], 'antvel-seeds');
+        }
     }
 
     /**
@@ -42,64 +50,6 @@ class AntvelServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->mapWebRoutes();
-    }
-
-    /**
-    * Get the services provided by the provider.
-    *
-    * @return array
-    */
-    public function provides()
-    {
-        return ['Antvel'];
-    }
-
-     /**
-     * Define the "web" routes for the application.
-     *
-     * @return void
-     */
-    protected function mapWebRoutes()
-    {
-        if (! $this->app->routesAreCached()) {
-            require __DIR__ . '/Kernel/Http/routes.php';
-        }
-    }
-
-    /**
-     * Load the Antvel shop migrations.
-     *
-     * @return void
-     */
-    protected function loadMigrations()
-    {
-        $this->loadMigrationsFrom(
-            __DIR__ . '/../database/migrations'
-        );
-    }
-
-    /**
-     * Load the Antvel shop translations.
-     *
-     * @return void
-     */
-    protected function loadTranslations()
-    {
-        $this->loadTranslationsFrom(
-            __DIR__ . '/../resources/lang',
-        'antvel');
-    }
-
-    /**
-     * Publish the antvel seeders in the local seeds app folder.
-     *
-     * @return void
-     */
-    protected function publishSeeders()
-    {
-        $this->publishes([
-            __DIR__ . '/Kernel/Database/Seeds' => database_path('seeds')
-        ], 'seeds');
+        //
     }
 }

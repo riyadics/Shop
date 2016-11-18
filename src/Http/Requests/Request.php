@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Kernel\Http;
+namespace Antvel\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
