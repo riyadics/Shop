@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\AddressBook;
+namespace Antvel\Components\AddressBook;
 
 use Illuminate\Support\Collection;
-use Antvel\AddressBook\Models\Address;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Antvel\Components\AddressBook\Models\Address;
 
-class AddressBook
+class Factory
 {
 	/**
 	 * The user who owns the address.

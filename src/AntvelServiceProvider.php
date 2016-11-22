@@ -29,13 +29,13 @@ class AntvelServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
 
-            $this->publishes([
-                __DIR__ . '/../resources/lang' => resource_path('lang/vendor/antvel'),
-            ], 'antvel-trans');
-
             $this->loadMigrationsFrom(
                 __DIR__ . '/../database/migrations'
             );
+
+            $this->publishes([
+                __DIR__ . '/../resources/lang' => resource_path('lang/vendor/antvel'),
+            ], 'antvel-trans');
 
              $this->publishes([
                 __DIR__ . '/../database/seeds' => database_path('seeds')

@@ -12,9 +12,9 @@
 namespace Antvel\Tests\AddressBook;
 
 use Antvel\Tests\TestCase;
-use Antvel\Customer\Models\User;
-use Antvel\AddressBook\AddressBook;
-use Antvel\AddressBook\Models\Address;
+use Antvel\Components\Customer\Models\User;
+use Antvel\Components\AddressBook\Models\Address;
+use Antvel\Components\AddressBook\Factory as AddressBook;
 
 class AddressBookTest extends TestCase
 {

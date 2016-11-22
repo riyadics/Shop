@@ -11,7 +11,7 @@
 
 namespace Antvel\Tests\Customers;
 
-use Antvel\Customer\Models\{ User, Business };
+use Antvel\Components\Customer\Models\{ User, Business };
 
 class BusinessesTest extends UsersTestCase
 {

@@ -12,7 +12,7 @@
 namespace Antvel\Tests\Customers;
 
 use Antvel\Tests\TestCase;
-use Antvel\Customer\Models\User;
+use Antvel\Components\Customer\Models\User;
 
 abstract class UsersTestCase extends TestCase
 {

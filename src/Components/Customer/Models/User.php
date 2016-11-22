@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Customer\Models;
+namespace Antvel\Components\Customer\Models;
 
 use Illuminate\Auth\Authenticatable;
-use Antvel\AddressBook\Models\Address;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Antvel\Components\AddressBook\Models\Address;
 use App\Notifications\Auth\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -74,7 +74,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     /**
      * The user addressBook.
      *
-     * @return Antvel\AddressBook\Models\Address
+     * @return Antvel\Components\AddressBook\Models\Address
      */
     public function addresses()
     {

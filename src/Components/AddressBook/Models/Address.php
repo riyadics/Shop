@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\AddressBook\Models;
+namespace Antvel\Components\AddressBook\Models;
 
-use Antvel\Customer\Models\User;
 use Illuminate\Database\Eloquent\Model;
+use Antvel\Components\Customer\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Address extends Model

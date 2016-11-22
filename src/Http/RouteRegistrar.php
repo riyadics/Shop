@@ -21,7 +21,6 @@ class RouteRegistrar
      */
     public function __construct(Router $router)
     {
-        // $this->trans = $trans;
         $this->router = $router;
     }
 
@@ -45,9 +44,8 @@ class RouteRegistrar
         $this->router->group([
 
 			'prefix' => 'user',
+            'middleware' => 'web',
             'namespace' => 'Users',
-            'roles' => $this->roles(),
-            'middleware' => ['web', 'roles'],
 
 		], function ($router) {
 
@@ -60,15 +58,5 @@ class RouteRegistrar
 			$router->post('address/default', 'AddressBookController@setDefault');
 
         });
-    }
-
-    /**
-     * Temporary while implementing policies.
-     *
-     * @return array
-     */
-    protected function roles()
-    {
-        return ['admin', 'business', 'nonprofit', 'person'];
     }
 }

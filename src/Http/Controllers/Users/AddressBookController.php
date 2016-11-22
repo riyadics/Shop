@@ -12,9 +12,9 @@
 namespace Antvel\Http\Controllers\Users;
 
 use Illuminate\Http\Request;
-use Antvel\AddressBook\AddressBook;
 use Antvel\Http\Controllers\Controller;
 use Antvel\Http\Requests\Users\AddressBookRequest;
+use Antvel\Components\AddressBook\Factory as AddressBook;
 
 class AddressBookController extends Controller
 {

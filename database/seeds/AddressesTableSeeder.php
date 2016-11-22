@@ -12,7 +12,7 @@
 use App\User as User;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
-use Antvel\AddressBook\Models\Address;
+use Antvel\Components\AddressBook\Models\Address;
 
 class AddressesTableSeeder extends Seeder
 {

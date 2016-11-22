@@ -9,18 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Customer\Models;
+namespace Antvel\Components\Customer\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Business extends Model
+class Person extends Model
 {
     /**
      * The database table.
      *
      * @var string
      */
-    protected $table = 'businesses';
+    protected $table = 'people';
 
     /**
      * Avoiding timestamps.
@@ -44,13 +44,13 @@ class Business extends Model
     public $incrementing = false;
 
     /**
-     * Mass assignable attributes.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
-    protected $fillable = ['user_id', 'business_name', 'local_phone', 'creation_date'];
+    protected $fillable = ['user_id', 'first_name', 'last_name', 'birthday', 'gender'];
 
-     /**
+    /**
      * The attributes excluded from the model's JSON form.
      *
      * @var array
@@ -58,7 +58,7 @@ class Business extends Model
     protected $hidden = ['user_id'];
 
     /**
-     * Returns the business user.
+     * Returns the people user.
      *
      * @return Illuminate\Database\Eloquent\Relations\Relation
      */
