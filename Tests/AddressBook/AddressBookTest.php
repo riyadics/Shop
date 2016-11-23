@@ -14,69 +14,71 @@ namespace Antvel\Tests\AddressBook;
 use Antvel\Tests\TestCase;
 use Antvel\Components\Customer\Models\User;
 use Antvel\Components\AddressBook\Models\Address;
-use Antvel\Components\AddressBook\Factory as AddressBook;
+use Antvel\Components\AddressBook\Repository as AddressBook;
 
 class AddressBookTest extends TestCase
 {
-   /**
-	 * Creates a new testing user in the database.
-	 *
-	 * @return Antvel\Customer\Models\User
-	 */
-	protected function user() : User
-	{
-		return factory(User::class)->create()->first();
-	}
+    protected $user = null;
+    protected $addressBook = null;
 
-	/**
-	 * Create a new addressBook instance.
-	 *
-	 * @return Antvel\AddressBook\AddressBook
-	 */
-	protected function addressBook() : AddressBook
-	{
-		return $this->app->make(AddressBook::class);
-	}
+    public function setUp()
+    {
+        parent::setUp();
+
+        $this->user = factory(User::class)->create()->first();
+        $this->addressBook = $this->app->make(AddressBook::class);
+    }
 
 	public function test_the_given_user_must_has_2_addresses()
     {
-    	$user = $this->user();
-    	factory(Address::class, 2)->create(['user_id' => $user->id]);
-    	$this->assertCount(2, $this->addressBook()->forUser($user));
+    	factory(Address::class, 2)->create([
+            'user_id' => $this->user->id
+        ]);
+
+    	$this->assertCount(2, $this->user->addresses);
     }
 
     public function test_find_address_by_id()
     {
-    	$user = $this->user();
-    	factory(Address::class)->create(['user_id' => $user->id]);
-    	$address = $this->addressBook()->find(1)->first();
-    	$this->assertTrue($user->id == $address->user_id);
+    	factory(Address::class)->create([
+            'user_id' => $this->user->id
+        ]);
+
+    	$address = $this->addressBook->find(1)->first();
+
+    	$this->assertTrue($this->user->id == $address->user_id);
     }
 
     public function test_create_a_new_address()
     {
-    	$user = $this->user();
-    	$address = $this->addressBook();
-    	$address = $address->create($this->faker($user->id), $user);
-    	$this->assertTrue($user->id == $address->user_id);
+    	$data = $this->faker();
+        $address = $this->addressBook->create($data, $this->user);
+
+        $this->assertTrue($this->user->id == $address->user_id);
     }
 
     public function test_create_a_new_address_and_set_it_as_default()
     {
-    	$user = $this->user();
-    	$address = $this->addressBook()->createAndSetToDefault(
-    		$this->faker($user->id), $user
+    	$data = $this->faker();
+
+    	$address = $this->addressBook->createAndSetToDefault(
+    		$data, $this->user
     	);
+
     	$this->assertTrue((bool) $address->default);
     }
 
+    /**
+     * @expectedException  Illuminate\Database\Eloquent\ModelNotFoundException
+     */
     public function test_destroy_an_address_from_the_database()
     {
-        $user = $this->user();
-        $address = factory(Address::class)->create(['user_id' => $user->id]);
-        $this->addressBook()->destroy($address->id);
-        $destroyed = Address::where('id', $address->id)->first();
-        $this->assertNull($destroyed);
+        $address = factory(Address::class)->create([
+            'user_id' => $this->user->id
+        ]);
+
+        $this->addressBook->destroy($address->id);
+        $this->addressBook->find($address->id)->first();
     }
 
     /**
@@ -85,10 +87,10 @@ class AddressBookTest extends TestCase
      * @param  int $user_id
      * @return array
      */
-    protected function faker(int $user_id)
+    protected function faker(int $user_id = null)
     {
 		return [
-			'user_id' => $user_id,
+			'user_id' => $user_id ?: $this->user->id,
 			'default' => 0,
 			'city' => 'Guacara',
 			'state' => 'Carabobo',

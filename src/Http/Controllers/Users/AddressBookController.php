@@ -14,14 +14,15 @@ namespace Antvel\Http\Controllers\Users;
 use Illuminate\Http\Request;
 use Antvel\Http\Controllers\Controller;
 use Antvel\Http\Requests\Users\AddressBookRequest;
-use Antvel\Components\AddressBook\Factory as AddressBook;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Antvel\Components\AddressBook\Repository as AddressBook;
 
 class AddressBookController extends Controller
 {
     /**
      * The addressBook book componet.
      *
-     * @var Antvel\AddressBook\AddressBook
+     * @var Antvel\Components\AddressBook\Repository
      */
     protected $addressBook = null;
 
@@ -92,7 +93,7 @@ class AddressBookController extends Controller
 
         if (! $address) {
             return $this->respondsWithError(
-                trans('address.error_updating')
+                trans('address.errors.update')
             );
         }
 
@@ -123,10 +124,10 @@ class AddressBookController extends Controller
      */
     public function update(AddressBookRequest $request, int $id)
     {
-        if (! $address = $this->addressBook->find($id)) {
-            return $this->respondsWithError(
-                trans('address.error_updating')
-            );
+        try {
+            ! $address = $this->addressBook->find($id);
+        } catch(ModelNotFoundException $e) {
+            return $this->respondsWithError(trans('address.errors.model_not_found'));
         }
 
         $address->update($request->all());
@@ -144,13 +145,7 @@ class AddressBookController extends Controller
      */
     public function destroy(Request $request)
     {
-        if (! $address = $this->addressBook->find($request->id)) {
-            return $this->respondsWithError(
-                trans('address.error_updating')
-            );
-        }
-
-        $address->destroy($request->id);
+        $this->addressBook->destroy($request->id);
 
         return $this->respondsWithSuccess(
             '', $this->redirecTo

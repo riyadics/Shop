@@ -171,5 +171,8 @@ return [
     'product_value_counters' => [
         'view' => '1',
         'sale' => '1',
-    ]
+    ],
+
+    'save' => 'Save',
+    'cancel' => 'Cancel',
 ];

@@ -40,7 +40,7 @@ class Address extends Model
     protected $hidden = ['id'];
 
     /**
-     * Get the user that owns the address.
+     * Get the user who owns the address.
      */
     public function user()
     {

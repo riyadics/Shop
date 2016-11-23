@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Antvel\Components\AddressBook\Models\Address;
 
-class Factory
+class Repository
 {
 	/**
 	 * The user who owns the address.
@@ -56,7 +56,8 @@ class Factory
 	 */
 	public function find(int $id) : Address
 	{
-		return Address::find($id);
+
+		return Address::findOrFail($id);
 	}
 
 	/**
