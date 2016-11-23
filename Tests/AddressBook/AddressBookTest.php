@@ -18,7 +18,18 @@ use Antvel\Components\AddressBook\Repository as AddressBook;
 
 class AddressBookTest extends TestCase
 {
+    /**
+     * Temporary user.
+     *
+     * @var Antvel\Components\Customer\Models\User
+     */
     protected $user = null;
+
+    /**
+     * Temporary addressbook repository.
+     *
+     * @var Antvel\Components\AddressBook\Repository
+     */
     protected $addressBook = null;
 
     public function setUp()
@@ -81,6 +92,32 @@ class AddressBookTest extends TestCase
         $this->addressBook->find($address->id)->first();
     }
 
+    public function test_retrieves_addresses_for_a_logged_user()
+    {
+        factory(Address::class, 2)->create([
+            'user_id' => $this->user->id
+        ]);
+
+        $this->actingAs($this->user);
+
+        $addresses = $this->addressBook->forUser();
+
+        $this->assertNotEmpty($addresses);
+        $this->assertCount(2, $addresses);
+    }
+
+    public function test_retrieves_addresses_for_a_given_user()
+    {
+        factory(Address::class, 2)->create([
+            'user_id' => $this->user->id
+        ]);
+
+        $addresses = $this->addressBook->forUser($this->user);
+
+        $this->assertNotEmpty($addresses);
+        $this->assertCount(2, $addresses);
+    }
+
     /**
      * Returns a fake address for a given user.
      *
@@ -90,16 +127,16 @@ class AddressBookTest extends TestCase
     protected function faker(int $user_id = null)
     {
 		return [
+            'default' => 0,
+            'city' => 'Guacara',
+            'zipcode' => '2001',
+            'state' => 'Carabobo',
+            'country' => 'Venezuela',
+            'phone' => '+ 1 405 669 00 00',
+            'name_contact' => 'Gustavo Ocanto',
 			'user_id' => $user_id ?: $this->user->id,
-			'default' => 0,
-			'city' => 'Guacara',
-			'state' => 'Carabobo',
-			'country' => 'Venezuela',
-			'zipcode' => '2001',
-			'line1' => 'Urb. Augusto Malave Villalba',
-			'line2' => 'Conj#2, Piso#6, Apt#6-2, Los Azules',
-			'phone' => '+ 1 405 669 00 00',
-			'name_contact' => 'Gustavo Ocanto'
+            'line1' => 'Urb. Augusto Malave Villalba',
+            'line2' => 'Conj#2, Piso#6, Apt#6-2, Los Azules',
 		];
     }
 }

@@ -44,7 +44,7 @@ class RouteRegistrar
         $this->router->group([
 
 			'prefix' => 'user',
-            'middleware' => 'web',
+            'middleware' => ['web', 'auth'],
             'namespace' => 'Users',
 
 		], function ($router) {
