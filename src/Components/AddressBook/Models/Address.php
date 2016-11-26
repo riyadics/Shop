@@ -11,8 +11,8 @@
 
 namespace Antvel\Components\AddressBook\Models;
 
+use Antvel\Antvel;
 use Illuminate\Database\Eloquent\Model;
-use Antvel\Components\Customer\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Address extends Model
@@ -44,6 +44,6 @@ class Address extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Antvel::userModel());
     }
 }

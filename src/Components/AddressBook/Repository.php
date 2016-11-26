@@ -56,7 +56,6 @@ class Repository
 	 */
 	public function find(int $id) : Address
 	{
-
 		return Address::findOrFail($id);
 	}
 

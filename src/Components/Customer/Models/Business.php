@@ -11,6 +11,7 @@
 
 namespace Antvel\Components\Customer\Models;
 
+use Antvel\Antvel;
 use Illuminate\Database\Eloquent\Model;
 
 class Business extends Model
@@ -64,6 +65,6 @@ class Business extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Antvel::userModel());
     }
 }

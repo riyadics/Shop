@@ -53,8 +53,8 @@ class RouteRegistrar
 			$router->put('address/store', 'AddressBookController@store');
 			$router->put('address/{id}', 'AddressBookController@update');
 			$router->get('address/create', 'AddressBookController@create');
-			$router->post('address/delete', 'AddressBookController@destroy');
 			$router->get('address/{id}/edit', 'AddressBookController@edit');
+            $router->post('address/delete', 'AddressBookController@destroy');
 			$router->post('address/default', 'AddressBookController@setDefault');
 
         });

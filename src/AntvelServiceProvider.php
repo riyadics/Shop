@@ -11,8 +11,9 @@
 
 namespace Antvel;
 
-use Illuminate\Support\Facades\Route;
+use Antvel\Antvel;
 use Illuminate\Support\ServiceProvider;
+use Antvel\Exceptions\UserModelDoesnotExistException;
 
 class AntvelServiceProvider extends ServiceProvider
 {
@@ -23,24 +24,42 @@ class AntvelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // dd(Antvel::doesntHaveUserModel());
+        // if (Antvel::doesntHaveUserModel()) {
+        //    throw new UserModelDoesnotExistException;
+        // }
+
          $this->loadTranslationsFrom(
             realpath(__DIR__ . '/../resources/lang')
         , 'antvel');
 
         if ($this->app->runningInConsole()) {
-
-            $this->loadMigrationsFrom(
-                __DIR__ . '/../database/migrations'
-            );
-
-            $this->publishes([
-                __DIR__ . '/../resources/lang' => resource_path('lang/vendor/antvel'),
-            ], 'antvel-trans');
-
-             $this->publishes([
-                __DIR__ . '/../database/seeds' => database_path('seeds')
-            ], 'antvel-seeds');
+            $this->publishAntvel();
         }
+    }
+
+    /**
+     * Publish the antvel configuration files.
+     *
+     * @return void
+     */
+    protected function publishAntvel()
+    {
+        $this->loadMigrationsFrom(
+            __DIR__ . '/../database/migrations'
+        );
+
+        $this->publishes([
+            __DIR__ . '/../config/' => config_path()
+        ], 'antvel-config');
+
+         $this->publishes([
+            __DIR__ . '/../database/seeds' => database_path('seeds')
+        ], 'antvel-seeds');
+
+        $this->publishes([
+            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/antvel'),
+        ], 'antvel-trans');
     }
 
     /**

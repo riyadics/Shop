@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-use App\User as User;
 use Faker\Factory as Faker;
 use Illuminate\Database\Seeder;
 use Antvel\Components\AddressBook\Models\Address;
+use Antvel\Components\Customer\Models\User as User;
 
 class AddressesTableSeeder extends Seeder
 {
