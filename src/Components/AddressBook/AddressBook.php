@@ -15,7 +15,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Antvel\Components\AddressBook\Models\Address;
 
-class Repository
+class AddressBook
 {
 	/**
 	 * The user who owns the address.

@@ -12,9 +12,9 @@
 namespace Antvel\Tests\AddressBook;
 
 use Antvel\Tests\TestCase;
-use Antvel\Components\Customer\Models\User;
+use Antvel\Tests\Stubs\User;
+use Antvel\Components\AddressBook\AddressBook;
 use Antvel\Components\AddressBook\Models\Address;
-use Antvel\Components\AddressBook\Repository as AddressBook;
 
 class AddressBookTest extends TestCase
 {
@@ -42,7 +42,7 @@ class AddressBookTest extends TestCase
 
 	public function test_the_given_user_must_has_2_addresses()
     {
-    	factory(Address::class, 2)->create([
+        factory(Address::class, 2)->create([
             'user_id' => $this->user->id
         ]);
 
@@ -51,29 +51,27 @@ class AddressBookTest extends TestCase
 
     public function test_find_address_by_id()
     {
-    	factory(Address::class)->create([
+        factory(Address::class)->create([
             'user_id' => $this->user->id
         ]);
 
     	$address = $this->addressBook->find(1)->first();
-
     	$this->assertTrue($this->user->id == $address->user_id);
     }
 
     public function test_create_a_new_address()
     {
-    	$data = $this->faker();
-        $address = $this->addressBook->create($data, $this->user);
+    	$address = $this->addressBook->create(
+            $this->fakedData(), $this->user
+        );
 
         $this->assertTrue($this->user->id == $address->user_id);
     }
 
     public function test_create_a_new_address_and_set_it_as_default()
     {
-    	$data = $this->faker();
-
-    	$address = $this->addressBook->createAndSetToDefault(
-    		$data, $this->user
+        $address = $this->addressBook->createAndSetToDefault(
+    		$this->fakedData(), $this->user
     	);
 
     	$this->assertTrue((bool) $address->default);
@@ -99,9 +97,7 @@ class AddressBookTest extends TestCase
         ]);
 
         $this->actingAs($this->user);
-
         $addresses = $this->addressBook->forUser();
-
         $this->assertNotEmpty($addresses);
         $this->assertCount(2, $addresses);
     }
@@ -124,7 +120,7 @@ class AddressBookTest extends TestCase
      * @param  int $user_id
      * @return array
      */
-    protected function faker(int $user_id = null)
+    protected function fakedData(int $user_id = null)
     {
 		return [
             'default' => 0,

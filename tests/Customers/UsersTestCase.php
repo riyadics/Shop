@@ -12,11 +12,11 @@
 namespace Antvel\Tests\Customers;
 
 use Antvel\Tests\TestCase;
-use Antvel\Components\Customer\Models\User;
+use Antvel\Tests\Stubs\User;
 
 abstract class UsersTestCase extends TestCase
 {
-	protected function user(array $data = [], bool $create = true, int $number = 1) : User
+	protected function user(array $data = [], bool $create = true, int $number = 1)
 	{
 		if ($create) {
 			return $this->createUser($data, $number);
@@ -25,9 +25,9 @@ abstract class UsersTestCase extends TestCase
 		return factory(User::class)->make($data)->first();
 	}
 
-	protected function createUser(array $data = [], int $number) : User
+	protected function createUser(array $data = [], int $number)
 	{
-		return factory(User::class)->create($data)->first();
+		return factory(User::class, $number)->create($data)->first();
 	}
 
 }

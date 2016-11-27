@@ -11,17 +11,18 @@
 
 namespace Antvel\Tests\Customers;
 
-use Antvel\Components\Customer\Models\{ User, Business };
+use Illuminate\Contracts\Auth\Authenticatable;
+use Antvel\Components\Customer\Models\Business;
 
 class BusinessesTest extends UsersTestCase
 {
 	public function test_create_a_new_business_in_databse()
 	{
 		$business = factory(Business::class)->create([
-    		'user_id' =>  $this->user(['role' => 'business'])->id
+    		'user_id' => $this->user(['role' => 'business'])->id
     	])->first();
 
-		$this->assertInstanceOf(User::class, $business->user);
 		$this->assertEquals($business->user->role, 'business');
+    	$this->assertInstanceOf(Authenticatable::class, $business->user);
 	}
 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Http\Requests\Users;
+namespace Antvel\Components\AddressBook;
 
 use Antvel\Http\Requests\Request;
 

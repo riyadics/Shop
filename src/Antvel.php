@@ -1,9 +1,17 @@
 <?php
 
+/*
+ * This file is part of the Antvel Shop package.
+ *
+ * (c) Gustavo Ocanto <gustavoocanto@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
 namespace Antvel;
 
 use Antvel\Http\RouteRegistrar;
-use Illuminate\Auth\Authenticatable;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
 use Antvel\Policies\Registrar as Policies;
@@ -18,6 +26,13 @@ class Antvel
      */
     const VERSION = '1.0.0';
 
+    /**
+     * Controls whether tests are running.
+     *
+     * @var boolean
+     */
+    protected static $testsAreRunning = false;
+
 	/**
      * Get a Antvel route registrar.
      *
@@ -29,10 +44,6 @@ class Antvel
         $callback = $callback ?: function ($router) {
             $router->all();
         };
-
-        $options = array_merge($options, [
-            'namespace' => '\Antvel\Http\Controllers',
-        ]);
 
         Route::group($options, function ($router) use ($callback) {
             $callback(new RouteRegistrar($router));
@@ -57,8 +68,7 @@ class Antvel
     public static function doesntHaveUserModel()
     {
         $model = static::userModel();
-// dd('----->>>', new $model);
-// dd('----->>>', new $model, (get_class($model) instanceof Authenticatable));
+
         if (is_null($model) || ! class_exists($model)) {
             return true;
         }
@@ -71,10 +81,29 @@ class Antvel
      *
      * @return null|App\User
      */
-    protected static function userModel()
+    public static function userModel()
     {
+        if (static::$testsAreRunning) {
+            //If phpunit is running, we retrieve the user model stub
+            //for testing purposes.
+            return \Antvel\Tests\Stubs\User::class;
+            // return \Antvel\Tests\Stubs\UserModelStub::class;
+        }
+
         $config = Container::getInstance()->make(Config::class);
 
         return $config->get('auth.providers.users.model');
+    }
+
+    /**
+     * Tells the application that tests are about to start.
+     *
+     * @return void
+     */
+    public static function beginsTests()
+    {
+        //Allows the application knows whether phpunit is running,
+        //so we can swap the user models by the testing one.
+        static::$testsAreRunning = true;
     }
 }

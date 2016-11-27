@@ -11,7 +11,8 @@
 
 namespace Antvel\Tests\Customers;
 
-use Antvel\Components\Customer\Models\{ User, Person };
+use Antvel\Components\Customer\Models\Person;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class PeopleTest extends UsersTestCase
 {
@@ -22,6 +23,6 @@ class PeopleTest extends UsersTestCase
     	])->first();
 
 		$this->assertEquals($person->user->role, 'person');
-    	$this->assertInstanceOf(User::class, $person->user);
+    	$this->assertInstanceOf(Authenticatable::class, $person->user);
 	}
 }

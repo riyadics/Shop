@@ -1,10 +1,20 @@
 <?php
 
+/*
+ * This file is part of the Antvel Shop package.
+ *
+ * (c) Gustavo Ocanto <gustavoocanto@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+use Antvel\Antvel;
 use Faker\Generator as Faker;
 use Antvel\Components\AddressBook\Models\Address;
-use Antvel\Components\Customer\Models\{ User, Person, Business };
+use Antvel\Components\Customer\Models\{ Person, Business };
 
-$factory->define(User::class, function (Faker $faker) use ($factory)
+$factory->define(Antvel::userModel(), function (Faker $faker) use ($factory)
 {
     return [
         'password' => bcrypt('123456'),
@@ -22,7 +32,7 @@ $factory->define(Person::class, function (Faker $faker) use ($factory)
 {
     return [
         'user_id' => function () {
-            return factory(User::class)->create()->id;
+            return factory(Antvel::userModel())->create()->id;
         },
         'last_name' => $faker->lastName,
         'first_name' => $faker->firstName,
@@ -36,7 +46,7 @@ $factory->define(Business::class, function (Faker $faker) use ($factory)
 {
     return [
         'user_id' => function () {
-            return factory(User::class)->create()->id;
+            return factory(Antvel::userModel())->create()->id;
         },
         'creation_date' => $faker->date(),
         'business_name' => $faker->company,
@@ -48,7 +58,7 @@ $factory->define(Address::class, function (Faker $faker) use ($factory)
 {
     return [
         'user_id' => function () {
-            return factory(User::class)->create()->id;
+            return factory(Antvel::userModel())->create()->id;
         },
         'default' => 0,
         'city' => $faker->city,

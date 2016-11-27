@@ -9,13 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Http\Controllers\Users;
+namespace Antvel\Components\AddressBook;
 
+use Antvel\Http\Controller;
 use Illuminate\Http\Request;
-use Antvel\Http\Controllers\Controller;
-use Antvel\Http\Requests\Users\AddressBookRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Antvel\Components\AddressBook\Repository as AddressBook;
 
 class AddressBookController extends Controller
 {
