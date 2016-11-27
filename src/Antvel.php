@@ -87,7 +87,6 @@ class Antvel
             //If phpunit is running, we retrieve the user model stub
             //for testing purposes.
             return \Antvel\Tests\Stubs\User::class;
-            // return \Antvel\Tests\Stubs\UserModelStub::class;
         }
 
         $config = Container::getInstance()->make(Config::class);
