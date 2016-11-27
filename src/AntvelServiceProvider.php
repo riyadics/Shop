@@ -24,26 +24,27 @@ class AntvelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        // dd(Antvel::doesntHaveUserModel());
-        // if (Antvel::doesntHaveUserModel()) {
-        //    throw new UserModelDoesnotExistException;
-        // }
+        //if the application user model was not provided,
+        //We throw an exception.
+        if (Antvel::doesntHaveUserModel()) {
+           throw new UserModelDoesnotExistException;
+        }
 
          $this->loadTranslationsFrom(
             realpath(__DIR__ . '/../resources/lang')
         , 'antvel');
 
         if ($this->app->runningInConsole()) {
-            $this->publishAntvel();
+            $this->publishAntvelResources();
         }
     }
 
     /**
-     * Publish the antvel configuration files.
+     * Publish the antvel resources files.
      *
      * @return void
      */
-    protected function publishAntvel()
+    protected function publishAntvelResources()
     {
         $this->loadMigrationsFrom(
             __DIR__ . '/../database/migrations'

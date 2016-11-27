@@ -14,16 +14,15 @@ namespace Antvel\Tests\Stubs;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use Antvel\Components\Customer\hasAntvel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
-use Antvel\Components\AddressBook\Models\Address;
-use Antvel\Components\Customer\Models\{ Business, Person };
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract
 {
-    use Authenticatable, CanResetPassword, SoftDeletes, Notifiable;
+    use Authenticatable, CanResetPassword, SoftDeletes, Notifiable, hasAntvel;
 
     /**
      * The database table used by the model.
@@ -38,10 +37,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $fillable = [
-        'disabled_at',
-        'nickname', 'email', 'password', 'role',
-        'pic_url', 'language', 'website', 'twitter',
         'facebook', 'mobile_phone', 'work_phone', 'description',
+        'pic_url', 'language', 'website', 'twitter',
+        'nickname', 'email', 'password', 'role',
+        'disabled_at',
     ];
 
     /**
@@ -57,22 +56,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
-
-
-
-    public function profile()
-    {
-        if (in_array($this->role, ['business', 'nonprofit'])) {
-            return $this->hasOne(Business::class);
-        }
-
-        return $this->hasOne(Person::class);
-    }
-
-    public function addresses()
-    {
-        return $this->hasMany(Address::class);
-    }
 
     public function hasRole($role)
     {
