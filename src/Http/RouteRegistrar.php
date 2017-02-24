@@ -23,6 +23,13 @@ class RouteRegistrar
     protected $router;
 
     /**
+     * The base namespace.
+     *
+     * @var string
+     */
+    protected $namespace = 'Antvel\Components';
+
+    /**
      * Create a new route registrar instance.
      *
      * @param  Router  $router
@@ -41,6 +48,7 @@ class RouteRegistrar
     public function all()
     {
         $this->forAddressBook();
+        $this->forCustomer();
     }
 
     /**
@@ -54,7 +62,7 @@ class RouteRegistrar
 
 			'prefix' => 'user',
             'middleware' => ['web', 'auth'],
-            'namespace' => 'Antvel\Components\AddressBook',
+            'namespace' => $this->namespace . '\AddressBook',
 
 		], function ($router) {
 
@@ -66,6 +74,19 @@ class RouteRegistrar
             $router->post('address/delete', 'AddressBookController@destroy');
 			$router->post('address/default', 'AddressBookController@setDefault');
 
+        });
+    }
+
+    protected function forCustomer()
+    {
+        $this->router->group([
+
+            'middleware' => ['web', 'auth'],
+            'namespace' => $this->namespace . '\Customer',
+
+        ], function ($router) {
+
+            $router->resource('customer', 'CustomersController');
         });
     }
 }
