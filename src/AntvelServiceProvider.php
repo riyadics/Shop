@@ -34,6 +34,10 @@ class AntvelServiceProvider extends ServiceProvider
             realpath(__DIR__ . '/../resources/lang')
         , 'antvel');
 
+         $this->loadMigrationsFrom(
+            __DIR__ . '/../database/migrations'
+        );
+
         if ($this->app->runningInConsole()) {
             $this->publishAntvelResources();
         }
@@ -46,10 +50,6 @@ class AntvelServiceProvider extends ServiceProvider
      */
     protected function publishAntvelResources()
     {
-        $this->loadMigrationsFrom(
-            __DIR__ . '/../database/migrations'
-        );
-
         $this->publishes([
             __DIR__ . '/../config/' => config_path()
         ], 'antvel-config');
