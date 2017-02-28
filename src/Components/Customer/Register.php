@@ -94,11 +94,8 @@ class Register
      */
     protected function persist() : self
     {
-        //we fetch the application user model.
-        $user = Antvel::userModel();
-
         //we create the user with the given request.
-        $this->user = $user::create([
+        $this->user = $this->model::create([
             'password' => bcrypt($this->request->get('password')),
             'nickname' => $this->request->get('email'),
             'email' => $this->request->get('email'),
