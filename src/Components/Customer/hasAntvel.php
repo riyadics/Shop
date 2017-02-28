@@ -19,37 +19,6 @@ trait hasAntvel
     use Presenters;
 
     /**
-     * The "booting" method of the model.
-     *
-     * @return void
-     */
-    protected static function boot()
-    {
-        parent::boot();
-
-        $class = new static;
-
-        /**
-        * The attributes that are mass assignable.
-        *
-        * @var array
-        */
-        $class->fillable = [
-            'facebook', 'mobile_phone', 'work_phone', 'description',
-            'pic_url', 'language', 'website', 'twitter',
-            'nickname', 'email', 'password', 'role',
-            'disabled_at',
-        ];
-
-        /**
-        * The attribute for soft deletes.
-        *
-        * @var array
-        */
-        $class->dates = ['deleted_at'];
-    }
-
-    /**
      * Returns the user profile.
      */
 	public function profile()

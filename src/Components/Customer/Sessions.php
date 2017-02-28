@@ -99,6 +99,8 @@ class Sessions
     {
     	$this->request = $request;
 
+        //If user said he was not registered, we flash his email address
+        //in order for it to be available in the registration view.
 		if ($this->request->input('newuser')) {
 			$this->session->flash('email', $this->request->input('email'));
 			return redirect('/register');

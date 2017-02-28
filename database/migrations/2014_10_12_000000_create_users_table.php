@@ -41,6 +41,7 @@ class CreateUsersTable extends Migration
             $table->enum('type', array_keys(resolveTrans('globals.type_user')))->default('normal');
             $table->enum('verified', array_keys(resolveTrans('globals.verification')))->default('no');
             $table->json('preferences')->nullable();
+            $table->string('confirmation_token', 100)->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->timestamp('disabled_at')->nullable();
