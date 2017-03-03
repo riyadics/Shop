@@ -12,7 +12,7 @@
 namespace Antvel\Components\Customer;
 
 use Antvel\Components\AddressBook\Models\Address;
-use Antvel\Components\Customer\Models\{ Person, Bussiness, Presenters };
+use Antvel\Components\Customer\Models\{ Person, Business, Presenters };
 
 trait hasAntvel
 {

@@ -21,7 +21,7 @@ trait Presenters
     public function getFullNameAttribute()
     {
         $firstName = ($this->isPerson() || $this->isAdmin()) ? 'first_name' : 'business_name';
-// echo $this->isPerson() . ' > ' . $firstName;
+
         return ucwords($this->profile->$firstName . ' ' . $this->profile->last_name);
     }
 

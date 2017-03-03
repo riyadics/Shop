@@ -16,54 +16,60 @@ use Antvel\Components\Customer\Requests\ProfileRequest;
 
 class CustomersController
 {
-	protected $customerRepository = null;
+    /**
+     * The customer repository.
+     *
+     * @var CustomerRepository
+     */
+	protected $customer = null;
 
+    /**
+     * The view panel layout. (TEMP while refactoring)
+     *
+     * @var array
+     */
     private $view_panel = [
         'left'   => ['width' => '2', 'class' => 'user-panel'],
         'center' => ['width' => '10'],
     ];
 
-	public function __construct(CustomerRepository $customerRepository)
+    /**
+     * Creates a new instance.
+     *
+     * @param CustomersRepository $customer
+     * @return void
+     */
+	public function __construct(CustomersRepository $customer)
     {
-    	$this->customerRepository = $customerRepository;
+    	$this->customer = $customer;
     }
 
+    /**
+     * Shows the user profile.
+     *
+     * @return void
+     */
 	public function index()
 	{
-		return view('user.profile', [
-        	'user' => $this->customerRepository->find(),
+        return view('user.profile', [
+        	'user' => $this->customer->profile(),
         	'panel' => $this->view_panel
         ]);
 	}
 
-    public function update($customer)
+    /**
+     * Updates the user profile.
+     *
+     * @param  ProfileRequest $request
+     * @param  int $id
+     * @return void
+     */
+    public function update(ProfileRequest $request, $id)
     {
-        dd($customer);
+        $this->customer->update(
+            $request->all(), $id
+        );
 
-        // //user update
-        // \Session::flash('message', trans('user.saved'));
-        // $user->fill($request->all());
-        // $user->pic_url = $request->get('pic_url');
-        // $user->password = bcrypt($request->get('password'));
-        // $user->save();
-
-        // //bussiness update
-        // if ($request->get('business_name') !== null && trim($request->get('business_name')) != '') {
-        //     $business = Business::find($user->id);
-        //     $business->business_name = $request->get('business_name');
-        //     $business->save();
-        // }
-
-        // //person update
-        // if ($request->get('first_name') !== null && trim($request->get('first_name')) != '') {
-        //     $person = Person::find($user->id);
-        //     $person->first_name = $request->get('first_name');
-        //     $person->last_name = $request->get('last_name');
-        //     $person->birthday = $request->get('birthday');
-        //     $person->sex = $request->get('sex');
-        //     $person->save();
-        // }
-
-        // return redirect()->back();
+        return back();
     }
 }

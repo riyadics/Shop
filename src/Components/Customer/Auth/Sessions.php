@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Components\Customer;
+namespace Antvel\Components\Customer\Auth;
 
 use Illuminate\Http\Request;
 use Illuminate\Container\Container;
