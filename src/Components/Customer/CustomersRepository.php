@@ -108,25 +108,13 @@ class CustomersRepository
      */
     public function profile($user_id = null)
     {
+        //if user id was not provided, we assumed the update will be
+        //done on the logged user.
+        if (is_null($user_id)) {
+            return $this->user();
+        }
+
+        //we retrieve the user for the given id.
         return $this->find($user_id, 'profile');
-    }
-
-    /**
-     * Updates the user profile.
-     * @param  array  $data
-     * @param  int $user_id
-     * @return void
-     */
-    public function update(array $data, $user_id)
-    {
-        $user = $this->user();
-
-        //we update the user information.
-        $user->fill($data);
-        $user->save();
-
-        //we update the user profile.
-        $user->profile->fill($data);
-        $user->profile->save();
     }
 }

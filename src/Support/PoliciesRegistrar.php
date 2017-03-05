@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Policies;
+namespace Antvel\Support;
 
 use Illuminate\Support\Facades\Gate;
 
-class Registrar
+class PoliciesRegistrar
 {
 	/**
      * The policy mappings for Antvel.

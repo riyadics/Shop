@@ -18,6 +18,13 @@ use Antvel\Exceptions\UserModelDoesnotExistException;
 class AntvelServiceProvider extends ServiceProvider
 {
     /**
+     * Indicates if loading of the provider is deferred.
+     *
+     * @var bool
+     */
+    protected $defer = true;
+
+    /**
      * Bootstrap the application services.
      *
      * @return void
@@ -30,11 +37,11 @@ class AntvelServiceProvider extends ServiceProvider
            throw new UserModelDoesnotExistException;
         }
 
-         $this->loadTranslationsFrom(
+        $this->loadTranslationsFrom(
             realpath(__DIR__ . '/../resources/lang')
         , 'antvel');
 
-         $this->loadMigrationsFrom(
+        $this->loadMigrationsFrom(
             __DIR__ . '/../database/migrations'
         );
 
@@ -71,5 +78,15 @@ class AntvelServiceProvider extends ServiceProvider
     public function register()
     {
         //
+    }
+
+    /**
+     * Get the services provided by the provider.
+     *
+     * @return array
+     */
+    public function provides()
+    {
+        return ['antvel'];
     }
 }

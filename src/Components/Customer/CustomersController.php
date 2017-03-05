@@ -12,7 +12,9 @@
 namespace Antvel\Components\Customer;
 
 use Illuminate\Http\Request;
+use Illuminate\Events\Dispatcher;
 use Antvel\Components\Customer\Requests\ProfileRequest;
+use Antvel\Components\Customer\Events\ProfileWasUpdated;
 
 class CustomersController
 {
@@ -21,7 +23,7 @@ class CustomersController
      *
      * @var CustomerRepository
      */
-	protected $customer = null;
+    protected $customer = null;
 
     /**
      * The view panel layout. (TEMP while refactoring)
@@ -34,14 +36,23 @@ class CustomersController
     ];
 
     /**
+     * The laravel Dispatcher component.
+     *
+     * @var Dispatcher
+     */
+    protected $event = null;
+
+    /**
      * Creates a new instance.
      *
      * @param CustomersRepository $customer
+     * @param Dispatcher $event
      * @return void
      */
-	public function __construct(CustomersRepository $customer)
+	public function __construct(CustomersRepository $customer, Dispatcher $event)
     {
-    	$this->customer = $customer;
+        $this->event = $event;
+        $this->customer = $customer;
     }
 
     /**
@@ -51,25 +62,42 @@ class CustomersController
      */
 	public function index()
 	{
-        return view('user.profile', [
-        	'user' => $this->customer->profile(),
-        	'panel' => $this->view_panel
-        ]);
+        return $this->show();
 	}
+
+    /**
+     * Shows the user profile.
+     *
+     * @return void
+     */
+    public function show()
+    {
+        return view('user.profile', [
+            'user' => $this->customer->profile(),
+            'panel' => $this->view_panel
+        ]);
+    }
 
     /**
      * Updates the user profile.
      *
      * @param  ProfileRequest $request
-     * @param  int $id
+     * @param  int $customer
      * @return void
      */
-    public function update(ProfileRequest $request, $id)
+    public function update(ProfileRequest $request, $customer = null)
     {
-        $this->customer->update(
-            $request->all(), $id
+        $customer = $this->customer->profile($customer);
+
+        $this->event->fire(
+            new ProfileWasUpdated($request->all(), $customer)
         );
 
         return back();
+    }
+
+    public function confirmNewEmailAddress(string $token, string $email)
+    {
+        dd('confirmNewEmailAddress', $token, $email);
     }
 }

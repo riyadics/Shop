@@ -50,7 +50,7 @@ class Register
     /**
      * The Laravel mail component.
      *
-     * @var Session
+     * @var Mailer
      */
     protected $mailer = null;
 

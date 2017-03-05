@@ -9,11 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Http;
+namespace Antvel\Support;
 
 use Illuminate\Contracts\Routing\Registrar as Router;
 
-class RouteRegistrar
+class RoutesRegistrar
 {
 	/**
      * The router implementation.
@@ -92,6 +92,10 @@ class RouteRegistrar
         ], function ($router) {
 
             $router->resource('customer', 'CustomersController');
+
+            $router->get('customer/confirmNewEmail/{token}/{email}', 'CustomersController@confirmNewEmailAddress')
+                ->name('customer.newemail')
+                ->middleware(['web', 'auth']);
         });
     }
 }

@@ -11,10 +11,8 @@
 
 namespace Antvel;
 
-use Antvel\Http\RouteRegistrar;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
-use Antvel\Policies\Registrar as Policies;
 use Illuminate\Contracts\Config\Repository as Config;
 
 class Antvel
@@ -32,33 +30,6 @@ class Antvel
      * @var boolean
      */
     protected static $testsAreRunning = false;
-
-	/**
-     * Get a Antvel route registrar.
-     *
-     * @param  array  $options
-     * @return RouteRegistrar
-     */
-    public static function routes($callback = null, array $options = [])
-    {
-        $callback = $callback ?: function ($router) {
-            $router->all();
-        };
-
-        Route::group($options, function ($router) use ($callback) {
-            $callback(new RouteRegistrar($router));
-        });
-    }
-
-    /**
-     * Register the antvel policies.
-     *
-     * @return void
-     */
-    public static function policies()
-    {
-        Container::getInstance()->make(Policies::class)->registrar();
-    }
 
     /**
      * Checks whether the app user model is valid.
@@ -104,5 +75,42 @@ class Antvel
         //Allows the application knows whether phpunit is running,
         //so we can swap the user models by the testing one.
         static::$testsAreRunning = true;
+    }
+
+    /**
+     * Registers Antvel events and listeners.
+     *
+     * @return void
+     */
+    public static function events()
+    {
+        (new \Antvel\Support\EventsRegistrar)->registrar();
+    }
+
+    /**
+     * Register the antvel policies.
+     *
+     * @return void
+     */
+    public static function policies()
+    {
+        (new \Antvel\Support\PoliciesRegistrar)->registrar();
+    }
+
+    /**
+     * Get a Antvel route registrar.
+     *
+     * @param  array  $options
+     * @return void
+     */
+    public static function routes($callback = null, array $options = [])
+    {
+        $callback = $callback ?: function ($router) {
+            $router->all();
+        };
+
+        Route::group($options, function ($router) use ($callback) {
+            $callback(new \Antvel\Support\RoutesRegistrar($router));
+        });
     }
 }
