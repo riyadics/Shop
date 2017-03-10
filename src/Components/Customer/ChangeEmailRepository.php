@@ -24,6 +24,8 @@ class ChangeEmailRepository
      */
     public function createPetition($data)
     {
+        $this->clearPendingPetitions();
+
         return EmailChangePetition::create([
             'expires_at' => Carbon::now()->addMonth(),
             'new_email' => $data['petition']['email'],

@@ -12,6 +12,7 @@
 namespace Antvel\Components\Customer;
 
 use Antvel\Antvel;
+use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -145,5 +146,48 @@ class CustomersRepository
 
         // //Update the user profile information with the given data.
         $user->profile->fill($data->all())->save();
+    }
+
+    /**
+     * Enables and Disables a given user profile.
+     *
+     * @param  int|null $user_id
+     * @param  string $action
+     * @return string
+     */
+    public function enableDisable($user_id = null, $action = 'disable') : string
+    {
+        $user = is_null($user_id) ?  $this->find($user_id) : $this->user();
+
+        if ($user) {
+            $this->update($user, [
+                'disabled_at' => $action == 'disable' ? Carbon::now() : null
+            ]);
+            return 'ok';
+        }
+
+        return 'notOk';
+    }
+
+    /**
+     * Disables a given user profile.
+     *
+     * @param  int $user_id
+     * @return string
+     */
+    public function disable($user_id = null)
+    {
+        return $this->enableDisable($user_id);
+    }
+
+    /**
+     * Enables a given user profile.
+     *
+     * @param  int $user_id
+     * @return string
+     */
+    public function enable($user_id = null)
+    {
+        return $this->enableDisable($user_id, 'enable');
     }
 }

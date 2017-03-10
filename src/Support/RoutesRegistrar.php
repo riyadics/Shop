@@ -93,9 +93,14 @@ class RoutesRegistrar
 
             $router->resource('customer', 'CustomersController');
 
-            $router->get('customer/confirmNewEmail/{token}/{email}', 'CustomersController@confirmNewEmailAddress')
-                ->name('customer.newemail')
-                ->middleware(['web', 'auth']);
+            $this->router->group([
+                'middleware' => ['web', 'auth'],
+                'prefix' => 'customer/security'
+            ], function ($router) {
+                $router->get('confirmEmail/{token}/{email}', 'SecurityController@confirmEmail')->name('customer.email');
+                $router->patch('{action}/{customer?}', 'SecurityController@update')->name('customer.action');
+            });
+
         });
     }
 }

@@ -11,12 +11,13 @@
 
 namespace Antvel\Components\Customer;
 
+use Antvel\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Events\Dispatcher;
 use Antvel\Components\Customer\Requests\ProfileRequest;
 use Antvel\Components\Customer\Events\ProfileWasUpdated;
 
-class CustomersController
+class CustomersController extends Controller
 {
     /**
      * The customer repository.
@@ -96,25 +97,4 @@ class CustomersController
         return back();
     }
 
-    /**
-     * Confirms the user's new email address.
-     *
-     * @param  string $token
-     * @param  string $email
-     * @return void
-     */
-    public function confirmNewEmailAddress(string $token, string $email)
-    {
-        $petition = (new ChangeEmailRepository())->confirm(
-            $user_id = $this->customer->id, $token, $email
-        );
-
-        if (! is_null($petition)) {
-            $this->customer->update(
-                $user_id, ['email' => $email]
-            );
-        }
-
-        return redirect()->route('customer.index');
-    }
 }

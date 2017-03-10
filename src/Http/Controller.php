@@ -27,13 +27,13 @@ abstract class Controller extends BaseController
      * @param  string $class
      * @return JSON
      */
-    public function respondsWithError(string $message, string $class = 'alert alert-danger')
+    public function respondsWithError(string $message, $code = 404)
     {
         return response()->json([
             'success' => false,
             'message' => $message,
             'class' => 'alert alert-danger'
-        ]);
+        ], $code);
     }
 
     /**
@@ -45,14 +45,11 @@ abstract class Controller extends BaseController
      */
     public function respondsWithSuccess(string $message, string $redirectTo = '')
     {
-        if (trim($message) != '') {
-            session()->flash('message', $message);
-        }
-
         return response()->json([
+            'redirectTo' => $redirectTo,
+            'callback' => $redirectTo,
+            'message' => $message,
             'success' => true,
-            'callback' => $redirectTo, //temporary while refactoring
-            'redirectTo' => $redirectTo
         ], 200);
     }
 
