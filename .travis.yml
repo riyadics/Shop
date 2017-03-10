@@ -6,6 +6,9 @@ php:
   - hhvm
   - nightly
 
+services:
+  - mysql
+
 sudo: false
 
 before_install:
