@@ -12,7 +12,10 @@
 namespace Antvel\Components\Customer;
 
 use Antvel\Components\AddressBook\Models\Address;
-use Antvel\Components\Customer\Models\{ Person, Business, Presenters };
+
+use Antvel\Components\Customer\Models\ {
+    Person, Business, Presenters, EmailChangePetition
+};
 
 trait hasAntvel
 {
@@ -20,6 +23,8 @@ trait hasAntvel
 
     /**
      * Returns the user profile.
+     *
+     * @return mixed
      */
 	public function profile()
     {
@@ -32,10 +37,22 @@ trait hasAntvel
 
     /**
      * Returns the user addressBook.
+     *
+     * @return Address
      */
     public function addresses()
     {
         return $this->hasMany(Address::class);
+    }
+
+    /**
+     * The user email change petitions.
+     *
+     * @return EmailChangePetition
+     */
+    public function emailChangePetitions()
+    {
+        return $this->hasMany(EmailChangePetition::class);
     }
 
 

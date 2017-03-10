@@ -13,7 +13,7 @@ namespace Antvel;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Contracts\Config\Repository as Config;
+use Antvel\Support\{ EventsRegistrar, PoliciesRegistrar, RoutesRegistrar };
 
 class Antvel
 {
@@ -55,12 +55,11 @@ class Antvel
     public static function userModel()
     {
         if (static::$testsAreRunning) {
-            //If phpunit is running, we retrieve the user model stub
-            //for testing purposes.
+            //If phpunit is running, we retrieve the user model stub for testing purposes.
             return \Antvel\Tests\Stubs\User::class;
         }
 
-        $config = Container::getInstance()->make(Config::class);
+        $config = Container::getInstance()->make('config');
 
         return $config->get('auth.providers.users.model');
     }
@@ -84,7 +83,7 @@ class Antvel
      */
     public static function events()
     {
-        (new \Antvel\Support\EventsRegistrar)->registrar();
+        (new EventsRegistrar)->registrar();
     }
 
     /**
@@ -94,7 +93,7 @@ class Antvel
      */
     public static function policies()
     {
-        (new \Antvel\Support\PoliciesRegistrar)->registrar();
+        (new PoliciesRegistrar)->registrar();
     }
 
     /**
@@ -110,7 +109,7 @@ class Antvel
         };
 
         Route::group($options, function ($router) use ($callback) {
-            $callback(new \Antvel\Support\RoutesRegistrar($router));
+            $callback(new RoutesRegistrar($router));
         });
     }
 }

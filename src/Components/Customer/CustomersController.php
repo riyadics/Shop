@@ -96,8 +96,25 @@ class CustomersController
         return back();
     }
 
+    /**
+     * Confirms the user's new email address.
+     *
+     * @param  string $token
+     * @param  string $email
+     * @return void
+     */
     public function confirmNewEmailAddress(string $token, string $email)
     {
-        dd('confirmNewEmailAddress', $token, $email);
+        $petition = (new ChangeEmailRepository())->confirm(
+            $user_id = $this->customer->id, $token, $email
+        );
+
+        if (! is_null($petition)) {
+            $this->customer->update(
+                $user_id, ['email' => $email]
+            );
+        }
+
+        return redirect()->route('customer.index');
     }
 }

@@ -12,9 +12,38 @@
 namespace Antvel\Components\Customer\Listeners;
 
 use Antvel\Components\Customer\Events\ProfileWasUpdated;
+use Antvel\Components\Customer\CustomersRepository as Customers;
+use Antvel\Components\Customer\ChangeEmailRepository as ChangeEmail;
 
 class UpdateProfile
 {
+    /**
+     * The customers repository.
+     *
+     * @var Customers
+     */
+    protected $customers = null;
+
+    /**
+     * The email petitions repository.
+     *
+     * @var EmailPetitions
+     */
+    protected $changeEmail = null;
+
+    /**
+     * Creates a new instance.
+     *
+     * @param Customers $customers
+     * @param EmailPetitions $changeEmail
+     * @return void
+     */
+    public function __construct(Customers $customers, ChangeEmail $changeEmail)
+    {
+        $this->customers = $customers;
+        $this->changeEmail = $changeEmail;
+    }
+
     /**
      * Handle the event.
      *
@@ -23,26 +52,22 @@ class UpdateProfile
      */
     public function handle(ProfileWasUpdated $event)
     {
-        //WORKING NOTES
-        //If the user requested a new email, we have to send a confirmation to his mailbox and
-        //update his email address JUST when the click on the sent link.
-
-
-        if ($continue = $this->wantsDifferentEmailEddress($event)) {
-            $event->request['confirmation_token'] = str_random(60);
+        //If the user requested a new email address, we create a new email change
+        //petition and send a confirmation email.
+        if ($sendConfirmationEmail = $this->emailWasChanged($event)) {
+            $event->petition = $this->changeEmail->createPetition([
+                'old_email' => $event->customer->email,
+                'user_id' => $event->customer->id,
+                'petition' => $event->request,
+            ]);
         }
 
-        //We update the user information with the given request and save the changes.
-        $event->customer->fill($event->request);
-        $event->customer->save();
+        $this->customers->update(
+            $event->customer, $event->request, $except = ['email']
+        );
 
-        //We update the user profile information with the given request and save the changes.
-        $event->customer->profile->fill($event->request);
-        $event->customer->profile->save();
-
-        if (! $continue) {
-            return false;
-        }
+        //We stop the event propagation if the user did not ask for a new email address.
+        return $sendConfirmationEmail;
     }
 
     /**
@@ -51,8 +76,17 @@ class UpdateProfile
      * @param  ProfileWasUpdated $event
      * @return bool
      */
-    protected function wantsDifferentEmailEddress(ProfileWasUpdated $event) : bool
+    protected function emailWasChanged($event) : bool
     {
-        return $event->request['email'] != $event->customer->email;
+        //If the user requested a new email address, we check whether the requested
+        //email address has an active email change petitions.
+        if ($event->request['email'] != $event->customer->email) {
+            return ! $this->changeEmail->hasPetition([
+                'new_email' => $event->request['email'],
+                'user_id' => $event->customer->id,
+            ]);
+        }
+
+        return false;
     }
 }

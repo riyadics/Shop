@@ -12,14 +12,16 @@
 namespace Antvel\Components\Customer;
 
 use Antvel\Antvel;
+use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 class CustomersRepository
 {
 	/**
 	 * The application user model.
 	 *
-	 * @var Illuminate\Auth\Authenticatable
+	 * @var Authenticatable
 	 */
 	protected $model = null;
 
@@ -38,7 +40,6 @@ class CustomersRepository
 	public function __construct(Container $container)
     {
         $model = Antvel::userModel();
-
         $this->model = new $model;
         $this->auth = $container->make('auth');
     }
@@ -57,9 +58,9 @@ class CustomersRepository
     /**
      * Returns the logged user.
      *
-     * @return Illuminate\Auth\Authenticatable
+     * @return Authenticatable
      */
-    protected function user()
+    public function user()
     {
         return $this->auth->user();
     }
@@ -79,7 +80,7 @@ class CustomersRepository
      *
      * @param int $user_id
      * @param array $loaders
-     * @return null|Illuminate\Auth\Authenticatable
+     * @return null|Authenticatable
      */
 	public function find($user_id = null, ...$loaders)
 	{
@@ -104,7 +105,7 @@ class CustomersRepository
      * Returns the user profile.
      *
      * @param  int $user_id
-     * @return null|Illuminate\Auth\Authenticatable
+     * @return null|Authenticatable
      */
     public function profile($user_id = null)
     {
@@ -116,5 +117,30 @@ class CustomersRepository
 
         //we retrieve the user for the given id.
         return $this->find($user_id, 'profile');
+    }
+
+    /**
+     * Updates the user information with a given data.
+     *
+     * @param  int|Authenticatable $user
+     * @param  array $data
+     * @param  array $except
+     * @return void
+     */
+    public function update($user, array $data, array $except = [])
+    {
+        if (is_int($user)) {
+            $user = $this->profile($user);
+        }
+
+        $data = Collection::make($data)
+            ->except($except)
+            ->all();
+
+        //Update the user information with the given data.
+        $user->fill($data)->save();
+
+        // //Update the user profile information with the given data.
+        $user->profile->fill($data)->save();
     }
 }

@@ -44,8 +44,10 @@ class SendNewEmailConfirmation implements ShouldQueue
      */
     public function handle(ProfileWasUpdated $event)
     {
-        $this->mailer->send(
-            new NewEmailConfirmation($event)
-        );
+        if (! is_null($event->petition)) {
+            $this->mailer->send(
+                new NewEmailConfirmation($event->petition, $event->customer)
+            );
+        }
     }
 }

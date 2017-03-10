@@ -13,9 +13,11 @@ namespace Antvel\Components\Customer\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Container\Container;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Auth\Authenticatable;
+use Antvel\Components\Customer\Models\EmailChangePetition;
 
 class NewEmailConfirmation extends Mailable implements ShouldQueue
 {
@@ -26,40 +28,24 @@ class NewEmailConfirmation extends Mailable implements ShouldQueue
      *
      * @var Authenticatable
      */
-    protected $user = null;
-    protected $request = null;
+    protected $customer = null;
 
     /**
-     * The email template.
+     * The change email petition.
      *
-     * @var array
+     * @var EmailChangePetition
      */
-    protected $template = [];
+    public $petition = null;
 
     /**
      * Create a new message instance.
      *
      * @return void
      */
-    public function __construct($event, $template = [])
+    public function __construct(EmailChangePetition $petition, Authenticatable $customer)
     {
-        $this->user = $event->customer;
-        $this->request = $event->request;
-        $this->template = $this->parseTemplate($template);
-    }
-
-    /**
-     * Parses the email information.
-     *
-     * @param  array  $template
-     * @return array
-     */
-    protected function parseTemplate(array $template = []) : array
-    {
-        return [
-            'subject' => isset($template['subject']) ? $template['subject'] : 'New Email Confirmation',
-            'view' => isset($template['view']) ? $template['view'] : 'emails.newEmailConfirmation'
-        ];
+        $this->customer = $customer;
+        $this->petition = $petition;
     }
 
     /**
@@ -69,12 +55,31 @@ class NewEmailConfirmation extends Mailable implements ShouldQueue
      */
     public function build()
     {
-    	 return $this->subject($this->template['subject'])
-            ->to($this->user->email)
-            ->view($this->template['view'], [
-                'name' => $this->user->fullName,
+        $subjectKey = 'user.emails.email_confirmation.subject';
+
+        return $this->subject($this->getSubject($subjectKey))
+            ->to($this->petition->new_email)
+            ->view('emails.newEmailConfirmation', [
+                'name' => $this->customer->fullName,
                 'route' => $this->route(),
         ]);
+    }
+
+    /**
+     * Returns the confirmation email subject.
+     *
+     * @param  string $key
+     * @return string
+     */
+    public function getSubject($key)
+    {
+        $translator = Container::getInstance()->make('translator');
+
+        if ($translator->has($key)) {
+            return $translator->get('user.emails.email_confirmation.subject');
+        }
+
+        return 'Please confirm your new email address';
     }
 
     /**
@@ -82,11 +87,11 @@ class NewEmailConfirmation extends Mailable implements ShouldQueue
      *
      * @return string
      */
-    protected function route() : string
+    protected function route()
     {
         return route('customer.newemail', [
-            'token' => $this->user->confirmation_token,
-            'email' => $this->user->email
+            'token' => $this->petition->token,
+            'email' => $this->petition->new_email
         ]);
     }
 }

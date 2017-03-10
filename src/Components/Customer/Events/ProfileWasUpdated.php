@@ -21,7 +21,7 @@ class ProfileWasUpdated
     /**
      * The laravel request component.
      *
-     * @var Request
+     * @var array
      */
     public $request = null;
 
@@ -31,6 +31,13 @@ class ProfileWasUpdated
      * @var Authenticatable
      */
     public $customer = null;
+
+    /**
+     * The change email petition.
+     *
+     * @var \Antvel\Components\Customer\Models\EmailChangePetition
+     */
+    public $petition = null;
 
     /**
      * Create a new event instance.
