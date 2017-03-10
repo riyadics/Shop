@@ -13,6 +13,7 @@ sudo: false
 
 before_install:
   - if [[ $TRAVIS_PHP_VERSION != 7.1 ]] ; then phpenv config-rm xdebug.ini; fi
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test;'
 
 install: travis_retry composer install --no-interaction --prefer-dist --no-suggest
 
