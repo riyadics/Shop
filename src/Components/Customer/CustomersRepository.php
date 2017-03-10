@@ -134,13 +134,16 @@ class CustomersRepository
         }
 
         $data = Collection::make($data)
-            ->except($except)
-            ->all();
+            ->except($except);
 
         //Update the user information with the given data.
-        $user->fill($data)->save();
+        if ($data->has('password')) {
+            $data['password'] = bcrypt($data['password']);
+        }
+
+        $user->fill($data->all())->save();
 
         // //Update the user profile information with the given data.
-        $user->profile->fill($data)->save();
+        $user->profile->fill($data->all())->save();
     }
 }
