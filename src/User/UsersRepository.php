@@ -17,7 +17,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Authenticatable;
 
-class CustomersRepository
+class UsersRepository
 {
 	/**
 	 * The application user model.

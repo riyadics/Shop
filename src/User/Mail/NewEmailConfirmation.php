@@ -89,7 +89,7 @@ class NewEmailConfirmation extends Mailable implements ShouldQueue
      */
     protected function route()
     {
-        return route('customer.email', [
+        return route('user.email', [
             'token' => $this->petition->token,
             'email' => $this->petition->new_email
         ]);

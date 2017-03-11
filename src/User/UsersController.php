@@ -17,7 +17,7 @@ use Antvel\Foundation\Http\Controller;
 use Antvel\User\Requests\ProfileRequest;
 use Antvel\User\Events\ProfileWasUpdated;
 
-class CustomersController extends Controller
+class UsersController extends Controller
 {
     /**
      * The user repository.
@@ -83,15 +83,15 @@ class CustomersController extends Controller
      * Updates the user profile.
      *
      * @param  ProfileRequest $request
-     * @param  int $customer
+     * @param  int $user
      * @return void
      */
-    public function update(ProfileRequest $request, $customer = null)
+    public function update(ProfileRequest $request, $user = null)
     {
-        $customer = $this->user->profile($customer);
+        $user = $this->user->profile($user);
 
         $this->event->fire(
-            new ProfileWasUpdated($request->all(), $customer)
+            new ProfileWasUpdated($request->all(), $user)
         );
 
         return back();

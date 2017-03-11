@@ -11,9 +11,9 @@
 
 namespace Antvel\User\Requests;
 
-use Antvel\Http\Request;
 use Illuminate\Validation\Rule;
 use Antvel\User\UsersRepository;
+use Antvel\Foundation\Http\Request;
 
 class ProfileRequest extends Request
 {

@@ -13,7 +13,7 @@ namespace Antvel;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
-use Antvel\Support\{ EventsRegistrar, PoliciesRegistrar, RoutesRegistrar };
+use Antvel\Foundation\Support\{ EventsRegistrar, PoliciesRegistrar, RoutesRegistrar };
 
 class Antvel
 {

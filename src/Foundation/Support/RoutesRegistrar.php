@@ -27,7 +27,7 @@ class RoutesRegistrar
      *
      * @var string
      */
-    protected $namespace = 'Antvel\Components';
+    protected $namespace = 'Antvel';
 
     /**
      * Create a new route registrar instance.
@@ -87,18 +87,18 @@ class RoutesRegistrar
         $this->router->group([
 
             'middleware' => ['web', 'auth'],
-            'namespace' => $this->namespace . '\Customer',
+            'namespace' => $this->namespace . '\User',
 
         ], function ($router) {
 
-            $router->resource('customer', 'CustomersController');
+            $router->resource('user', 'UsersController');
 
             $this->router->group([
                 'middleware' => ['web', 'auth'],
-                'prefix' => 'customer/security'
+                'prefix' => 'user/security'
             ], function ($router) {
-                $router->get('confirmEmail/{token}/{email}', 'SecurityController@confirmEmail')->name('customer.email');
-                $router->patch('{action}/{customer?}', 'SecurityController@update')->name('customer.action');
+                $router->get('confirmEmail/{token}/{email}', 'SecurityController@confirmEmail')->name('user.email');
+                $router->patch('{action}/{user?}', 'SecurityController@update')->name('user.action');
             });
 
         });

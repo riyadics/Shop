@@ -53,17 +53,17 @@ class SecurityController extends Controller
             );
         }
 
-        return redirect()->route('customer.index');
+        return redirect()->route('user.index');
     }
 
     /**
      * Update user's profile with a given action.
      *
      * @param  string $action
-     * @param  int|null $customer
+     * @param  int|null $user
      * @return void
      */
-    public function update(string $action, $customer = null)
+    public function update(string $action, $user = null)
     {
     	$allowed = ['enable', 'disable'];
 
@@ -73,7 +73,7 @@ class SecurityController extends Controller
 
     	$action = mb_strtolower($action);
 
-    	$response = $this->user->$action($customer);
+    	$response = $this->user->$action($user);
 
     	if ($response == 'notOk') {
             $message = 'There was an error trying to update your information. Please, Try again!';
