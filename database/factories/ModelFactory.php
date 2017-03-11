@@ -11,8 +11,8 @@
 
 use Antvel\Antvel;
 use Faker\Generator as Faker;
-use Antvel\Components\AddressBook\Models\Address;
-use Antvel\Components\Customer\Models\{ Person, Business };
+use Antvel\AddressBook\Models\Address;
+use Antvel\User\Models\{ Person, Business };
 
 $factory->define(Antvel::userModel(), function (Faker $faker) use ($factory)
 {

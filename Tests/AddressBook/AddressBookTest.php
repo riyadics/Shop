@@ -13,22 +13,22 @@ namespace Antvel\Tests\AddressBook;
 
 use Antvel\Tests\TestCase;
 use Antvel\Tests\Stubs\User;
-use Antvel\Components\AddressBook\AddressBook;
-use Antvel\Components\AddressBook\Models\Address;
+use Antvel\AddressBook\AddressBook;
+use Antvel\AddressBook\Models\Address;
 
 class AddressBookTest extends TestCase
 {
     /**
      * Temporary user.
      *
-     * @var Antvel\Components\Customer\Models\User
+     * @var Antvel\User\Models\User
      */
     protected $user = null;
 
     /**
      * Temporary addressbook repository.
      *
-     * @var Antvel\Components\AddressBook\Repository
+     * @var Antvel\AddressBook\Repository
      */
     protected $addressBook = null;
 

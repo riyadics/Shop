@@ -11,10 +11,10 @@
 
 namespace Antvel\Tests\Stubs;
 
+use Antvel\User\hasAntvel;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
-use Antvel\Components\Customer\hasAntvel;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;

@@ -31,8 +31,7 @@ class AntvelServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //if the application user model was not provided,
-        //We throw an exception.
+        //if the application user model was not provided, we throw an exception.
         if (Antvel::doesntHaveUserModel()) {
            throw new UserModelDoesnotExistException;
         }
