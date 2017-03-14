@@ -58,12 +58,12 @@ class UpdateProfile
             $this->createNewEmailPetition($event);
         }
 
-        $aux = $this->users->update(
+        $this->users->update(
            $event->user, $event->request, $except = ['email']
         );
 
         //If the user did not ask for a new email address, We stop the event propagation.
-        return $continuePropagation ? $aux : false;
+        return $continuePropagation;
     }
 
     /**
