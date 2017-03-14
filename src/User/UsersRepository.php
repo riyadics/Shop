@@ -46,7 +46,7 @@ class UsersRepository
     }
 
     /**
-     * Gets a field in the user model.
+     * Gets a field from the user model.
      *
      * @param  string $key
      * @return mixed
@@ -110,42 +110,52 @@ class UsersRepository
      */
     public function profile($user_id = null)
     {
-        //if user id was not provided, we assumed the update will be
-        //done on the logged user.
+        //if user id was not provided, we assumed the update will be done on the logged user.
         if (is_null($user_id)) {
             return $this->user();
         }
 
-        //we retrieve the user for the given id.
+        //we retrieve the user for a given id.
         return $this->find($user_id, 'profile');
     }
 
     /**
      * Updates the user information with a given data.
      *
-     * @param  int|Authenticatable $user
+     * @param  Authenticatable $user
      * @param  array $data
      * @param  array $except
      * @return void
      */
     public function update($user, array $data, array $except = [])
     {
-        if (is_int($user)) {
-            $user = $this->profile($user);
-        }
+        $data = $this->normalizeData(
+          $user, Collection::make($data)->except($except)
+        );
 
-        $data = Collection::make($data)
-            ->except($except);
+        $user->fill($data)->save();
+        $user->profile->fill($data)->save();
+    }
 
-        //Update the user information with the given data.
+    /**
+     * Returns a normalized data to be used within insert/update calls.
+     *
+     * @param  Authenticatable $user
+     * @param  Collection $data
+     * @return array
+     */
+    protected function normalizeData($user, Collection $data) : array
+    {
         if ($data->has('password')) {
             $data['password'] = bcrypt($data['password']);
         }
 
-        $user->fill($data->all())->save();
+        if ($data->has('file')) {
+            $data['pic_url'] = $data['file']->store('img/profile/' . $user->id);
+            $data->forget('file');
+        }
 
-        // //Update the user profile information with the given data.
-        $user->profile->fill($data->all())->save();
+        return $data->all();
     }
 
     /**
@@ -157,16 +167,17 @@ class UsersRepository
      */
     public function enableDisable($user_id = null, $action = 'disable') : string
     {
-        $user = is_null($user_id) ?  $this->find($user_id) : $this->user();
+        $user = is_null($user_id) ? $this->user() : $this->find($user_id);
 
-        if ($user) {
-            $this->update($user, [
-                'disabled_at' => $action == 'disable' ? Carbon::now() : null
-            ]);
-            return 'ok';
+        if (! $user) {
+            return 'notOk';
         }
 
-        return 'notOk';
+        $this->update($user, [
+            'disabled_at' => $action == 'disable' ? Carbon::now() : null
+        ]);
+
+        return 'ok';
     }
 
     /**

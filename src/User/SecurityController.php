@@ -17,25 +17,25 @@ use Antvel\Foundation\Http\Controller;
 class SecurityController extends Controller
 {
 	/**
-     * The user repository.
+     * The users repository.
      *
      * @var UsersRepository
      */
-    protected $user = null;
+    protected $users = null;
 
     /**
      * Creates a new instance.
      *
-     * @param UsersRepository $user
+     * @param UsersRepository $users
      * @return void
      */
-	public function __construct(UsersRepository $user)
+	public function __construct(UsersRepository $users)
     {
-        $this->user = $user;
+        $this->users = $users;
     }
 
 	/**
-     * Confirms the user's new email address.
+     * Confirms the users's new email address.
      *
      * @param  string $token
      * @param  string $email
@@ -43,13 +43,15 @@ class SecurityController extends Controller
      */
     public function confirmEmail(string $token, string $email)
     {
+        $user = $this->users->profile();
+
         $petition = (new ChangeEmailRepository())->confirm(
-            $user_id = $this->user->id, $token, $email
+            $user->id, $token, $email
         );
 
-        if (! is_null($petition)) {
-            $this->user->update(
-                $user_id, ['email' => $email]
+        if ($petition) {
+            $this->users->update(
+                $user, ['email' => $email]
             );
         }
 

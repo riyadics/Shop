@@ -48,7 +48,7 @@ class RoutesRegistrar
     public function all()
     {
         $this->forAddressBook();
-        $this->forCustomer();
+        $this->forUser();
     }
 
     /**
@@ -82,7 +82,7 @@ class RoutesRegistrar
      *
      * @return void
      */
-    protected function forCustomer()
+    protected function forUser()
     {
         $this->router->group([
 
@@ -94,11 +94,15 @@ class RoutesRegistrar
             $router->resource('user', 'UsersController');
 
             $this->router->group([
+
                 'middleware' => ['web', 'auth'],
                 'prefix' => 'user/security'
+
             ], function ($router) {
+
                 $router->get('confirmEmail/{token}/{email}', 'SecurityController@confirmEmail')->name('user.email');
                 $router->patch('{action}/{user?}', 'SecurityController@update')->name('user.action');
+
             });
 
         });

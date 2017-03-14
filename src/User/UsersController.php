@@ -63,6 +63,7 @@ class UsersController extends Controller
      */
 	public function index()
 	{
+        //might be the user dashboard down on the road.
         return $this->show();
 	}
 
@@ -86,13 +87,17 @@ class UsersController extends Controller
      * @param  int $user
      * @return void
      */
-    public function update(ProfileRequest $request, $user = null)
+    public function update(ProfileRequest $request, $user_id = null)
     {
-        $user = $this->user->profile($user);
+        $user = $this->user->profile($user_id);
 
         $this->event->fire(
             new ProfileWasUpdated($request->all(), $user)
         );
+
+        if ($request->wantsJson()) {
+            return $this->respondsWithSuccess('ok');
+        }
 
         return back();
     }

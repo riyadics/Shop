@@ -25,12 +25,11 @@ class ProfileRequest extends Request
     protected $user = null;
 
     /**
-     * The allowed references.
-     * Here, we defined the allowed forms to requesting a profile update.
+     * The allowed form references.
      *
      * @var array
      */
-    protected $allowedReferral = ['profile', 'social', 'account'];
+    protected $allowedReferral = ['profile', 'social', 'account', 'upload'];
 
     /**
      * Creates a new instance.
@@ -121,6 +120,22 @@ class ProfileRequest extends Request
             'old_password'  => 'required_with:password,password_confirmation',
             'password'  => 'required_with:old_password,password_confirmation|confirmed|different:old_password',
             'password_confirmation' => 'required_with:old_password,password|different:old_password|same:password',
+        ];
+    }
+
+    /**
+     * Returns validation rules for the form profile.
+     *
+     * @return array
+     */
+    protected function rulesForUpload() : array
+    {
+        return [
+            'file' => [
+                'required',
+                'image',
+                Rule::dimensions()->maxWidth(600)->maxHeight(600),
+            ],
         ];
     }
 }

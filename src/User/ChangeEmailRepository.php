@@ -17,39 +17,56 @@ use Antvel\User\Models\EmailChangePetition;
 class ChangeEmailRepository
 {
     /**
+     * Stores a new petition.
+     *
+     * @param  array  $data
+     * @return EmailChangePetition
+     */
+    public function store(array $data) : EmailChangePetition
+    {
+        $petition = $this->findBy([
+            'new_email' => $data['request']['email'],
+            'user_id' => $data['user_id'],
+            'confirmed' => '0',
+        ])->first();
+
+        if (is_null($petition)) {
+            return $this->create($data);
+        }
+
+        return $this->refresh($petition);
+    }
+
+    /**
+     * Refreshes the expiration date for a given petition.
+     *
+     * @param  EmailChangePetition $petition
+     * @return EmailChangePetition
+     */
+    public function refresh(EmailChangePetition $petition) : EmailChangePetition
+    {
+        $petition->expires_at = Carbon::now()->addMonth();
+        $petition->token = str_random(60);
+        $petition->save();
+
+        return $petition;
+    }
+
+    /**
      * Creates a new petition.
      *
      * @param  array $data
      * @return EmailChangePetition
      */
-    public function createPetition($data)
+    public function create(array $data) : EmailChangePetition
     {
-        $this->clearPendingPetitions();
-
         return EmailChangePetition::create([
             'expires_at' => Carbon::now()->addMonth(),
-            'new_email' => $data['petition']['email'],
+            'new_email' => $data['request']['email'],
             'old_email' => $data['old_email'],
             'user_id' => $data['user_id'],
             'token' => str_random(60),
         ]);
-    }
-
-    /**
-     * Checks whether the petition exist by a given constraints.
-     *
-     * @param  array $data
-     * @return boolean
-     */
-    public function hasPetition($data) : bool
-    {
-        $petition = $this->findBy([
-            'new_email' => $data['new_email'],
-            'user_id' => $data['user_id'],
-            'confirmed' => '0',
-        ]);
-
-        return !! $petition->count() > 0;
     }
 
     /**
@@ -62,16 +79,6 @@ class ChangeEmailRepository
     public function findBy($constraints, $take = 1)
     {
         return EmailChangePetition::where($constraints)->take($take)->get();
-    }
-
-    /**
-     * Delete the pending petitions from the database.
-     *
-     * @return void
-     */
-    protected function clearPendingPetitions()
-    {
-        EmailChangePetition::where('confirmed', 0)->delete();
     }
 
     /**
@@ -92,7 +99,7 @@ class ChangeEmailRepository
             'confirmed' => 0,
         ])->first();
 
-        if (! is_null($petition)) {
+        if ($petition) {
             $petition->confirmed = 1;
             $petition->confirmed_at = Carbon::now();
             $petition->save();

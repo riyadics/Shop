@@ -53,21 +53,17 @@ class UpdateProfile
     public function handle(ProfileWasUpdated $event)
     {
         //If the user requested a new email address, we create a new email change
-        //petition and send a confirmation email.
-        if ($sendConfirmationEmail = $this->emailWasChanged($event)) {
-            $event->petition = $this->changeEmail->createPetition([
-                'old_email' => $event->user->email,
-                'user_id' => $event->user->id,
-                'petition' => $event->request,
-            ]);
+        //petition record in the database and send out a confirmation email.
+        if ($continuePropagation = $this->emailWasChanged($event)) {
+            $this->createNewEmailPetition($event);
         }
 
-        $this->users->update(
-            $event->user, $event->request, $except = ['email']
+        $aux = $this->users->update(
+           $event->user, $event->request, $except = ['email']
         );
 
-        //We stop the event propagation if the user did not ask for a new email address.
-        return $sendConfirmationEmail;
+        //If the user did not ask for a new email address, We stop the event propagation.
+        return $continuePropagation ? $aux : false;
     }
 
     /**
@@ -76,17 +72,24 @@ class UpdateProfile
      * @param  ProfileWasUpdated $event
      * @return bool
      */
-    protected function emailWasChanged($event) : bool
+    protected function emailWasChanged(ProfileWasUpdated $event) : bool
     {
-        //If the user requested a new email address, we check whether the requested
-        //email address has an active email change petitions.
-        if ($event->request['email'] != $event->user->email) {
-            return ! $this->changeEmail->hasPetition([
-                'new_email' => $event->request['email'],
-                'user_id' => $event->user->id,
-            ]);
-        }
+        $request = $event->request;
 
-        return false;
+        return isset($request['email']) && $request['email'] != $event->user->email;
+    }
+
+    /**
+     * Creates a new email petition.
+     * @param  ProfileWasUpdated $event
+     * @return void
+     */
+    protected function createNewEmailPetition(ProfileWasUpdated $event)
+    {
+        $event->petition = $this->changeEmail->store([
+            'old_email' => $event->user->email,
+            'user_id' => $event->user->id,
+            'request' => $event->request,
+        ]);
     }
 }
