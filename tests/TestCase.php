@@ -12,7 +12,6 @@
 namespace Antvel\Tests;
 
 use Antvel\Antvel;
-use Antvel\Tests\Traits\Environment;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra

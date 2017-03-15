@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\Traits;
+namespace Antvel\Tests;
 
 use Illuminate\Support\Facades\Artisan;
 
@@ -26,7 +26,7 @@ trait Environment
 
         $this->artisan('migrate', [
             '--database' => $this->schema['database'],
-            '--realpath' => __DIR__ . '/../../database/migrations'
+            '--realpath' => __DIR__ . '/../database/migrations'
         ]);
     }
 
@@ -37,7 +37,7 @@ trait Environment
      */
     protected function loadFactories()
     {
-        $this->withFactories(__DIR__ . '/../../database/factories');
+        $this->withFactories(__DIR__ . '/../database/factories');
     }
 
     /**
@@ -61,7 +61,7 @@ trait Environment
      */
     public function getFixturesDirectory(string $path): string
     {
-        return __DIR__ . "/../../resources/{$path}";
+        return __DIR__ . "/../resources/{$path}";
     }
 
     /**

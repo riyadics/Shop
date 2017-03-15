@@ -11,7 +11,6 @@
 
 use Antvel\Antvel;
 use Faker\Generator as Faker;
-use Antvel\AddressBook\Models\Address;
 use Antvel\User\Models\{ Person, Business };
 
 $factory->define(Antvel::userModel(), function (Faker $faker) use ($factory)
@@ -51,23 +50,5 @@ $factory->define(Business::class, function (Faker $faker) use ($factory)
         'creation_date' => $faker->date(),
         'business_name' => $faker->company,
         'local_phone' => $faker->e164PhoneNumber,
-    ];
-});
-
-$factory->define(Address::class, function (Faker $faker) use ($factory)
-{
-    return [
-        'user_id' => function () {
-            return factory(Antvel::userModel())->create()->id;
-        },
-        'default' => 0,
-        'city' => $faker->city,
-        'state' => $faker->state,
-        'country' => $faker->country,
-        'zipcode' => $faker->postcode,
-        'line1' => $faker->streetAddress,
-        'line2' => $faker->streetAddress,
-        'phone' => $faker->e164PhoneNumber,
-        'name_contact' => $faker->streetName,
     ];
 });
