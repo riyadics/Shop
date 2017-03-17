@@ -19,23 +19,6 @@ abstract class TestCase extends Orchestra
     use Environment;
 
     /**
-     * Contains the database schema information.
-     *
-     * @var array
-     */
-    protected $schema = null;
-
-    /**
-     * Create a new Invitations instance.
-     *
-     * @return  void
-     */
-    public function __construct()
-    {
-        $this->schema = require(__DIR__ . '/config/database.php');
-    }
-
-    /**
      * Setup the test environment
      *
      * @return void
@@ -47,6 +30,4 @@ abstract class TestCase extends Orchestra
         $this->loadFactories();
         $this->loadMigrations();
     }
-
-
 }

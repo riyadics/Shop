@@ -25,7 +25,6 @@ trait Environment
         Artisan::call('migrate:refresh');
 
         $this->artisan('migrate', [
-            '--database' => $this->schema['database'],
             '--realpath' => __DIR__ . '/../database/migrations'
         ]);
     }
@@ -49,8 +48,6 @@ trait Environment
     protected function getEnvironmentSetUp($app)
     {
         $app['path.lang'] = $this->getFixturesDirectory('lang');
-        $app['config']->set('database.default', $this->schema['database']);
-        $app['config']->set('database.connections.antvel_testing', $this->schema);
     }
 
     /**
