@@ -17,7 +17,7 @@ $factory->define(Address::class, function (Faker $faker) use ($factory)
 {
     return [
         'user_id' => function () {
-            return factory(Antvel::userModel())->create()->id;
+            return factory(Antvel::user())->create()->id;
         },
         'default' => 0,
         'city' => $faker->city,
