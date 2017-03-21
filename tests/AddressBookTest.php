@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\AddressBook;
+namespace Antvel\Tests;
 
 use Antvel\Tests\TestCase;
 use Antvel\Tests\Stubs\User;
