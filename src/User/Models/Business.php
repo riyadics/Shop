@@ -75,6 +75,6 @@ class Business extends Model
      */
     public function getFullNameAttribute()
     {
-        return ucwords($this->profile->business_name);
+        return ucwords($this->business_name);
     }
 }
