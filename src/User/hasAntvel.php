@@ -18,6 +18,37 @@ trait hasAntvel
 {
     use Presenters;
 
+     /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        (new static)->initializeAntvelAttributes();
+    }
+
+    /**
+     * Initialize model attributes
+     *
+     * @return void
+     */
+    protected function initializeAntvelAttributes()
+    {
+        $this->fillable([
+            'facebook', 'mobile_phone', 'work_phone', 'description',
+            'pic_url', 'language', 'website', 'twitter',
+            'nickname', 'email', 'password', 'role',
+            'disabled_at', 'confirmation_token'
+        ]);
+
+        $this->setHidden(['password', 'remember_token']);
+
+        $this->addDateAttributesToArray(['deleted_at']);
+    }
+
     /**
      * Returns the user profile.
      *

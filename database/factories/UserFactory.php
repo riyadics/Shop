@@ -31,7 +31,7 @@ $factory->define(Person::class, function (Faker $faker) use ($factory)
 {
     return [
         'user_id' => function () {
-            return factory(Antvel::user())->create()->id;
+            return factory(Antvel::user())->create(['role' => 'person'])->id;
         },
         'last_name' => $faker->lastName,
         'first_name' => $faker->firstName,
@@ -45,7 +45,7 @@ $factory->define(Business::class, function (Faker $faker) use ($factory)
 {
     return [
         'user_id' => function () {
-            return factory(Antvel::user())->create()->id;
+            return factory(Antvel::user())->create(['role' => 'business'])->id;
         },
         'creation_date' => $faker->date(),
         'business_name' => $faker->company,
@@ -55,7 +55,6 @@ $factory->define(Business::class, function (Faker $faker) use ($factory)
 
 $factory->define(EmailChangePetition::class, function (Faker $faker) use ($factory)
 {
-    //str_random
     return [
         'user_id' => function () {
             return factory(Antvel::user())->create()->id;
@@ -65,6 +64,6 @@ $factory->define(EmailChangePetition::class, function (Faker $faker) use ($facto
         'token' => $faker->unique()->randomDigit,
         'confirmed' => '0',
         'expires_at' => Carbon::now(),
-        'confirmed_at' => ''
+        'confirmed_at' => null
     ];
 });

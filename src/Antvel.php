@@ -13,67 +13,75 @@ namespace Antvel;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
+use Antvel\Tests\Stubs\User as UserStub;
 use Antvel\Foundation\Support\{ EventsRegistrar, PoliciesRegistrar, RoutesRegistrar };
 
 class Antvel
 {
     /**
-     * The antvel version.
+     * The Antvel Shop version.
      *
      * @var string
      */
-    const VERSION = '1.0.0';
+    const VERSION = '1.0';
 
     /**
-     * Controls whether tests are running.
+     * The Laravel container component.
      *
-     * @var boolean
+     * @var Container
      */
-    protected static $testsAreRunning = false;
+    protected $container = null;
 
     /**
-     * Checks whether the app user model is valid.
+     * Creates a new instance.
      *
-     * @return bool
+     * @return void
      */
-    public static function doesntHaveUserModel()
+    public function __construct()
     {
-        $model = static::user();
-
-        if (is_null($model) || ! class_exists($model)) {
-            return true;
-        }
-
-        return false;
+        $this->container = Container::getInstance();
     }
 
     /**
      * Returns the applications user model.
      *
-     * @return null|App\User
+     * @return |App\User|UserStub
      */
     public static function user()
     {
-        if (static::$testsAreRunning) {
-            //If phpunit is running, we retrieve the user model stub for testing purposes.
-            return \Antvel\Tests\Stubs\User::class;
+        $antvel = new static;
+
+        if ($antvel->isRunning('shop')) {
+            return UserStub::class;
         }
 
-        $config = Container::getInstance()->make('config');
-
-        return $config->get('auth.providers.users.model');
+        return $antvel->appUserModel();
     }
 
     /**
-     * Tells the application that tests are about to start.
+     * Checks whether the application is being run in the given package.
      *
-     * @return void
+     * @param  string $env
+     * @return bool
      */
-    public static function beginsTests()
+    protected function isRunning(string $env) : bool
     {
-        //Allows the application knows whether phpunit is running,
-        //so we can swap the user models by the testing one.
-        static::$testsAreRunning = true;
+        $path = $this->container->make('app')->environmentPath();
+
+        $path = realpath(mb_strtolower($path));
+
+        return strpos($path, $env) !== false;
+    }
+
+    /**
+     * Returns the application user model.
+     *
+     * @return Illuminate\Contracts\Auth\Authenticatable
+     */
+    protected function appUserModel()
+    {
+        return $this->container->make('config')
+            ->get('auth.providers.users.model');
     }
 
     /**
