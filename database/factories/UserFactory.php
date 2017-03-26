@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Carbon\Carbon;
 use Antvel\Antvel;
 use Faker\Generator as Faker;
 use Antvel\User\Models\{ Person, Business, EmailChangePetition };
@@ -59,11 +60,11 @@ $factory->define(EmailChangePetition::class, function (Faker $faker) use ($facto
         'user_id' => function () {
             return factory(Antvel::user())->create()->id;
         },
+        'token' => $faker->unique()->sha1,
+        'expires_at' => Carbon::now(),
         'old_email' => $faker->email,
         'new_email' => $faker->email,
-        'token' => $faker->unique()->randomDigit,
+        'confirmed_at' => null,
         'confirmed' => '0',
-        'expires_at' => Carbon::now(),
-        'confirmed_at' => null
     ];
 });
