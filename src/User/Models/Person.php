@@ -65,7 +65,7 @@ class Person extends Model
      */
     public function user()
     {
-        return $this->belongsTo(Antvel::user());
+        return $this->belongsTo(User::class);
     }
 
     /**

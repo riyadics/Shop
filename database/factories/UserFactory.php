@@ -10,11 +10,10 @@
  */
 
 use Carbon\Carbon;
-use Antvel\Antvel;
 use Faker\Generator as Faker;
-use Antvel\User\Models\{ Person, Business, EmailChangePetition };
+use Antvel\User\Models\{ User, Person, Business, EmailChangePetition };
 
-$factory->define(Antvel::user(), function (Faker $faker) use ($factory)
+$factory->define(User::class, function (Faker $faker) use ($factory)
 {
     return [
         'password' => bcrypt('123456'),
@@ -32,7 +31,7 @@ $factory->define(Person::class, function (Faker $faker) use ($factory)
 {
     return [
         'user_id' => function () {
-            return factory(Antvel::user())->create(['role' => 'person'])->id;
+            return factory(User::class)->create(['role' => 'person'])->id;
         },
         'last_name' => $faker->lastName,
         'first_name' => $faker->firstName,
@@ -46,7 +45,7 @@ $factory->define(Business::class, function (Faker $faker) use ($factory)
 {
     return [
         'user_id' => function () {
-            return factory(Antvel::user())->create(['role' => 'business'])->id;
+            return factory(User::class)->create(['role' => 'business'])->id;
         },
         'creation_date' => $faker->date(),
         'business_name' => $faker->company,
@@ -58,7 +57,7 @@ $factory->define(EmailChangePetition::class, function (Faker $faker) use ($facto
 {
     return [
         'user_id' => function () {
-            return factory(Antvel::user())->create()->id;
+            return factory(User::class)->create()->id;
         },
         'token' => $faker->unique()->sha1,
         'expires_at' => Carbon::now(),

@@ -13,8 +13,6 @@ namespace Antvel;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
-use Antvel\Tests\Stubs\User as UserStub;
-use Antvel\Foundation\Support\{ EventsRegistrar, PoliciesRegistrar, RoutesRegistrar };
 
 class Antvel
 {
@@ -43,55 +41,13 @@ class Antvel
     }
 
     /**
-     * Returns the applications user model.
-     *
-     * @return |App\User|UserStub
-     */
-    public static function user()
-    {
-        $antvel = new static;
-
-        if ($antvel->isRunning('shop')) {
-            return UserStub::class;
-        }
-
-        return $antvel->appUserModel();
-    }
-
-    /**
-     * Checks whether the application is being run in the given package.
-     *
-     * @param  string $env
-     * @return bool
-     */
-    protected function isRunning(string $env) : bool
-    {
-        $path = $this->container->make('app')->environmentPath();
-
-        $path = realpath(mb_strtolower($path));
-
-        return strpos($path, $env) !== false;
-    }
-
-    /**
-     * Returns the application user model.
-     *
-     * @return Illuminate\Contracts\Auth\Authenticatable
-     */
-    protected function appUserModel()
-    {
-        return $this->container->make('config')
-            ->get('auth.providers.users.model');
-    }
-
-    /**
      * Registers Antvel events and listeners.
      *
      * @return void
      */
     public static function events()
     {
-        (new EventsRegistrar)->registrar();
+        (new \Antvel\Foundation\Support\EventsRegistrar)->registrar();
     }
 
     /**
@@ -101,7 +57,7 @@ class Antvel
      */
     public static function policies()
     {
-        (new PoliciesRegistrar)->registrar();
+        (new \Antvel\Foundation\Support\PoliciesRegistrar)->registrar();
     }
 
     /**
@@ -117,7 +73,7 @@ class Antvel
         };
 
         Route::group($options, function ($router) use ($callback) {
-            $callback(new RoutesRegistrar($router));
+            $callback(new \Antvel\Foundation\Support\RoutesRegistrar($router));
         });
     }
 }
