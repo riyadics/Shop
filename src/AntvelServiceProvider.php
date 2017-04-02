@@ -43,10 +43,6 @@ class AntvelServiceProvider extends ServiceProvider
      */
     protected function loadResources()
     {
-        $this->loadTranslationsFrom(
-            realpath(__DIR__ . '/../resources/lang')
-        , 'antvel');
-
         $this->loadMigrationsFrom(
             __DIR__ . '/../database/migrations'
         );
