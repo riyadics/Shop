@@ -16,36 +16,18 @@ use Illuminate\Support\ServiceProvider;
 class AntvelServiceProvider extends ServiceProvider
 {
     /**
-     * Indicates if loading of the provider is deferred.
-     *
-     * @var bool
-     */
-    protected $defer = true;
-
-    /**
      * Bootstrap the application services.
      *
      * @return void
      */
     public function boot()
     {
-        $this->loadResources();
+        $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
+        $this->loadViewsFrom(__DIR__ . '/../resources/views', 'antvel');
 
         if ($this->app->runningInConsole()) {
             $this->publishResources();
         }
-    }
-
-    /**
-     * Loads the Antvel resources.
-     *
-     * @return void
-     */
-    protected function loadResources()
-    {
-        $this->loadMigrationsFrom(
-            __DIR__ . '/../database/migrations'
-        );
     }
 
     /**

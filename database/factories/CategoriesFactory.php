@@ -9,7 +9,6 @@
  * file that was distributed with this source code.
  */
 
-use Antvel\User\Models\User;
 use Faker\Generator as Faker;
 use Antvel\Categories\Models\Category;
 

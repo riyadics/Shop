@@ -11,36 +11,38 @@
 
 namespace Antvel\Categories;
 
+use Antvel\Contracts\Repository;
 use Antvel\Categories\Models\Category;
 
-class Categories
+class Categories implements Repository
 {
 	/**
 	 * Creates a new category with a given attributes.
 	 *
-	 * @param  array $attr
+	 * @param  array $attributes
 	 * @return Category
 	 */
-	public function create(array $attr)
+    public function create(array $attributes = [])
 	{
-		return Category::create($attr);
+		return Category::create($attributes);
 	}
 
 	/**
      * Finds a category by a given constraints.
      *
      * @param mixed $constraints
+      * @param mixed $columns
      * @param array $loaders
      * @return null|Category
      */
-	public function find($constraints, ...$loaders)
+    public function find($constraints, $columns = '*', ...$loaders)
 	{
         if (! is_array($constraints)) {
             $constraints = ['id' => $constraints];
         }
 
         //We fetch the user using a given constraint.
-        $category = Category::where($constraints)->first();
+        $category = Category::select($columns)->where($constraints)->get();
 
         //We throw an exception if the user was not found to avoid whether
         //somebody tries to look for a non-existent user.
