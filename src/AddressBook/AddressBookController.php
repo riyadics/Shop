@@ -29,7 +29,7 @@ class AddressBookController extends Controller
      *
      * @var string
      */
-    protected $redirecTo = '/user/address';
+    protected $redirecTo = '/addressBook';
 
     /**
      * Create a new Invitations instance.

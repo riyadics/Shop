@@ -103,6 +103,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     //        temporary while refactoring      //
     // ======================================= //
 
+    public function getCartCount()
+    {
+        return 0;
+    }
+
      public function hasRole($role)
     {
         if (is_array($role)) {
