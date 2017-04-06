@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\BackOffice;
+namespace Antvel\WorkShop;
 
 use Illuminate\Http\Request;
 use Antvel\Foundation\Http\Controller;
@@ -17,12 +17,12 @@ use Antvel\Foundation\Http\Controller;
 class DashBoardController extends Controller
 {
 	/**
-	 * Loads the back office dashboard.
+	 * Loads the workshop dashboard.
 	 *
 	 * @return void
 	 */
 	public function index()
 	{
-		return view('antvel::BackOffice.dashboard');
+		echo 'Workshop DashBoard!';
 	}
 }

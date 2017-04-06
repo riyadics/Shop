@@ -113,14 +113,14 @@ class RoutesRegistrar
     {
         $this->router->group([
 
-            'namespace' => $this->namespace . '\BackOffice',
+            'namespace' => $this->namespace . '\WorkShop',
             'middleware' => ['web', 'auth'],
-            'prefix' => 'backoffice',
+            'prefix' => 'workshop',
 
         ], function ($router) {
 
-            $router->get('/', 'DashBoardController@index')->name('backoffice.home');
-            $router->get('dashboard', 'DashBoardController@index')->name('backoffice.dashboard');
+            $router->get('/', 'DashBoardController@index')->name('workshop.home');
+            $router->get('dashboard', 'DashBoardController@index')->name('workshop.dashboard');
 
         });
     }
