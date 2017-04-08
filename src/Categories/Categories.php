@@ -16,6 +16,48 @@ use Antvel\Categories\Models\Category;
 
 class Categories implements Repository
 {
+    /**
+     * Paginate the given query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder|null $builder
+     * @param  array $options
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginate($builder = null, $options = [])
+    {
+        $builder = $builder ?? new Category;
+
+        $options = array_merge([
+            'pageName' => 'page',
+            'columns' => ['*'],
+            'perPage' => null,
+            'page' => null
+        ], $options);
+
+        return $builder->paginate($options['perPage'], $options['columns'], $options['pageName'], $options['page']);
+    }
+
+    /**
+     * Paginates the given query and load relationship.
+     *
+     * @param  string|array $loaders
+     * @param  array $constraints
+     * @param  array $paginate
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginateWith($loaders, $constraints = [], $paginate = [])
+    {
+        $categories = Category::with($loaders);
+
+        if (count($constraints) > 0) {
+            $categories->where($constraints);
+        }
+
+        return $this->paginate($categories, $paginate);
+    }
+
 	/**
 	 * Creates a new category with a given attributes.
 	 *
@@ -31,7 +73,7 @@ class Categories implements Repository
      * Finds a category by a given constraints.
      *
      * @param mixed $constraints
-      * @param mixed $columns
+     * @param mixed $columns
      * @param array $loaders
      * @return null|Category
      */
@@ -55,4 +97,9 @@ class Categories implements Repository
 
         return $category;
 	}
+
+    public function parents($limit = 50)
+    {
+        return Category::whereNull('category_id')->take($limit)->get();
+    }
 }

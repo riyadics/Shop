@@ -13,6 +13,7 @@ namespace Antvel;
 
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
+use Antvel\Foundation\Support\RoutesRegistrar;
 
 class Antvel
 {
@@ -63,17 +64,21 @@ class Antvel
     /**
      * Get a Antvel route registrar.
      *
-     * @param  array  $options
+     * @param  callable $callback
+     * @param  array $options
      * @return void
      */
-    public static function routes($callback = null, array $options = [])
+    public static function routes(callable $callback = null, array $options = [])
     {
         $callback = $callback ?: function ($router) {
-            $router->all();
+            $router->forPanel();
         };
 
         Route::group($options, function ($router) use ($callback) {
-            $callback(new \Antvel\Foundation\Support\RoutesRegistrar($router));
+
+            $registrar = (new RoutesRegistrar($router))->all();
+
+            $callback($registrar);
         });
     }
 }

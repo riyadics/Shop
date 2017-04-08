@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\WorkShop;
+namespace Antvel\Foundation\Support\Admin;
 
 use Illuminate\Http\Request;
 use Antvel\Foundation\Http\Controller;
@@ -23,6 +23,10 @@ class DashBoardController extends Controller
 	 */
 	public function index()
 	{
-		echo 'Workshop DashBoard!';
+		if (! view()->exists('foundation.index')) {
+			return redirect('/');
+		}
+
+		return view('foundation.index');
 	}
 }

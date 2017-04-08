@@ -43,13 +43,14 @@ class RoutesRegistrar
     /**
      * Register routes for Antvel.
      *
-     * @return void
+     * @return self
      */
     public function all()
     {
         $this->forUser();
-        $this->forBackOffice();
         $this->forAddressBook();
+
+        return $this;
     }
 
     /**
@@ -61,8 +62,7 @@ class RoutesRegistrar
     {
         $this->router->group([
 
-			// 'prefix' => 'user',
-            'middleware' => ['web', 'auth'],
+			'middleware' => ['web', 'auth'],
             'namespace' => $this->namespace . '\AddressBook',
 
 		], function ($router) {
@@ -109,18 +109,24 @@ class RoutesRegistrar
         });
     }
 
-    public function forBackOffice()
+    /**
+     * Registers routes for the admin panel.
+     *
+     * @return void
+     */
+    public function forPanel()
     {
         $this->router->group([
 
-            'namespace' => $this->namespace . '\WorkShop',
+            'namespace' => $this->namespace,
             'middleware' => ['web', 'auth'],
-            'prefix' => 'workshop',
+            'prefix' => 'foundation',
 
         ], function ($router) {
 
-            $router->get('/', 'DashBoardController@index')->name('workshop.home');
-            $router->get('dashboard', 'DashBoardController@index')->name('workshop.dashboard');
+            $router->get('/', 'Foundation\Support\Admin\DashBoardController@index')->name('foundation.home');
+            $router->get('dashboard', 'Foundation\Support\Admin\DashBoardController@index')->name('foundation.home');
+            $router->resource('categories', 'Categories\CategoriesController');
 
         });
     }

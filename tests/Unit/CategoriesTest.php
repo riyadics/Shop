@@ -25,6 +25,27 @@ class CategoriesTest extends TestCase
 		$this->repository = $this->app->make('Antvel\Categories\Categories');
 	}
 
+	public function test_a_repository_can_paginate_result_and_load_it_relationship()
+	{
+		$parent = factory(Category::class)->create()->first();
+
+		factory(Category::class, 2)->create([
+			'category_id' => $parent->id
+		]);
+
+		$list = $this->repository->paginateWith('parent.parent');
+
+		$this->assertTrue(count($list) > 0);
+		$this->assertCount(3, $list);
+
+		$list->each(function($item) use ($parent) {
+			if (! is_null($item->parent)) {
+				$this->assertEquals($item->parent->id, $parent->id);
+				$this->assertInstanceOf(Category::class, $item->parent);
+			}
+		});
+	}
+
 	public function test_a_repository_can_find_categories_by_a_given_constraints()
 	{
 		$newCategory = factory(Category::class)->create([
@@ -113,5 +134,14 @@ class CategoriesTest extends TestCase
 			$this->assertEquals($item->category_id, $parent->id);
 			$this->assertInstanceOf(Category::class, $item);
 		});
+	}
+
+	public function test_a_repository_can_list_parent_categories()
+	{
+		factory(Category::class, 2)->create();
+
+		$parents = $this->repository->parents();
+
+		$this->assertCount(2, $parents);
 	}
 }

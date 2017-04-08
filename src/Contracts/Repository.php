@@ -13,6 +13,16 @@ namespace Antvel\Contracts;
 
 interface Repository
 {
+    /**
+     * Paginate the given query.
+     *
+     * @param  \Illuminate\Database\Eloquent\Builder|null $builder
+     * @param  array $options
+     *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     */
+    public function paginate($builder = null, $options = []);
+
 	/**
      * Save a new model and return the instance.
      *

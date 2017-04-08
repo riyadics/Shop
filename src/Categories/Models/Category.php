@@ -33,7 +33,7 @@ class Category extends Model
     ];
 
     /**
-     * The parent category.
+     * Returns a list of the children categories.
      *
      * @return \Illuminate\Database\Query\Builder
      */
@@ -42,6 +42,11 @@ class Category extends Model
         return $this->hasMany(Category::class);
     }
 
+    /**
+     * Returns a parent category.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
     public function parent()
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
