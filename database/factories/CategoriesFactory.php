@@ -15,9 +15,8 @@ use Antvel\Categories\Models\Category;
 $factory->define(Category::class, function (Faker $faker) use ($factory)
 {
     return [
-        'name' => $faker->sentence,
-        'description' => $faker->paragraph,
-        'image' => '/img/pt-default/'.$faker->numberBetween(1, 20).'.jpg',
-        'icon' => array_rand(['glyphicon glyphicon-facetime-video', 'glyphicon glyphicon-bullhorn', 'glyphicon glyphicon-briefcase'], 1),
+        'name' => str_limit($faker->sentence, 50),
+        'description' => str_limit($faker->paragraph, 90),
+        'icon' => $faker->randomElement(['glyphicon glyphicon-facetime-video', 'glyphicon glyphicon-bullhorn', 'glyphicon glyphicon-briefcase']),
     ];
 });

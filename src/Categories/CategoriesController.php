@@ -44,7 +44,7 @@ class CategoriesController extends Controller
      */
 	public function index()
 	{
-		return view('foundation.views.categories.index', [
+		return view('foundation.sections.categories.index', [
 			'categories' => $this->categories->paginateWith('parent'),
 		]);
 	}
@@ -60,7 +60,7 @@ class CategoriesController extends Controller
 	{
 		$category = $category->load('parent');
 
-		return view('foundation.views.categories.edit', [
+		return view('foundation.sections.categories.edit', [
 			'hasParent' => ! is_null($category->parent),
 			'parents' => $this->categories->parents(),
 			'category' => $category,
@@ -77,6 +77,10 @@ class CategoriesController extends Controller
      */
 	public function update(CategoriesRequest $request, Category $category)
 	{
-		// dd($request->all(), $category);
+		$update = $this->categories->update(
+			$request->all(), $category
+		);
+
+		return back();
 	}
 }

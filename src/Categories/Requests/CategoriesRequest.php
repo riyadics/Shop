@@ -54,15 +54,18 @@ class CategoriesRequest extends Request
     public function rules()
     {
         return [
-            'background' => 'dimensions:min_width=100,min_height=200',
-            'background' => 'mimes:jpeg,png,jpg',
             'description' => 'required',
+
+            '_pictures_file' => [
+                'mimes:jpeg,png,jpg',
+                Rule::dimensions()->maxWidth(2000)->maxHeight(2000)
+            ],
+
             'name' => [
                 'required',
-                Rule::exists('categories')->where(function ($query) {
-                    $query->where('name', 'like', $this->request->get('name'));
-                }),
+                Rule::unique('categories')->ignore($this->request->get('current_category')),
             ],
+
         ];
     }
 }

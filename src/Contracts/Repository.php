@@ -33,6 +33,16 @@ interface Repository
     public function create(array $attributes = []);
 
     /**
+     * Update a Model in the database.
+     *
+     * @param array $attributes
+     * @param Category|mixed $idOrModel
+     * @param array $options
+     * @return bool
+     */
+    public function update(array $attributes, $idOrModel, array $options = []);
+
+    /**
      * Find a Model in the Database using the given constraints.
      *
      * @param mixed $constraints

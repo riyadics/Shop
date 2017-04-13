@@ -11,28 +11,32 @@
 
 namespace Antvel\Categories;
 
+use Antvel\Support\Pictures;
 use Antvel\Contracts\Repository;
 use Antvel\Categories\Models\Category;
 
 class Categories implements Repository
 {
     /**
+     * The files directory.
+     *
+     * @var string
+     */
+    protected $filesDirectory = 'img/categories';
+
+    /**
      * Paginate the given query.
      *
      * @param  \Illuminate\Database\Eloquent\Builder|null $builder
      * @param  array $options
-     *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function paginate($builder = null, $options = [])
     {
         $builder = $builder ?? new Category;
 
-        $options = array_merge([
-            'pageName' => 'page',
-            'columns' => ['*'],
-            'perPage' => null,
-            'page' => null
+        $options = array_merge(['pageName' => 'page', 'columns' => ['*'],
+            'perPage' => null, 'page' => null
         ], $options);
 
         return $builder->paginate($options['perPage'], $options['columns'], $options['pageName'], $options['page']);
@@ -64,10 +68,46 @@ class Categories implements Repository
 	 * @param  array $attributes
 	 * @return Category
 	 */
-    public function create(array $attributes = [])
+    public function create(array $attributes = []) : Category
 	{
-		return Category::create($attributes);
+        if (isset($attributes['_pictures_file'])) {
+            $attributes['image'] = Pictures::make($attributes)->store($this->filesDirectory);
+        }
+
+        return Category::create($attributes);
 	}
+
+    /**
+     * Update a Model in the database.
+     *
+     * @param array $attributes
+     * @param Category|mixed $idOrModel
+     * @param array $options
+     * @return bool
+     */
+    public function update(array $attributes, $idOrModel, array $options = [])
+    {
+        $category = $this->model($idOrModel);
+
+        if (isset($attributes['image'])) {
+            $attributes['image'] = Pictures::make($attributes)->store($this->filesDirectory);
+        }
+
+        return $category->update($attributes, $options);
+    }
+
+    /**
+     * Returns the model.
+     *
+     * @param  Category|mixed $idOrModel
+     * @return Category
+     */
+    protected function model($idOrModel) : Category
+    {
+        return $idOrModel instanceof Category ?
+            $idOrModel :
+            $this->find($idOrModel)->first();
+    }
 
 	/**
      * Finds a category by a given constraints.
@@ -75,6 +115,7 @@ class Categories implements Repository
      * @param mixed $constraints
      * @param mixed $columns
      * @param array $loaders
+     *
      * @return null|Category
      */
     public function find($constraints, $columns = '*', ...$loaders)
@@ -98,6 +139,12 @@ class Categories implements Repository
         return $category;
 	}
 
+    /**
+     * Returns the master categories.
+     *
+     * @param  integer $limit
+     * @return \Illuminate/Database/Eloquent/Collection
+     */
     public function parents($limit = 50)
     {
         return Category::whereNull('category_id')->take($limit)->get();
