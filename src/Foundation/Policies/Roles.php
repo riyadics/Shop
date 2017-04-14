@@ -13,11 +13,21 @@ namespace Antvel\Foundation\Policies;
 
 class Roles
 {
+	/**
+	 * The default registration role.
+	 *
+	 * @return string
+	 */
 	public static function default()
 	{
 		return 'person';
 	}
 
+	/**
+	 * The allowed roles.
+	 *
+	 * @return array
+	 */
 	public static function allowed()
 	{
 		return ['nonprofit', 'admin', 'business', 'person'];

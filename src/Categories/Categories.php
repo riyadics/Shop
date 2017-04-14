@@ -29,6 +29,7 @@ class Categories implements Repository
      *
      * @param  \Illuminate\Database\Eloquent\Builder|null $builder
      * @param  array $options
+     *
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function paginate($builder = null, $options = [])
@@ -66,12 +67,13 @@ class Categories implements Repository
 	 * Creates a new category with a given attributes.
 	 *
 	 * @param  array $attributes
+     *
 	 * @return Category
 	 */
     public function create(array $attributes = []) : Category
 	{
         if (isset($attributes['_pictures_file'])) {
-            $attributes['image'] = Pictures::make($attributes)->store($this->filesDirectory);
+            $attributes['image'] = Pictures::prepare($attributes)->store($this->filesDirectory);
         }
 
         return Category::create($attributes);
@@ -83,14 +85,17 @@ class Categories implements Repository
      * @param array $attributes
      * @param Category|mixed $idOrModel
      * @param array $options
+     *
      * @return bool
      */
     public function update(array $attributes, $idOrModel, array $options = [])
     {
         $category = $this->model($idOrModel);
 
-        if (isset($attributes['image'])) {
-            $attributes['image'] = Pictures::make($attributes)->store($this->filesDirectory);
+        $picture = Pictures::prepare($attributes);
+
+        if ($picture->wasUpdated()) {
+           $attributes['image'] = $picture->store($this->filesDirectory);
         }
 
         return $category->update($attributes, $options);
@@ -100,6 +105,7 @@ class Categories implements Repository
      * Returns the model.
      *
      * @param  Category|mixed $idOrModel
+     *
      * @return Category
      */
     protected function model($idOrModel) : Category
@@ -142,11 +148,34 @@ class Categories implements Repository
     /**
      * Returns the master categories.
      *
-     * @param  integer $limit
+     * @param  mixed $columns
+     * @param  int $limit
+     *
      * @return \Illuminate/Database/Eloquent/Collection
      */
-    public function parents($limit = 50)
+    public function parents($columns = '*', $limit = 50)
     {
-        return Category::whereNull('category_id')->take($limit)->get();
+        return Category::select($columns)
+            ->whereNull('category_id')
+            ->take($limit)
+            ->get();
+    }
+
+    /**
+     * Returns the master categories except the given one.
+     *
+     * @param  int $category_id
+     * @param  mixed $columns
+     * @param  int $limit
+     *
+     * @return \Illuminate/Database/Eloquent/Collection
+     */
+    public function parentsExcept($category_id, $columns = '*', $limit = 50)
+    {
+        return Category::select($columns)
+            ->whereNull('category_id')
+            ->where('id', '<>', $category_id)
+            ->take($limit)
+            ->get();
     }
 }

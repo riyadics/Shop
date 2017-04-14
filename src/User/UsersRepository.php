@@ -71,6 +71,7 @@ class UsersRepository
      *
      * @param mixed $constraints
      * @param array $loaders
+     *
      * @return null|Authenticatable
      */
 	public function find($constraints, ...$loaders)
@@ -98,6 +99,7 @@ class UsersRepository
      * Returns the user profile.
      *
      * @param  int $user_id
+     *
      * @return null|Authenticatable
      */
     public function profile($user_id = null)
@@ -115,6 +117,7 @@ class UsersRepository
      * Creates a new user in the database.
      *
      * @param  array $data
+     *
      * @return Authenticatable
      */
     public function create(array $data) : Authenticatable
@@ -138,6 +141,7 @@ class UsersRepository
      * @param  Authenticatable $user
      * @param  array $data
      * @param  array $except
+     *
      * @return void
      */
     public function update($user, array $data, array $except = [])
@@ -153,6 +157,7 @@ class UsersRepository
      *
      * @param  int|null $user_id
      * @param  string $action
+     *
      * @return string
      */
     public function enableDisable($user_id = null, $action = 'disable') : string
@@ -174,6 +179,7 @@ class UsersRepository
      * Disables a given user profile.
      *
      * @param  int $user_id
+     *
      * @return string
      */
     public function disable($user_id = null)
@@ -185,6 +191,7 @@ class UsersRepository
      * Enables a given user profile.
      *
      * @param  int $user_id
+     *
      * @return string
      */
     public function enable($user_id = null)

@@ -38,6 +38,7 @@ interface Repository
      * @param array $attributes
      * @param Category|mixed $idOrModel
      * @param array $options
+     *
      * @return bool
      */
     public function update(array $attributes, $idOrModel, array $options = []);

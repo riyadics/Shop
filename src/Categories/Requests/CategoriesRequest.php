@@ -54,18 +54,17 @@ class CategoriesRequest extends Request
     public function rules()
     {
         return [
-            'description' => 'required',
+            'description' => 'required|max:100',
 
             '_pictures_file' => [
                 'mimes:jpeg,png,jpg',
-                Rule::dimensions()->maxWidth(2000)->maxHeight(2000)
+                Rule::dimensions()->maxWidth(1000)->maxHeight(500)
             ],
 
             'name' => [
                 'required',
                 Rule::unique('categories')->ignore($this->request->get('current_category')),
             ],
-
         ];
     }
 }

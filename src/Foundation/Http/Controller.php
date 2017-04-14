@@ -25,6 +25,7 @@ abstract class Controller extends BaseController
      *
      * @param  string $message
      * @param  string $class
+     *
      * @return JSON
      */
     public function respondsWithError(string $message, $code = 404)
@@ -41,6 +42,7 @@ abstract class Controller extends BaseController
      *
      * @param  string $message
      * @param  string $redirectTo
+     *
      * @return JSON
      */
     public function respondsWithSuccess(string $message, string $redirectTo = '')

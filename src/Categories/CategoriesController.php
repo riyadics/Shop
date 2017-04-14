@@ -38,6 +38,36 @@ class CategoriesController extends Controller
     }
 
     /**
+     * Creates a new category.
+     *
+     * @return void
+     */
+    public function create()
+    {
+    	return view('foundation.sections.categories.create', [
+    		'parents' => $this->categories->parents(),
+    	]);
+    }
+
+    /**
+     * Stores a new category.
+     *
+     * @param  CategoriesRequest $request
+     *
+     * @return void
+     */
+    public function store(CategoriesRequest $request)
+    {
+    	$category = $this->categories->create(
+    		$request->all()
+    	);
+
+    	return redirect()->route('categories.edit', [
+    		'category' => $category->id
+    	])->with('status', trans('globals.success_text'));
+    }
+
+    /**
      * Shows categories list.
      *
      * @return void
@@ -53,7 +83,7 @@ class CategoriesController extends Controller
 	 * Edits a given category.
 	 *
 	 * @param  Category $category
-	 *
+     *
 	 * @return void
 	 */
 	public function edit(Category $category)
@@ -81,6 +111,6 @@ class CategoriesController extends Controller
 			$request->all(), $category
 		);
 
-		return back();
+		return back()->with('status', trans('globals.success_text'));
 	}
 }

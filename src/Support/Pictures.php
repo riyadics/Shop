@@ -36,9 +36,10 @@ class Pictures
 	 * Creates a new instance with the given attributes.
 	 *
 	 * @param  array $attributes
+	 *
 	 * @return slef
 	 */
-	public static function make(array $attributes)
+	public static function prepare(array $attributes)
 	{
 		$pictures = new static;
 
@@ -48,17 +49,33 @@ class Pictures
 	}
 
 	/**
+	 * Checks whether the request asked for a file updating.
+	 *
+	 * @return bool
+	 */
+	public function wasUpdated() : bool
+	{
+		return $this->data->has('_pictures_delete') || $this->data->has('_pictures_file');
+	}
+
+	/**
 	 * Stores the file in the given directory.
 	 *
 	 * @param  string $directory
+	 *
 	 * @return null|string
 	 */
 	public function store($directory)
 	{
+		//We clean the given directory to avoid file duplication.
+		$this->purge($directory);
+
+		//We verify whether there was a deletion request. If so, the file path will be null.
 		if ($this->data->has('_pictures_delete')) {
-			return $this->purge($directory);
+			return null;
 		}
 
+		//We upload and store the file in the given directory and retrieve its path.
 		return $this->upload($directory);
 	}
 
@@ -66,32 +83,30 @@ class Pictures
 	 * Uploads a file in the given directory.
 	 *
 	 * @param  string $directory
+	 *
 	 * @return string
 	 */
 	protected function upload($directory) : string
 	{
-		return $this->data
-			->get('_pictures_file')
-			->store($directory);
+		return $this->data->get('_pictures_file')->store($directory);
 	}
 
 	/**
 	 * Cleans the given directory.
 	 *
 	 * @param  string $directory
-	 * @return null
+	 *
+	 * @return void
 	 */
 	protected function purge($directory)
 	{
 		$files = Collection::make(Storage::files($directory));
 
-		$aux = $files->filter(function($value) {
+		$files->filter(function($value) {
 			return Str::contains($value, $this->startWith());
 		})->tap(function($collection) {
 			Storage::delete($collection->all());
 		});
-
-		return null;
 	}
 
 	/**
@@ -101,8 +116,12 @@ class Pictures
 	 */
 	protected function startWith() : string
 	{
-		$current = explode('/', $this->data->get('_pictures_current'));
+		//The needle is the file name to be deleted from the location of the file.
+		$needle = $this->data->get('_pictures_current');
 
+		$current = explode('/', $needle);
+
+		//We get the filename from the given needle.
 		$fileName = Arr::last($current);
 
 		return Arr::first(explode('.', $fileName));
@@ -113,7 +132,7 @@ class Pictures
 	 *
 	 * @return Collection
 	 */
-	public function data()
+	public function data() : Collection
 	{
 		return $this->data;
 	}

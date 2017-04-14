@@ -139,6 +139,22 @@ class CategoriesTest extends TestCase
 		$this->assertCount(2, $parents);
 	}
 
+	public function test_a_repository_can_list_parent_categories_except_the_given_one()
+	{
+		$parents = factory(Category::class, 2)->create();
+
+		$children = factory(Category::class, 2)->create([
+			'category_id' => rand(1, 10)
+		]);
+
+		$except = factory(Category::class)->create()->first();
+
+		$list = $this->repository->parentsExcept($except->id);
+
+		$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $list);
+		$this->assertCount(2, $list);
+	}
+
 	public function test_a_repository_can_update_a_given_category_by_model()
 	{
 		$category = factory(Category::class)->create(['name' => 'Tools'])->first();

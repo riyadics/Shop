@@ -22,7 +22,7 @@ class Antvel
      *
      * @var string
      */
-    const VERSION = '1.0.2';
+    const VERSION = '1.0.6';
 
     /**
      * The Laravel container component.
@@ -66,6 +66,7 @@ class Antvel
      *
      * @param  callable $callback
      * @param  array $options
+     *
      * @return void
      */
     public static function routes(callable $callback = null, array $options = [])

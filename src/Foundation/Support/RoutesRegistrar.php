@@ -33,6 +33,7 @@ class RoutesRegistrar
      * Create a new route registrar instance.
      *
      * @param  Router  $router
+     *
      * @return void
      */
     public function __construct(Router $router)
@@ -124,8 +125,9 @@ class RoutesRegistrar
 
         ], function ($router) {
 
-            $router->get('/', 'Foundation\Support\Admin\DashBoardController@index')->name('foundation.home');
-            $router->get('dashboard', 'Foundation\Support\Admin\DashBoardController@index')->name('foundation.home');
+            $router->get('/', 'Categories\CategoriesController@index')->name('foundation.home');
+            $router->get('dashboard', 'Categories\CategoriesController@index')->name('foundation.home');
+
             $router->resource('categories', 'Categories\CategoriesController');
 
         });

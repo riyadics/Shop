@@ -19,7 +19,7 @@ class PituresTest extends TestCase
 {
 	protected function pictures($attributes = [])
 	{
-		return Pictures::make($attributes);
+		return Pictures::prepare($attributes);
 	}
 
 	/**

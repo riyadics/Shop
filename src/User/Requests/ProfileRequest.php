@@ -35,6 +35,7 @@ class ProfileRequest extends Request
      * Creates a new instance.
      *
      * @param UsersRepository $user
+     *
      * @return void
      */
     public function __construct(UsersRepository $user)

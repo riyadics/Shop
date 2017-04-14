@@ -85,6 +85,7 @@ class UsersController extends Controller
      *
      * @param  ProfileRequest $request
      * @param  int $user
+     *
      * @return void
      */
     public function update(ProfileRequest $request, $user_id = null)
