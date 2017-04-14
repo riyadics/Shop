@@ -60,7 +60,7 @@ $factory->define(EmailChangePetition::class, function (Faker $faker) use ($facto
         'user_id' => function () {
             return factory(User::class)->create()->id;
         },
-        'expires_at' => Carbon::now()->addDays(2),
+        'expires_at' => Carbon::now()->addWeek(),
         'token' => $faker->unique()->sha1,
         'old_email' => $faker->email,
         'new_email' => $faker->email,
