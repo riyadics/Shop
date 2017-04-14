@@ -20,7 +20,7 @@ class RoutesRegistrar
      *
      * @var Router
      */
-    protected $router;
+    protected $router = null;
 
     /**
      * The base namespace.
@@ -36,22 +36,44 @@ class RoutesRegistrar
      *
      * @return void
      */
-    public function __construct(Router $router)
+    public static function make(Router $router)
     {
-        $this->router = $router;
+        $registrar = new static;
+
+        $registrar->router = $router;
+
+        return $registrar;
     }
 
     /**
      * Register routes for Antvel.
      *
-     * @return self
+     * @param  callable $callback
+     *
+     * @return void
      */
-    public function all()
+    public function routes(callable $callback = null)
     {
         $this->forUser();
         $this->forAddressBook();
 
-        return $this;
+        $this->foundation($callback);
+    }
+
+    /**
+     * Register routes for Antvel foundation panel.
+     *
+     * @param  callable $callback
+     *
+     * @return void
+     */
+    public function foundation (callable $callback = null)
+    {
+        $callback = $callback ?: function ($registrar) {
+            $registrar->forFoundation();
+        };
+
+        $callback($this);
     }
 
     /**
@@ -115,7 +137,7 @@ class RoutesRegistrar
      *
      * @return void
      */
-    public function forPanel()
+    public function forFoundation()
     {
         $this->router->group([
 

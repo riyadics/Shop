@@ -17,7 +17,7 @@ use Antvel\Foundation\Http\Controller;
 class DashBoardController extends Controller
 {
 	/**
-	 * Loads the workshop dashboard.
+	 * Loads the foundation dashboard.
 	 *
 	 * @return void
 	 */

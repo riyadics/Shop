@@ -71,15 +71,8 @@ class Antvel
      */
     public static function routes(callable $callback = null, array $options = [])
     {
-        $callback = $callback ?: function ($router) {
-            $router->forPanel();
-        };
-
         Route::group($options, function ($router) use ($callback) {
-
-            $registrar = (new RoutesRegistrar($router))->all();
-
-            $callback($registrar);
+            RoutesRegistrar::make($router)->routes($callback);
         });
     }
 }
