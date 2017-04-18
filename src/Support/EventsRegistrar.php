@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Foundation\Support;
+namespace Antvel\Support;
 
 use Illuminate\Support\Facades\Event;
 

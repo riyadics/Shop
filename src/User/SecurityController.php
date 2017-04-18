@@ -11,8 +11,8 @@
 
 namespace Antvel\User;
 
+use Antvel\Http\Controller;
 use Illuminate\Http\Request;
-use Antvel\Foundation\Http\Controller;
 
 class SecurityController extends Controller
 {

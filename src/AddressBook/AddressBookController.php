@@ -11,8 +11,8 @@
 
 namespace Antvel\AddressBook;
 
+use Antvel\Http\Controller;
 use Illuminate\Http\Request;
-use Antvel\Foundation\Http\Controller;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AddressBookController extends Controller

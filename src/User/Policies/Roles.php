@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Foundation\Policies;
+namespace Antvel\User\Policies;
 
 class Roles
 {
@@ -30,6 +30,6 @@ class Roles
 	 */
 	public static function allowed()
 	{
-		return ['nonprofit', 'admin', 'business', 'person'];
+		return ['admin', 'business', 'person'];
 	}
 }

@@ -9,10 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Foundation\Support\Admin;
+namespace Antvel\Support;
 
+use Antvel\Http\Controller;
 use Illuminate\Http\Request;
-use Antvel\Foundation\Http\Controller;
 
 class DashBoardController extends Controller
 {

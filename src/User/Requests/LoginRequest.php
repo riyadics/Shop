@@ -11,8 +11,8 @@
 
 namespace Antvel\User\Requests;
 
+use Antvel\Http\Request;
 use Illuminate\Container\Container;
-use Antvel\Foundation\Http\Request;
 
 class LoginRequest extends Request
 {

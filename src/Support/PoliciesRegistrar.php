@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Foundation\Support;
+namespace Antvel\Support;
 
 use Illuminate\Support\Facades\Gate;
 
@@ -21,7 +21,7 @@ class PoliciesRegistrar
      * @var array
      */
 	protected $policies = [
-		\Antvel\Customer\Models\User::class => \Antvel\Policies\UserPolicy::class,
+		\Antvel\User\Models\User::class => \Antvel\User\Policies\UserPolicy::class,
 	];
 
     /**

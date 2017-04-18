@@ -11,9 +11,9 @@
 
 namespace Antvel\Categories\Requests;
 
+use Antvel\Http\Request;
 use Illuminate\Validation\Rule;
 use Antvel\Categories\Categories;
-use Antvel\Foundation\Http\Request;
 
 class CategoriesRequest extends Request
 {

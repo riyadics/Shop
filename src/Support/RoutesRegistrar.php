@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Foundation\Support;
+namespace Antvel\Support;
 
 use Illuminate\Contracts\Routing\Registrar as Router;
 
@@ -141,14 +141,14 @@ class RoutesRegistrar
     {
         $this->router->group([
 
+            'middleware' => ['web', 'auth', 'managers'],
             'namespace' => $this->namespace,
-            'middleware' => ['web', 'auth'],
             'prefix' => 'foundation',
 
         ], function ($router) {
 
-            $router->get('/', 'Categories\CategoriesController@index')->name('foundation.home');
             $router->get('dashboard', 'Categories\CategoriesController@index')->name('foundation.home');
+            $router->get('/', 'Categories\CategoriesController@index')->name('foundation.home');
 
             $router->resource('categories', 'Categories\CategoriesController');
 

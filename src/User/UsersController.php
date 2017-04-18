@@ -11,9 +11,9 @@
 
 namespace Antvel\User;
 
+use Antvel\Http\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Events\Dispatcher;
-use Antvel\Foundation\Http\Controller;
 use Antvel\User\Requests\ProfileRequest;
 use Antvel\User\Events\ProfileWasUpdated;
 

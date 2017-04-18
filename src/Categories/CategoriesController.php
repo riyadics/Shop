@@ -11,9 +11,9 @@
 
 namespace Antvel\Categories;
 
+use Antvel\Http\Controller;
 use Antvel\Categories\Categories;
 use Antvel\Categories\Models\Category;
-use Antvel\Foundation\Http\Controller;
 use Antvel\Categories\Requests\CategoriesRequest;
 
 class CategoriesController extends Controller
@@ -74,7 +74,7 @@ class CategoriesController extends Controller
      */
 	public function index()
 	{
-		return view('foundation.sections.categories.index', [
+        return view('foundation.sections.categories.index', [
 			'categories' => $this->categories->paginateWith('parent'),
 		]);
 	}

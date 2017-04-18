@@ -9,15 +9,21 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Foundation\Policies;
+namespace Antvel\User\Policies;
 
-use Antvel\AddressBook\Models;
-use Antvel\Customer\Models\User;
+use Antvel\User\Models\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class UserPolicy
 {
     use HandlesAuthorization;
+
+    /**
+     * Allowed managers.
+     *
+     * @var array
+     */
+    protected $managers = ['admin', 'business'];
 
     /**
      * Create a new policy instance.
@@ -29,8 +35,15 @@ class UserPolicy
         //
     }
 
-    public function ownsAddressBook(User $user, Address $address)
+    /**
+     * Checks whether a given user can manage the store.
+     *
+     * @param  User $user
+     *
+     * @return bool
+     */
+    public function manageStore(User $user)
     {
-        return $user->id === $address->user_id;
+        return in_array($user->role, $this->managers);
     }
 }

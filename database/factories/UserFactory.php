@@ -11,7 +11,7 @@
 
 use Carbon\Carbon;
 use Faker\Generator as Faker;
-use Antvel\Foundation\Policies\Roles;
+use Antvel\User\Policies\Roles;
 use Antvel\User\Models\{ User, Person, Business, EmailChangePetition };
 
 $factory->define(User::class, function (Faker $faker) use ($factory)

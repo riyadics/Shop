@@ -11,9 +11,9 @@
 
 namespace Antvel;
 
+use Antvel\Support\RoutesRegistrar;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
-use Antvel\Foundation\Support\RoutesRegistrar;
 
 class Antvel
 {
@@ -48,7 +48,7 @@ class Antvel
      */
     public static function events()
     {
-        (new \Antvel\Foundation\Support\EventsRegistrar)->registrar();
+        (new \Antvel\Support\EventsRegistrar)->registrar();
     }
 
     /**
@@ -58,7 +58,7 @@ class Antvel
      */
     public static function policies()
     {
-        (new \Antvel\Foundation\Support\PoliciesRegistrar)->registrar();
+        (new \Antvel\Support\PoliciesRegistrar)->registrar();
     }
 
     /**
