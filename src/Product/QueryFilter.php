@@ -51,8 +51,6 @@ class QueryFilter
     	$this->request = $this->parseRequest($request);
 
         $this->request['search'] = 'Seeded'; //while testing
-
-        // dd($this->request);
     }
 
     /**

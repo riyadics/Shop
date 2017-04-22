@@ -14,12 +14,6 @@ namespace Antvel\Product;
 
 class FiltersParser
 {
-	protected $features = null;
-
-	protected $toFilter = ['images'];
-
-	protected $collection = null;
-
 	/**
 	 * Parses the given collection.
 	 *

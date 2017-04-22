@@ -22,6 +22,11 @@ class Search
 	 */
 	protected $seed = null;
 
+	/**
+	 * The fields where to perform the searching.
+	 *
+	 * @var array
+	 */
 	protected $searchable = ['name', 'description', 'features', 'brand', 'tags'];
 
 	/**
@@ -46,10 +51,6 @@ class Search
 	{
 		if (trim($seed = $this->seed) !== '') {
 			$this->builder->where(function ($query) use ($seed) {
-				// foreach ($this->searchable as $field) {
-				// 	$query->orWhere($field, 'like', '%'.$seed.'%');
-				// }
-				// return $query;
 				return $this->resolveQuery($query, $seed);
 			});
 		}
@@ -57,7 +58,15 @@ class Search
 		return $this->builder;
 	}
 
-	protected function resolveQuery(Builder $builder, string $seed)
+	/**
+	 * Resolves the query for the given seed.
+	 *
+	 * @param  Builder $builder
+	 * @param  string  $seed
+	 *
+	 * @return Builder
+	 */
+	protected function resolveQuery(Builder $builder, string $seed) : Builder
 	{
 		foreach ($this->searchable as $field) {
 			$builder->orWhere($field, 'like', '%'.$seed.'%');

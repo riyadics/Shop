@@ -23,7 +23,8 @@ class Products
 
 	public function filter($request)
 	{
-		return Product::filter($request)
+		return Product::actives()
+			->filter($request)
 			->orderBy('rate_val', 'desc')
 			->paginate(28);
 	}

@@ -79,17 +79,6 @@ class Product extends Model
 
 ///////////
 
-    // public function scopeSearch($query, $seed)
-    // {
-    //     $fields = ['name', 'description', 'features', 'brand', 'tags'];
-
-    //      if (trim($seed) !== '') {
-    //         foreach ($fields as $value) {
-    //             $query->orWhere($value, 'like', '%'.$seed.'%');
-    //         }
-    //     }
-    // }
-
     public function scopeActives($query)
     {
         return $query->where('status', 1)->where('stock', '>', 0);
