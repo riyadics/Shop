@@ -36,6 +36,5 @@ class Managers
     protected function isAuthorized($user)
     {
         return $user->can('manage-store', \Antvel\User\Models\User::class);
-        // return ! is_null($user) && in_array($user->role, ['admin', 'business']);
     }
 }

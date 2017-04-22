@@ -178,4 +178,24 @@ class Categories implements Repository
             ->take($limit)
             ->get();
     }
+
+    /**
+     * Returns the children for a given category.
+     *
+     * @param  Category|mixed $idOrModel $idOrModel
+     * @param array $columns
+     * @param int $limit
+     *
+     * @return \Illuminate/Database/Eloquent/Collection
+     */
+    public function children($idOrModel, $columns = ['id'], int $limit = 50)
+    {
+        $category_id = $idOrModel instanceof Category ? $idOrModel->id : $idOrModel;
+
+        return Category::select($columns)->with('children')
+            ->where('category_id', $category_id)
+            ->orderBy('updated_at', 'desc')
+            ->take($limit)
+            ->get();
+    }
 }

@@ -55,6 +55,7 @@ class RoutesRegistrar
     public function routes(callable $callback = null)
     {
         $this->forUser();
+        $this->forProduct();
         $this->forAddressBook();
 
         $this->foundation($callback);
@@ -128,6 +129,20 @@ class RoutesRegistrar
                 $router->patch('{action}/{user?}', 'SecurityController@update')->name('user.action');
 
             });
+
+        });
+    }
+
+    public function forProduct()
+    {
+        $this->router->group([
+
+            'middleware' => ['web', 'auth'],
+            'namespace' => $this->namespace . '\Product',
+
+        ], function ($router) {
+
+            $router->resource('products2', 'Products2Controller');
 
         });
     }

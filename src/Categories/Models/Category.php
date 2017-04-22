@@ -11,6 +11,7 @@
 
 namespace Antvel\Categories\Models;
 
+use Antvel\Product\Models\Product;
 use Illuminate\Database\Eloquent\Model;
 
 class Category extends Model
@@ -50,5 +51,15 @@ class Category extends Model
     public function parent()
     {
         return $this->hasOne(Category::class, 'id', 'category_id');
+    }
+
+    /**
+     * Returns the products list for a given category.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function product()
+    {
+        return $this->hasMany(Product::class);
     }
 }
