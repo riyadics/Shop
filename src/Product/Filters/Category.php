@@ -16,8 +16,6 @@ use Illuminate\Support\Arr;
 use Antvel\Categories\Categories;
 use Illuminate\Database\Eloquent\Builder;
 
-use Antvel\Categories\Models\Category;
-
 class Category
 {
 	/**
@@ -26,6 +24,13 @@ class Category
 	 * @var Categories
 	 */
 	protected $categories = null;
+
+	/**
+	 * The Illuminate eloquent builder.
+	 *
+	 * @var Builder
+	 */
+	protected $builder = null;
 
 	/**
 	 * The requested category ID.
@@ -44,26 +49,27 @@ class Category
 	/**
      * Create a new instance.
      *
-     * @param string $category
+     * @param string $input
      *
      * @return void
      */
-	public function __construct(string $category)
+	public function __construct(string $input, Builder $builder)
 	{
+		$this->parseInput($input);
+		$this->builder = $builder;
 		$this->categories = new Categories;
-		$this->parseCategory($category);
 	}
 
 	/**
 	 * Parses the given category info.
 	 *
-	 * @param  string $category
+	 * @param  string $input
 	 *
 	 * @return void
 	 */
-	protected function parseCategory($category)
+	protected function parseInput(string $input)
 	{
-		$category = explode('|', urldecode($category));
+		$category = explode('|', urldecode($input));
 
 		$this->category_name = Arr::last($category);
 		$this->category_id = Arr::first($category);
@@ -72,24 +78,21 @@ class Category
 	/**
 	 * Builds the query with the given category.
 	 *
-	 * @param  Builder $query
-	 *
 	 * @return Builder
 	 */
-	public function query(Builder $query)
+	public function query() : Builder
 	{
 		if (is_null($this->category_id)) {
-			return;
+			return $this->builder;
 		}
 
 		if (count($children = $this->children()) > 0) {
-			return $query->whereIn(
+			$this->builder->whereIn(
 				'category_id', $children
 			);
 		}
 
-		return $query;
-
+		return $this->builder;
 	}
 
 	/**
@@ -97,15 +100,26 @@ class Category
 	 *
 	 * @return array
 	 */
-	protected function children()
+	protected function children() : array
 	{
-		$categories = $this->categories->children(
-            $this->category_id
-        );
+		$categories = Cache::remember($this->cache_key(), 15, function () {
+			return $this->categories->children(
+	            $this->category_id
+	        );
+		});
 
-        return $categories->pluck('id')
+		return $categories->pluck('id')
         	->prepend((int) $this->category_id)
         	->all();
 	}
 
+	/**
+	 * Returns the filter cache key.
+	 *
+	 * @return string
+	 */
+	protected function cache_key() : string
+	{
+		return 'fitered_by_category_' . $this->category_id;
+	}
 }

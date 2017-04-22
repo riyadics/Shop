@@ -11,7 +11,6 @@
 
 namespace Antvel\Product;
 
-use Illuminate\Http\Request;
 use Antvel\Contracts\Repository;
 use Antvel\Product\Models\Product;
 
@@ -22,14 +21,10 @@ class Products
 		//
 	}
 
-	public function filter(QueryFilter $filters)
+	public function filter($request)
 	{
-		\DB::enableQueryLog();
-
-		$products = Product::filter($filters)
+		return Product::filter($request)
 			->orderBy('rate_val', 'desc')
-			->get();
-
-		dd('filter', \DB::getQueryLog(), $products);
+			->paginate(28);
 	}
 }

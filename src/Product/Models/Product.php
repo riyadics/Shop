@@ -59,13 +59,13 @@ class Product extends Model
      * Filter users upon type requested.
      *
      * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  QueryFilter $filters
+     * @param  Illuminate\Http\Request $request
      *
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeFilter($query, QueryFilter $filters)
+    public function scopeFilter($query, $request)
     {
-        return $filters->apply($query);
+        return (new QueryFilter($request))->apply($query);
     }
 
 
@@ -79,16 +79,16 @@ class Product extends Model
 
 ///////////
 
-    public function scopeSearch($query, $seed)
-    {
-        $fields = ['name', 'description', 'features', 'brand', 'tags'];
+    // public function scopeSearch($query, $seed)
+    // {
+    //     $fields = ['name', 'description', 'features', 'brand', 'tags'];
 
-         if (trim($seed) !== '') {
-            foreach ($fields as $value) {
-                $query->orWhere($value, 'like', '%'.$seed.'%');
-            }
-        }
-    }
+    //      if (trim($seed) !== '') {
+    //         foreach ($fields as $value) {
+    //             $query->orWhere($value, 'like', '%'.$seed.'%');
+    //         }
+    //     }
+    // }
 
     public function scopeActives($query)
     {

@@ -11,6 +11,7 @@
 
 namespace Antvel\Product;
 
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,36 +26,33 @@ class QueryFilter
     protected $request = null;
 
     /**
-     * Eloquent builder pointer.
-     *
-     * @var Illuminate\Database\Eloquent\Builder
-     */
-    protected $query = null;
-
-    /**
 	 * The allowed filters.
 	 *
 	 * @var array
 	 */
 	protected $allowed = [
-		'category' => \Antvel\Product\Filters\Category::class,
-
-		// 'search' => \Antvel\Product\Filters\Search::class,
-		// 'conditions' => \Antvel\Product\Filters\Search::class,
-		// 'brands' => \Antvel\Product\Filters\Search::class,
-		// 'min' => \Antvel\Product\Filters\Search::class,
-		// 'max' => \Antvel\Product\Filters\Search::class
+        'search' => \Antvel\Product\Filters\Search::class,
+        'category' => \Antvel\Product\Filters\Category::class,
+        'conditions' => \Antvel\Product\Filters\Conditions::class,
+        'brands' => \Antvel\Product\Filters\Brands::class,
+		'min' => \Antvel\Product\Filters\Prices::class,
+		'max' => \Antvel\Product\Filters\Prices::class
 	];
 
     /**
      * Create a new instance.
      *
-     * @param  Illuminate\Http\Request $request
+     * @param  Request $request
+     *
      * @return void
      */
-    public function __construct(Request $request)
+    public function __construct($request)
     {
     	$this->request = $this->parseRequest($request);
+
+        $this->request['search'] = 'Seeded'; //while testing
+
+        // dd($this->request);
     }
 
     /**
@@ -72,24 +70,21 @@ class QueryFilter
     }
 
     /**
-     * Apply an eloquent query to model.
+     * Apply an eloquent query to a given builder.
      *
-     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  Builder $builder
      *
-     * @return Illuminate\Database\Eloquent\Builder|null
+     * @return Builder
      */
-    public function apply(Builder $query)
+    public function apply(Builder $builder) : Builder
     {
-    	$this->query = $query;
-
-    	foreach ($this->request as $key => $value) {
-    		if ($this->canQueryFor($key)) {
-    			// echo '- ' . $key . ' -';
-    			$this->query = $this->filter($key)->query($this->query);
+    	foreach ($this->request as $filter => $value) {
+            if ($this->isQueryableBy($filter)) {
+    			$builder = $this->resolveQueryFor($builder, $filter);
     		}
     	}
 
-        return $this->query;
+        return $builder;
     }
 
     /**
@@ -99,22 +94,50 @@ class QueryFilter
      *
      * @return bool
      */
-    protected function canQueryFor($filter) : bool
+    protected function isQueryableBy($filter) : bool
     {
-    	return !! method_exists($this->allowed[$filter], 'query');
+    	return !! isset($this->allowed[$filter]) && method_exists($this->allowed[$filter], 'query');
     }
 
     /**
-     * Returns the filter instance for a given key.
+     * Returns a query filtered by the given filter.
      *
-     * @param  string $key
+     * @param Builder $builder
+     * @param string $key
      *
-     * @return mixed
+     * @return Builder
      */
-    protected function filter($key)
+    protected function resolveQueryFor(Builder $builder, string $filter) : Builder
     {
-    	return new $this->allowed[$key](
-    		$this->request[$key]
-    	);
+        $factory = $this->allowed[$filter];
+
+        $input = $this->wantsByPrices($filter) ? $this->prices() : $this->request[$filter];
+
+    	return (new $factory($input, $builder))->query();
+    }
+
+    /**
+     * Checks whether the request is by prices.
+     *
+     * @param  string $filter
+     *
+     * @return bool
+     */
+    protected function wantsByPrices(string $filter) : bool
+    {
+        return $filter == 'min' || $filter == 'max';
+    }
+
+    /**
+     * Returns the requested prices filter.
+     *
+     * @return array
+     */
+    protected function prices() : array
+    {
+        return [
+            'min' => Arr::get($this->request, 'min'),
+            'max' => Arr::get($this->request, 'max'),
+        ];
     }
 }
