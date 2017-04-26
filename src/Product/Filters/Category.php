@@ -104,7 +104,7 @@ class Category
 	{
 		$categories = Cache::remember($this->cache_key(), 15, function () {
 			return $this->categories->children(
-	            $this->category_id
+	            $this->category_id, ['id', 'category_id', 'name']
 	        );
 		});
 

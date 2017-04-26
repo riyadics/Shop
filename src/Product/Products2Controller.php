@@ -13,6 +13,8 @@ namespace Antvel\Product;
 
 use Antvel\Http\Controller;
 use Illuminate\Http\Request;
+use Antvel\Product\Parsers\Filters as FiltersParser;
+use Antvel\Product\Parsers\Breadcrumb as BreadcrumbParser;
 
 class Products2Controller extends Controller
 {
@@ -47,27 +49,16 @@ class Products2Controller extends Controller
 	 */
 	public function index(Request $request)
 	{
-		// \DB::enableQueryLog();
-
 		$products = $this->products->filter($request);
 
-		// dd('controller', \DB::getQueryLog(), $products);
-
-		//parse breadcrumb
-		$breadcrumb['search'] = $request->get('search');
-		$breadcrumb['category_name'] = 'category_name';
-
-        $filters = FiltersParser::parse($products);
-
-		//need to add suggestions
-		//set user preferences
+		//TODO: set user preferences
 
 		return view('products.index', [
-			'filters' => $filters,
+			'suggestions' => $this->products->suggestFor($products),
+			'refine' => BreadcrumbParser::parse($request),
+			'filters' => FiltersParser::parse($products),
 			'products' => $products,
 			'panel' => $this->panel,
-			'refine' => $breadcrumb,
-			'suggestions' => []
 		]);
 	}
 }

@@ -68,6 +68,27 @@ class Product extends Model
         return (new QueryFilter($request))->apply($query);
     }
 
+    /**
+     * Returns suggestions for a given constraints.
+     *
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $constraints
+     *
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeSuggestionsFor($query, $tags)
+    {
+        $query->actives()
+            ->where(function ($builder) use ($tags) {
+                foreach ($tags as $tag) {
+                    $builder->orWhere('tags', 'like', '%' . $tag . '%');
+                }
+                return $builder;
+            });
+
+        return $query;
+    }
+
 
 
 
