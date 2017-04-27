@@ -31,6 +31,12 @@ class CategoriesTest extends TestCase
 		$this->repository = $this->app->make('Antvel\Categories\Categories');
 	}
 
+	public function test_it_has_the_correct_model()
+	{
+		$this->assertNotNull($this->repository->getModel());
+		$this->assertInstanceOf(Category::class, $this->repository->getModel());
+	}
+
 	public function test_a_repository_can_paginate_result_and_load_it_relationship()
 	{
 		$parent = factory(Category::class)->create()->first();

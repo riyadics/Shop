@@ -14,6 +14,7 @@ namespace Antvel\Product\Filters;
 use Cache;
 use Illuminate\Support\Arr;
 use Antvel\Categories\Categories;
+use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Builder;
 
 class Category
@@ -57,7 +58,7 @@ class Category
 	{
 		$this->parseInput($input);
 		$this->builder = $builder;
-		$this->categories = new Categories;
+		$this->categories = Container::getInstance()->make(Categories::class);
 	}
 
 	/**
