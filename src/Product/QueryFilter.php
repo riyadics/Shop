@@ -42,11 +42,11 @@ class QueryFilter
     /**
      * Create a new instance.
      *
-     * @param  Request $request
+     * @param array $request
      *
      * @return void
      */
-    public function __construct($request)
+    public function __construct(array $request)
     {
     	$this->request = $this->parseRequest($request);
 
@@ -56,15 +56,15 @@ class QueryFilter
     /**
      * Parses the incoming request.
      *
-     * @param  Request $request
+     * @param array $request
      *
      * @return array
      */
-    protected function parseRequest(Request $request) : array
+    protected function parseRequest(array $request) : array
     {
     	$allowed = Collection::make($this->allowed)->keys()->all();
 
-    	return $request->intersect($allowed);
+        return Collection::make($request)->only($allowed)->all();
     }
 
     /**
@@ -76,6 +76,10 @@ class QueryFilter
      */
     public function apply(Builder $builder) : Builder
     {
+        if ($this->doesNotHaveRequest()) {
+            return $builder;
+        }
+
     	foreach ($this->request as $filter => $value) {
             if ($this->isQueryableBy($filter)) {
     			$builder = $this->resolveQueryFor($builder, $filter);
@@ -83,6 +87,16 @@ class QueryFilter
     	}
 
         return $builder;
+    }
+
+    /**
+     * Checks whether the request has values.
+     *
+     * @return boolean
+     */
+    protected function doesNotHaveRequest() : bool
+    {
+        return count($this->request) == 0;
     }
 
     /**

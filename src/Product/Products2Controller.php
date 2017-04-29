@@ -49,7 +49,7 @@ class Products2Controller extends Controller
 	 */
 	public function index(Request $request)
 	{
-		$products = $this->products->filter($request);
+		$products = $this->products->filter($request->all());
 
 		//TODO: set user preferences
 

@@ -57,11 +57,11 @@ class Products extends Repository
 	/**
 	 * Filters products by a given request.
 	 *
-	 * @param  \Illuminate\Http\Request
+	 * @param array $request
 	 *
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	public function filter($request, $limit = 10)
+	public function filter($request = [], $limit = 10)
 	{
 		return $this->getModel()->with('category')
 			->actives()
