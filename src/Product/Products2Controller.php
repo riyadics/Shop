@@ -55,7 +55,7 @@ class Products2Controller extends Controller
 
 		return view('products.index', [
 			'suggestions' => $this->products->suggestFor($products),
-			'refine' => BreadcrumbParser::parse($request),
+			'refine' => BreadcrumbParser::parse($request->all()),
 			'filters' => FiltersParser::parse($products),
 			'products' => $products,
 			'panel' => $this->panel,
