@@ -11,43 +11,45 @@
 
 namespace Antvel\Product\Parsers;
 
+use Illuminate\Support\Collection;
+
 class Breadcrumb
 {
 	/**
-	 * The illuminate request component.
+	 * The request information.
 	 *
-	 * @var \Illuminate/Database/Eloquent/Collection
+	 * @var array
 	 */
-	protected $request = null;
+	protected $data = [];
 
 	/**
 	 * Cretaes a new instance.
 	 *
-	 * @param \Illuminate\Http\Request $request
+	 * @param array $data
 	 *
 	 * @return void
 	 */
-	public function __construct($request)
+	public function __construct(array $data)
 	{
-		$this->request = $request;
+		$this->data = Collection::make($data);
 	}
 
 	/**
 	 * Parses the given collection.
 	 *
-	 * @param \Illuminate\Http\Request $request
+	 * @param array $data
 	 *
 	 * @return array
 	 */
-	public static function parse($request) : array
+	public static function parse(array $data) : array
 	{
-		$parser = new static ($request);
+		$parser = new static ($data);
 
 		return $parser->all();
 	}
 
 	/**
-	 * Parses the given request.
+	 * Parses the given data.
 	 *
 	 * @return array
 	 */
@@ -55,13 +57,27 @@ class Breadcrumb
 	{
 		//TODO: refactor this when working on the front end.
 
-		$breadcrumb = $this->request->except('page');
+		$breadcrumb = $this->data->except('page');
 
-		if ($this->request->has('category')) {
-			$category = explode('|', $this->request->category);
-			$breadcrumb['category_name'] = $category[1];
+		if ($this->data->has('category')) {
+			$breadcrumb = $breadcrumb->merge($this->category());
 		}
 
-		return $breadcrumb;
+		return $breadcrumb->all();
+	}
+
+	/**
+	 * Returns the category associated with the given data.
+	 *
+	 * @return array
+	 */
+	protected function category() : array
+	{
+		$category = explode('|', urldecode($this->data->get('category')));
+
+		return [
+			'category' => isset($category[0]) ? $category[0] : 1,
+			'category_name' => isset($category[1]) ? $category[1] : '',
+		];
 	}
 }
