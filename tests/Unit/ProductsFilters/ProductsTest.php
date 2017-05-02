@@ -97,7 +97,7 @@ class ProductsFiltersTest extends TestCase
 		$first = $all->first();
 
 		$this->assertInstanceOf('Antvel\Categories\Models\Category', $first->category);
-		$this->assertInstanceOf('Illuminate\Pagination\LengthAwarePaginator', $all);
+		$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $all);
 		$this->assertTrue(count($first->stock) > 0);
 		$this->assertEquals($first->status, 1);
 		$this->assertCount(2, $all);

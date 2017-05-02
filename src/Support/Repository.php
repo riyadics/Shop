@@ -12,6 +12,7 @@
 namespace Antvel\Support;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 abstract class Repository
 {
@@ -88,7 +89,7 @@ abstract class Repository
      * @param  \Illuminate\Database\Eloquent\Builder|null $builder
      * @param  array $options
      *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function paginate($builder = null, $options = [])
     {
@@ -109,7 +110,7 @@ abstract class Repository
      * @param  array $constraints
      * @param  array $paginate
      *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
     public function paginateWith($loaders, $constraints = [], $paginate = [])
     {

@@ -15,7 +15,19 @@ use Antvel\Categories\Models\Category;
 $factory->define(Category::class, function (Faker $faker) use ($factory)
 {
     return [
-        'name' => str_limit($faker->sentence, 50),
+    	'name' => str_limit($faker->sentence, 50),
+        'description' => str_limit($faker->paragraph, 90),
+        'icon' => $faker->randomElement(['glyphicon glyphicon-facetime-video', 'glyphicon glyphicon-bullhorn', 'glyphicon glyphicon-briefcase']),
+    ];
+});
+
+$factory->defineAs(Category::class, 'child', function (Faker $faker)  use ($factory)
+{
+	return [
+		'category_id' => function () {
+            return factory(Category::class)->create(['name' => 'parent'])->id;
+        },
+    	'name' => 'child',
         'description' => str_limit($faker->paragraph, 90),
         'icon' => $faker->randomElement(['glyphicon glyphicon-facetime-video', 'glyphicon glyphicon-bullhorn', 'glyphicon glyphicon-briefcase']),
     ];

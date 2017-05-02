@@ -13,6 +13,7 @@ namespace Antvel\Product;
 
 use Antvel\Http\Controller;
 use Illuminate\Http\Request;
+use Antvel\Support\Paginator;
 use Antvel\Product\Parsers\Filters as FiltersParser;
 use Antvel\Product\Parsers\Breadcrumb as BreadcrumbParser;
 
@@ -54,10 +55,10 @@ class Products2Controller extends Controller
 		//TODO: set user preferences
 
 		return view('products.index', [
+			'products' => Paginator::trace($request)->paginate($products, 28),
 			'suggestions' => $this->products->suggestFor($products),
 			'refine' => BreadcrumbParser::parse($request->all()),
 			'filters' => FiltersParser::parse($products),
-			'products' => $products,
 			'panel' => $this->panel,
 		]);
 	}

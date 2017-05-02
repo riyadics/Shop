@@ -30,33 +30,30 @@ class SuggestionsConstraints
 	protected $items = null;
 
 	/**
+	 * Creates a new instance with the given items.
+	 *
+	 * @param mixed $items
+	 *
+	 * @return void
+	 */
+	public function __construct($items)
+	{
+		$this->items = $items;
+		$this->except = $items->pluck('id')->all();
+	}
+
+	/**
 	 * Completes the products results for a given key.
 	 *
 	 * @param string $scope
 	 *
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	public static function complete(string $scope)
+	public static function from($items)
 	{
-		$suggestions = new static ($scope);
+		$suggestions = new static ($items);
 
-		return $suggestions;
-	}
-
-	/**
-	 * Assigns the given collection.
-	 *
-	 * @param array $except
-	 *
-	 * @return self
-	 */
-	public function with($items)
-	{
-		$this->items = $items;
-
-		$this->except = $items->pluck('id')->all();
-
-		return $this;
+		return $suggestions->all();
 	}
 
 	/**
@@ -66,10 +63,6 @@ class SuggestionsConstraints
 	 */
 	public function all() : array
 	{
-		if ($this->tags()->isEmpty()) {
-			return [];
-		}
-
 		return [
 			'tags' => $this->tags()->all(),
 			'except' => $this->except,

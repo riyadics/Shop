@@ -58,16 +58,18 @@ class Products extends Repository
 	 * Filters products by a given request.
 	 *
 	 * @param array $request
+	 * @param integer $limit
 	 *
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
 	public function filter($request = [], $limit = 10)
 	{
-		return $this->getModel()->with('category')
+		return $this->getModel()
+			->with('category')
 			->actives()
 			->filter($request)
 			->orderBy('rate_val', 'desc')
-			->paginate(28);
+			->get();
 	}
 
 	/**
@@ -80,12 +82,11 @@ class Products extends Repository
 	 */
 	public function suggestFor($products, int $limit = 8)
 	{
-		$constraints = SuggestionsConstraints::complete('searched_products')
-				->with($products)
-				->all();
+		$constraints = SuggestionsConstraints::from($products);
 
 		return Cache::remember('suggestions_for_searched_products', 5, function () use ($constraints, $limit) {
-			return $this->getModel()->distinct()->whereNotIn('id', $constraints['except'])
+			return $this->getModel()->distinct()->actives()
+				->whereNotIn('id', $constraints['except'])
 				->suggestionsFor($constraints['tags'])
 				->orderBy('rate_val', 'desc')
 				->take($limit)

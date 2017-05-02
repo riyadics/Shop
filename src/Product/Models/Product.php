@@ -59,11 +59,11 @@ class Product extends Model
      * Filter users upon type requested.
      *
      * @param  Illuminate\Database\Eloquent\Builder $query
-     * @param  Illuminate\Http\Request $request
+     * @param  array $request
      *
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeFilter($query, $request)
+    public function scopeFilter($query, array $request)
     {
         return (new QueryFilter($request))->apply($query);
     }
@@ -78,13 +78,14 @@ class Product extends Model
      */
     public function scopeSuggestionsFor($query, $tags)
     {
-        $query->actives()
-            ->where(function ($builder) use ($tags) {
-                foreach ($tags as $tag) {
-                    $builder->orWhere('tags', 'like', '%' . $tag . '%');
-                }
-                return $builder;
-            });
+        if (count($tags) > 0) {
+            $query->where(function ($builder) use ($tags) {
+                    foreach ($tags as $tag) {
+                        $builder->orWhere('tags', 'like', '%' . $tag . '%');
+                    }
+                    return $builder;
+                });
+        }
 
         return $query;
     }

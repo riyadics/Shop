@@ -76,15 +76,13 @@ class QueryFilter
      */
     public function apply(Builder $builder) : Builder
     {
-        if ($this->doesNotHaveRequest()) {
-            return $builder;
+        if ($this->hasRequest()) {
+            foreach ($this->request as $filter => $value) {
+                if ($this->isQueryableBy($filter)) {
+        			$builder = $this->resolveQueryFor($builder, $filter);
+        		}
+        	}
         }
-
-    	foreach ($this->request as $filter => $value) {
-            if ($this->isQueryableBy($filter)) {
-    			$builder = $this->resolveQueryFor($builder, $filter);
-    		}
-    	}
 
         return $builder;
     }
@@ -94,9 +92,9 @@ class QueryFilter
      *
      * @return boolean
      */
-    protected function doesNotHaveRequest() : bool
+    protected function hasRequest() : bool
     {
-        return count($this->request) == 0;
+        return count($this->request) > 0;
     }
 
     /**

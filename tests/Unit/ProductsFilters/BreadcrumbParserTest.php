@@ -19,8 +19,6 @@ class BreadcrumbParserTest extends TestCase
 	public function setUp()
 	{
 		parent::setUp();
-
-		$this->repository = $this->app->make('Antvel\Product\Products');
 	}
 
 	public function test_it_returns_a_parsed_array()
