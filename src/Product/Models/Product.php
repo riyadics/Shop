@@ -49,7 +49,11 @@ class Product extends Model
      */
     protected $hidden = ['details', 'created_at'];
 
-
+    /**
+     * Returns the category of the product.
+     *
+     * @return Category
+     */
     public function category()
     {
         return $this->belongsTo(Category::class);
@@ -90,73 +94,33 @@ class Product extends Model
         return $query;
     }
 
-
-
-
-
-
-
-
-
-
-///////////
-
+    /**
+     * Returns the actives products.
+     *
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     *
+     * @return Illuminate\Database\Eloquent\Builder
+     */
     public function scopeActives($query)
     {
         return $query->where('status', 1)->where('stock', '>', 0);
     }
 
-    public function scopeRefine($query, $filters)
+    /**
+     * Returns the features product transformed to an array.
+     *
+     * @return array
+     */
+    public function getFeaturesAttribute()
     {
-        foreach ($filters as $key => $value) {
-
-            switch ($key) {
-                case 'category':
-
-                    $category = \Cache::remember('filtered_by_category_id_' . $value, 15, function () use ($value){
-                        return Category::select('id')
-                            ->with('children.children')
-                            ->where('id', $value)
-                            ->first();
-                    });
-
-                    $children = $category->children->pluck('id')->all();
-                    dd($children);
-                    $query->whereIn('category_id', $children);
-
-                break;
-                case 'conditions':
-                    $query->where('condition', 'LIKE', $value);
-                break;
-                case 'brands':
-                   $query->where('brand', 'LIKE', $value);
-                break;
-                case 'min':
-                case 'max':
-                    $min = array_key_exists('min', $filters) ? (trim($filters['min']) != '' ? $filters['min'] : '') : '';
-                    $max = array_key_exists('max', $filters) ? (trim($filters['max']) != '' ? $filters['max'] : '') : '';
-                    if ($min != '' && $max != '') {
-                        $query->whereBetween('price', [$min, $max]);
-                    } elseif ($min == '' && $max != '') {
-                        $query->where('price', '<=', $max);
-                    } elseif ($min != '' && $max == '') {
-                        $query->where('price', '>=', $min);
-                    }
-                break;
-                default:
-                    if ($key != 'category_name' && $key != 'search' && $key != 'page') {
-                        //changing url encoded character by the real ones
-                        $value = urldecode($value);
-                        //applying filter to json field
-                        $query->whereRaw("features LIKE '%\"".$key.'":%"%'.str_replace('/', '%', $value)."%\"%'");
-                    }
-                break;
-            }
-        }
+        return json_decode($this->attributes['features'], true);
     }
 
+    /////////// while refactoring
     public function getNumOfReviewsAttribute()
     {
         return $this->rate_count.' '.\Lang::choice('store.review', $this->rate_count);
     }
+
+
 }

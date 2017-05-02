@@ -106,7 +106,7 @@ class Filters
 		$map = [];
 
 		foreach ($features as $feature) {
-            $feature = Collection::make(json_decode($feature))->except($this->excludedFilters);
+            $feature = Collection::make($feature)->except($this->excludedFilters);
             foreach ($feature as $key => $value) {
                 $map[$key][] = $value;
             }

@@ -64,7 +64,9 @@ class QueryFilter
     {
     	$allowed = Collection::make($this->allowed)->keys()->all();
 
-        return Collection::make($request)->only($allowed)->all();
+        return Collection::make($request)->filter(function($item) {
+            return ! is_null($item);
+        })->only($allowed)->all();
     }
 
     /**

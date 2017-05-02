@@ -137,12 +137,12 @@ class RoutesRegistrar
     {
         $this->router->group([
 
-            'middleware' => ['web', 'auth'],
+            'middleware' => ['web'],
             'namespace' => $this->namespace . '\Product',
 
         ], function ($router) {
 
-            $router->resource('products2', 'Products2Controller');
+            $router->get('products', 'Products2Controller@index')->name('products.index');
 
         });
     }
