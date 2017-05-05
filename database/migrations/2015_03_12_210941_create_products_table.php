@@ -37,7 +37,7 @@ class CreateProductsTable extends Migration
             $table->string('bar_code', 100)->nullable();
             $table->string('brand', 50)->nullable();
             $table->enum('condition', ['new', 'used', 'refurbished'])->default('new');
-            $table->json('tags')->nullable();
+            $table->mediumText('tags')->nullable();
             $table->json('features')->nullable();
             $table->double('rate_val', 10, 2)->nullable();
             $table->integer('rate_count')->nullable();

@@ -198,4 +198,27 @@ class UsersRepository
     {
         return $this->enableDisable($user_id, 'enable');
     }
+
+    /**
+     * Updates the user preferences for a given key and data.
+     *
+     * @param  string $key
+     * @param  mixed $data
+     *
+     * @return self
+     */
+    public static function updatePreferences(string $key, $data)
+    {
+        $self = new static (Container::getInstance());
+
+        if ($self->isLoggedIn()) {
+            $user = $self->user();
+
+            $user->preferences = Preferences::parse($user->preferences)
+                ->update('my_searches', $data)
+                ->toJson();
+
+            $user->save();
+        }
+    }
 }

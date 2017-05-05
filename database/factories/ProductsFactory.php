@@ -26,7 +26,7 @@ $factory->define(Product::class, function (Faker $faker) use ($factory)
             return factory(Person::class)->create()->first()->user_id;
         },
 
-        'tags' => json_encode($faker->word . ',' . $faker->word . ',' . $faker->word),
+        'tags' => $faker->word . ',' . $faker->word . ',' . $faker->word,
         'brand' => $faker->randomElement(['Apple', 'Microsoft', 'Samsung', 'Lg']),
         'condition' => $faker->randomElement(['new', 'used', 'refurbished']),
         'low_stock' => $faker->randomElement([5, 10, 15]),

@@ -52,8 +52,6 @@ class Products2Controller extends Controller
 	{
 		$products = $this->products->filter($request->all());
 
-		//TODO: set user preferences
-
 		return view('products.index', [
 			'products' => Paginator::trace($request)->paginate($products, 28),
 			'suggestions' => $this->products->suggestFor($products),

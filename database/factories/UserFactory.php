@@ -24,7 +24,7 @@ $factory->define(User::class, function (Faker $faker) use ($factory)
         'email' => $faker->unique()->email,
         'role' => array_rand(Roles::allowed(), 1),
         'pic_url' => '/img/pt-default/'.$faker->numberBetween(1, 20).'.jpg',
-        'preferences' => '{"product_viewed":[],"product_purchased":[],"product_shared":[],"product_categories":[],"my_searches":[]}',
+        'preferences' => '{"product_viewed":"","product_purchased":"","product_shared":"","product_categories":"","my_searches":""}',
     ];
 });
 

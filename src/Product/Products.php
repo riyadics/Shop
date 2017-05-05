@@ -14,6 +14,7 @@ namespace Antvel\Product;
 use Cache;
 use Antvel\Support\Repository;
 use Antvel\Product\Models\Product;
+use Antvel\User\UsersRepository as Users;
 use Antvel\Product\Parsers\SuggestionsConstraints;
 
 class Products extends Repository
@@ -64,12 +65,14 @@ class Products extends Repository
 	 */
 	public function filter($request = [], $limit = 10)
 	{
-		return $this->getModel()
-			->with('category')
-			->actives()
-			->filter($request)
+		$products = $this->getModel()->with('category')
+			->actives()->filter($request)
 			->orderBy('rate_val', 'desc')
 			->get();
+
+		Users::updatePreferences('my_searches', $products);
+
+		return $products;
 	}
 
 	/**
@@ -82,12 +85,12 @@ class Products extends Repository
 	 */
 	public function suggestFor($products, int $limit = 8)
 	{
-		$constraints = SuggestionsConstraints::from($products);
+		$suggestions = SuggestionsConstraints::from($products);
 
-		return Cache::remember('suggestions_for_searched_products', 5, function () use ($constraints, $limit) {
+		return Cache::remember('suggestions_for_searched_products', 5, function () use ($suggestions, $limit) {
 			return $this->getModel()->distinct()->actives()
-				->whereNotIn('id', $constraints['except'])
-				->suggestionsFor($constraints['tags'])
+				->whereNotIn('id', $suggestions['except'])
+				->suggestionsFor($suggestions['tags'])
 				->orderBy('rate_val', 'desc')
 				->take($limit)
 				->get();
