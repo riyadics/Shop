@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\Unit\ProductsFilters;
+namespace Antvel\Tests\Unit\Products\Filters;
 
 use Antvel\Tests\TestCase;
 use Antvel\Product\Models\Product;
 use Antvel\Categories\Models\Category;
 
-class ProductsFiltersTest extends TestCase
+class QueryFilterTest extends TestCase
 {
 	public function setUp()
 	{
@@ -98,8 +98,6 @@ class ProductsFiltersTest extends TestCase
 
 		$this->assertInstanceOf('Antvel\Categories\Models\Category', $first->category);
 		$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $all);
-		$this->assertTrue(count($first->stock) > 0);
-		$this->assertEquals($first->status, 1);
 		$this->assertCount(2, $all);
 	}
 

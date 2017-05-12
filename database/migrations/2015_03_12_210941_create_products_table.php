@@ -39,10 +39,10 @@ class CreateProductsTable extends Migration
             $table->enum('condition', ['new', 'used', 'refurbished'])->default('new');
             $table->mediumText('tags')->nullable();
             $table->json('features')->nullable();
-            $table->double('rate_val', 10, 2)->nullable();
-            $table->integer('rate_count')->nullable();
-            $table->integer('sale_counts')->unsigned();
-            $table->integer('view_counts')->unsigned();
+            $table->double('rate_val', 10, 2)->default(0)->nullable();
+            $table->integer('rate_count')->default(0)->nullable();
+            $table->integer('sale_counts')->default(0)->unsigned();
+            $table->integer('view_counts')->default(0)->unsigned();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

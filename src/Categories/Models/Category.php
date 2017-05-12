@@ -62,4 +62,28 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+
+    /**
+     * Applies a light columns selection to the given query.
+     *
+     * @param \Illuminate\Database\Query\Builder $query
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function scopeLightSelection($query)
+    {
+        return $query->select('categories.id', 'categories.name', 'categories.category_id');
+    }
+
+    /**
+     * Returns actives categories.
+     *
+     * @param  \Illuminate\Database\Query\Builder $query
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function scopeActives($query)
+    {
+        return $query->where('status', 1);
+    }
 }

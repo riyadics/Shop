@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\Unit\ProductsFilters;
+namespace Antvel\Tests\Unit\Products\Filters;
 
 use Antvel\Tests\TestCase;
 use Antvel\Product\Models\Product;

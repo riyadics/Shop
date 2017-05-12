@@ -23,9 +23,9 @@ class CreateBusinessesTable extends Migration
     {
         Schema::create('businesses', function (Blueprint $table) {
             $table->integer('user_id')->unsigned()->primary();
-            $table->string('business_name');
+            $table->string('business_name', 60);
             $table->date('creation_date');
-            $table->string('local_phone')->nullable();
+            $table->string('local_phone', 20)->nullable();
             $table->integer('rate_val')->nullable();
             $table->integer('rate_count')->nullable();
             $table->foreign('user_id')->references('id')->on('users');

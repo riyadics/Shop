@@ -9,11 +9,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\Unit;
+namespace Antvel\Tests\Unit\Users;
 
 use Antvel\User\Models\Person;
 use Illuminate\Support\Collection;
-use Antvel\Tests\Features\Users\UsersTestCase;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class UsersRepositoryTest extends UsersTestCase
@@ -37,7 +36,7 @@ class UsersRepositoryTest extends UsersTestCase
 		parent::setUp();
 
 		$this->person = $this->person();
-		$this->repository =  $this->app->make('Antvel\User\UsersRepository');
+		$this->repository =  $this->getRepo();
 	}
 
 	public function test_a_repository_can_retrieve_a_signed_user()

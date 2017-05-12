@@ -87,7 +87,9 @@ class Category
 			return $this->builder;
 		}
 
-		if (count($children = $this->children()) > 0) {
+		$children = $this->children();
+
+		if (count($children) > 0) {
 			$this->builder->whereIn(
 				'category_id', $children
 			);
@@ -109,7 +111,7 @@ class Category
 	        );
 		});
 
-		return $categories->pluck('id')
+		return $categories->pluck('id')->unique()
         	->prepend((int) $this->category_id)
         	->all();
 	}

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\Features\Users;
+namespace Antvel\Tests\Unit\Users;
 
 use Antvel\Tests\TestCase;
 use Antvel\User\Models\{ User, Person, Business };

@@ -12,9 +12,17 @@
 namespace Antvel\User;
 
 use Illuminate\Support\Collection;
+use Illuminate\Container\Container;
 
 class Preferences
 {
+	/**
+	 * The laravel auth component.
+	 *
+	 * @var Authenticable
+	 */
+	protected $auth = null;
+
 	/**
 	 * The allowed schema for users preferences.
 	 *
@@ -34,6 +42,16 @@ class Preferences
 	 * @var string
 	 */
 	protected $preferences = null;
+
+	/**
+	 * Creates a new instance from a given user preferences.
+	 *
+	 * @return void
+	 */
+	public function __construct()
+	{
+		$this->auth = Container::getInstance()->make('auth');
+	}
 
 	/**
 	 * Creates a new instance from a given user preferences.
@@ -78,15 +96,27 @@ class Preferences
 	 */
 	protected function normalizePref($preferences = null) : array
 	{
-		if (is_string($preferences)) {
+		if ($this->auth->check()) {
+			return $this->loggedUserPreferences();
+		}
+
+		if (! is_null($preferences) && is_string($preferences)) {
 			return json_decode($preferences, true);
 		}
 
-		if (is_null($preferences) || count($preferences) == 0) {
-			return $this->allowed->all();
-		}
+		return $this->allowed->all();
+	}
 
-		return $preferences;
+	/**
+	 * Returns the logged user preferences.
+	 *
+	 * @return array
+	 */
+	protected function loggedUserPreferences() : array
+	{
+		$preferences = $this->auth->user()->preferences ?? $this->allowed->all();
+
+		return json_decode($preferences, true);
 	}
 
 	/**
@@ -100,8 +130,8 @@ class Preferences
 	public function update(string $key, $data)
 	{
 		if ($this->allowed->has($key)) {
-			$this->updateReferencesForKey(
-				$key, $data->pluck('tags')
+			$this->updatePreferencesForKey(
+				$key, $this->normalizedTags($data)
 			);
 
 			$this->updateCategories(
@@ -113,6 +143,20 @@ class Preferences
 	}
 
 	/**
+	 * Returns a collection of tags.
+	 *
+	 * @param  mixed $data
+	 *
+	 * @return Collection
+	 */
+	protected function normalizedTags($data) : Collection
+	{
+		return $data->has('tags')
+			? Collection::make($data->get('tags'))
+			: $data->pluck('tags');
+	}
+
+	/**
 	 * Updates the user references for a given key.
 	 *
 	 * @param  string $key
@@ -120,16 +164,14 @@ class Preferences
 	 *
 	 * @return void
 	 */
-	protected function updateReferencesForKey(string $key, Collection $tags)
+	protected function updatePreferencesForKey(string $key, Collection $tags)
 	{
-		$preferences = $this->preferences[$key];
-
-		$preferences = is_array($preferences) ? $preferences : explode(',', $preferences ?? '');
-
-		$this->preferences[$key] = $this->parseTags($tags)
-			->merge($preferences)
+		$tags = $this->parseTags($tags)
+			->merge($this->preferences[$key])
 			->unique()
 			->implode(',');
+
+		$this->preferences[$key] = trim($tags, ',');
 	}
 
 	/**
@@ -143,9 +185,7 @@ class Preferences
 	{
 		$tags = str_replace('"', '', $tags->implode(','));
 
-		return Collection::make(
-			explode(',', $tags)
-		)->unique();
+		return Collection::make(explode(',', $tags))->unique();
 	}
 
 	/**
@@ -157,14 +197,12 @@ class Preferences
 	 */
 	protected function updateCategories(Collection $data)
 	{
-		$categories = $this->preferences['product_categories'];
-
-		$current = is_array($categories) ? $categories : explode(',', $categories ?? '');
-
-		$this->preferences['product_categories'] = Collection::make($current)
+		$categories = Collection::make($this->preferences['product_categories'])
 			->merge($data)
 			->unique()
 			->implode(',');
+
+		$this->preferences['product_categories'] = trim($categories, ',');
 	}
 
 	/**
@@ -203,5 +241,26 @@ class Preferences
 		return Collection::make(
 			explode(',', $this->preferences[$key])
 		);
+	}
+
+	/**
+	 * Takes the given keys from the preferences array.
+	 *
+	 * @param  array $keys
+	 *
+	 * @return Collection
+	 */
+	public function all(array $keys = []) : Collection
+	{
+		if (count($keys) == 0) {
+			$keys = $this->preferences->keys();
+		}
+
+		return Collection::make($keys)->flatMap(function ($item) {
+			if (isset($this->preferences[$item])) {
+				$result[$item] = explode(',', $this->preferences[$item]);
+			}
+			return $result ?? [];
+		});
 	}
 }

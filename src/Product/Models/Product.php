@@ -11,7 +11,6 @@
 
 namespace Antvel\Product\Models;
 
-use Antvel\Product\QueryFilter;
 use Antvel\Categories\Models\Category;
 use Illuminate\Database\Eloquent\Model;
 
@@ -52,11 +51,21 @@ class Product extends Model
     /**
      * Returns the category of the product.
      *
-     * @return Category
+     * @return \Illuminate\Database\Query\Builder
      */
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /**
+     * A product has many groups.
+     *
+     * @return \Illuminate\Database\Query\Builder
+     */
+    public function group()
+    {
+        return $this->hasMany('Antvel\Product\Models\Product', 'products_group', 'products_group');
     }
 
     /**
@@ -76,22 +85,16 @@ class Product extends Model
      * Returns suggestions for a given constraints.
      *
      * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  string $type
      * @param  array $constraints
      *
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSuggestionsFor($query, $tags)
+    public function scopeSuggestionsFor($query, string $type, array $constraints)
     {
-        if (count($tags) > 0) {
-            $query->where(function ($builder) use ($tags) {
-                    foreach ($tags as $tag) {
-                        $builder->orWhere('tags', 'like', '%' . $tag . '%');
-                    }
-                    return $builder;
-                });
-        }
-
-        return $query;
+        return (new SuggestionQuery($query))
+            ->type($type)
+            ->apply($constraints);
     }
 
     /**
@@ -120,6 +123,22 @@ class Product extends Model
     public function getNumOfReviewsAttribute()
     {
         return $this->rate_count.' '.\Lang::choice('store.review', $this->rate_count);
+    }
+
+    public function scopeFree($query)
+    {
+        if (! config('app.offering_free_products')) {
+            $query->where('type', '<>', 'freeproduct');
+        }
+    }
+
+    public function scopeSearch($query, $seed)
+    {
+        return $query->where('name', 'like', '%'.$seed.'%')
+            ->orWhere('description', 'like', '%'.$seed.'%')
+            ->orWhere('features', 'like', '%'.$seed.'%')
+            ->orWhere('brand', 'like', '%'.$seed.'%')
+            ->orWhere('tags', 'like', '%'.$seed.'%');
     }
 
 

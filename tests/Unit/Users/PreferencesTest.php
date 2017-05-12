@@ -45,7 +45,7 @@ class PreferencesTest extends TestCase
 
 	public function test_it_prunes_keys_that_are_not_allowed()
 	{
-		$userPreferences = '{"not_allowed":"bad", "my_searches": "aaa,bbb", "product_shared": "", "product_viewed": "", "product_purchased": "", "product_categories": "8,9"}';
+		$userPreferences = '{"not_allowed":"bad", "my_searches": "aaa,bbb", "product_categories": "8,9"}';
 
 		$products = factory('Antvel\Product\Models\Product')->create([
 			'tags' => 'new,tag'
@@ -62,11 +62,33 @@ class PreferencesTest extends TestCase
 
 	public function test_it_is_able_to_retrieve_a_given_key()
 	{
-		$userPreferences = '{"my_searches": "aaa,bbb", "product_shared": "", "product_viewed": "", "product_purchased": "", "product_categories": "8,9"}';
+		$userPreferences = '{"my_searches": "aaa,bbb", "product_categories": "8,9"}';
 
 		$preferences = Preferences::parse($userPreferences)->pluck('my_searches');
 
 		$this->assertInstanceOf('Illuminate\Support\Collection', $preferences);
 		$this->assertEquals('aaa,bbb', $preferences->implode(','));
+	}
+
+	public function test_it_is_able_to_retrieve_a_given_array_of_keys()
+	{
+		$userPreferences = '{"my_searches": "aaa,bbb", "product_purchased": "ddd,vvv,aaa", "product_categories": "8,9"}';
+
+		$preferences = Preferences::parse($userPreferences)->all(['my_searches']);
+
+		$this->assertInstanceOf('Illuminate\Support\Collection', $preferences);
+		$this->assertTrue(in_array('aaa', $preferences->get('my_searches')));
+	}
+
+	public function test_it_is_able_to_retrieve_all_keys()
+	{
+		$userPreferences = '{"my_searches": "aaa,bbb", "product_purchased": "ddd,vvv,aaa", "product_categories": "8,9"}';
+
+		$preferences = Preferences::parse($userPreferences)->all();
+
+		$this->assertTrue(in_array('ddd', $preferences->get('product_purchased')));
+		$this->assertTrue(in_array('8', $preferences->get('product_categories')));
+		$this->assertInstanceOf('Illuminate\Support\Collection', $preferences);
+		$this->assertTrue(in_array('aaa', $preferences->get('my_searches')));
 	}
 }

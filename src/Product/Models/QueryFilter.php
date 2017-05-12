@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Product;
+namespace Antvel\Product\Models;
 
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
@@ -50,6 +50,7 @@ class QueryFilter
     {
     	$this->request = $this->parseRequest($request);
 
+        // dd('in', $this->request);
         // $this->request['search'] = 'Seeded'; //while testing
     }
 
@@ -67,6 +68,11 @@ class QueryFilter
         return Collection::make($request)->filter(function($item) {
             return ! is_null($item);
         })->only($allowed)->all();
+    }
+
+    public function getRequest()
+    {
+        return $this->request;
     }
 
     /**

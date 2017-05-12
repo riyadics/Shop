@@ -12,10 +12,11 @@
 namespace Antvel\Product;
 
 use Cache;
+use Antvel\User\Preferences;
 use Antvel\Support\Repository;
 use Antvel\Product\Models\Product;
+use Illuminate\Support\Collection;
 use Antvel\User\UsersRepository as Users;
-use Antvel\Product\Parsers\SuggestionsConstraints;
 
 class Products extends Repository
 {
@@ -78,22 +79,32 @@ class Products extends Repository
 	/**
 	 * Generates a suggestion based on a given constraints.
 	 *
-	 * @param  \Illuminate\Database\Eloquent\Collection $products
+	 * @param  Collection $products
 	 * @param  int $limit
 	 *
-	 * @return \Illuminate\Database\Eloquent\Collection
+	 * @return Collection
 	 */
-	public function suggestFor($products, int $limit = 8)
+	public function suggestFor($products, $key = 'my_searches', int $limit = 8)
 	{
-		$suggestions = SuggestionsConstraints::from($products);
-
-		return Cache::remember('suggestions_for_searched_products', 5, function () use ($suggestions, $limit) {
-			return $this->getModel()->distinct()->actives()
-				->whereNotIn('id', $suggestions['except'])
-				->suggestionsFor($suggestions['tags'])
-				->orderBy('rate_val', 'desc')
+		return Cache::remember('suggestions_for_searched_products', 5, function () use ($products, $key, $limit) {
+			return ProductsSuggestions::from($key, $products)
 				->take($limit)
-				->get();
+				->all();
 		});
+	}
+
+	/**
+	 * Returns a products suggestion based on user's preferences.
+	 *
+	 * @param array $filters
+	 * @param int $limit
+	 *
+	 * @return array
+	 */
+	public function suggestForPreferences(array $filters = [], $limit = 4, $preferences = null) : array
+	{
+		return ProductsSuggestions::make($filters, $preferences)
+			->take($limit)
+			->all();
 	}
 }

@@ -13,6 +13,7 @@ namespace Antvel\User;
 
 use Carbon\Carbon;
 use Antvel\User\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Auth\Authenticatable;
 
@@ -21,7 +22,7 @@ class UsersRepository
     /**
      * The laravel auth component.
      *
-     * @var Container
+     * @var Authenticatable
      */
     protected $auth = null;
 
@@ -209,13 +210,17 @@ class UsersRepository
      */
     public static function updatePreferences(string $key, $data)
     {
+        $data = is_string($data)
+            ? Collection::make(['tags' => explode(',', $data)])
+            : $data;
+
         $self = new static (Container::getInstance());
 
         if ($self->isLoggedIn()) {
             $user = $self->user();
 
             $user->preferences = Preferences::parse($user->preferences)
-                ->update('my_searches', $data)
+                ->update($key, $data)
                 ->toJson();
 
             $user->save();
