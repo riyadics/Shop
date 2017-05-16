@@ -45,7 +45,9 @@ class Address extends Model
     protected $hidden = ['id'];
 
     /**
-     * Get the user who owns the address.
+     * An address belongs to an user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {

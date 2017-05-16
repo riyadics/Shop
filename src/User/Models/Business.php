@@ -59,9 +59,9 @@ class Business extends Model
     protected $hidden = ['user_id'];
 
     /**
-     * Returns the business user.
+     * A business belongs to a user.
      *
-     * @return Illuminate\Database\Eloquent\Relations\Relation
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {

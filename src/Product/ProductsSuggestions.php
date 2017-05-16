@@ -14,7 +14,6 @@ namespace Antvel\Product;
 use Antvel\User\Preferences;
 use Antvel\Product\Models\Product;
 use Illuminate\Support\Collection;
-// use Illuminate\Container\Container;
 
 class ProductsSuggestions
 {
@@ -54,7 +53,6 @@ class ProductsSuggestions
 	public function __construct()
 	{
 		$this->except = new Collection;
-		// $this->auth = Container::getInstance()->make('auth');
 	}
 
 	/**
@@ -68,24 +66,10 @@ class ProductsSuggestions
 	{
 		$suggestions = new static;
 
-		// $preferences = $suggestions->userPreferences();
-
 		$suggestions->constraints = Preferences::parse($preferences)->all($constraints);
-
-		// dd('in', $suggestions->constraints);
 
 		return $suggestions;
 	}
-
-	/**
-	 * Returns the user's preferences.
-	 *
-	 * @return mixed
-	 */
-	// protected function userPreferences()
-	// {
-	// 	return $this->auth->check() ? $this->auth->user()->preferences : [];
-	// }
 
 	/**
 	 * Returns constraints based upon the given items.

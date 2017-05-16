@@ -11,6 +11,7 @@
 
 namespace Antvel\User\Models;
 
+use Antvel\Product\Models\Product;
 use Antvel\AddressBook\Models\Address;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -47,9 +48,9 @@ class User extends Authenticatable
     protected $hidden = ['password', 'remember_token'];
 
      /**
-     * Returns the user profile.
+     * A user has a profile.
      *
-     * @return mixed
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
 	public function profile()
     {
@@ -61,9 +62,9 @@ class User extends Authenticatable
     }
 
     /**
-     * Returns the user addressBook.
+     * An user has an address book.
      *
-     * @return Address
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function addresses()
     {
@@ -71,9 +72,19 @@ class User extends Authenticatable
     }
 
     /**
-     * The user email change petitions.
+     * An user has many products.
      *
-     * @return EmailChangePetition
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
+
+    /**
+     * An user has many email change petitions.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function emailChangePetitions()
     {
@@ -84,6 +95,7 @@ class User extends Authenticatable
      * Send the password reset notification mail.
      *
      * @param  string  $token
+     *
      * @return void
      */
     public function sendPasswordResetNotification($token)

@@ -143,6 +143,7 @@ class RoutesRegistrar
         ], function ($router) {
 
             $router->get('products', 'Products2Controller@index')->name('products.index');
+            $router->get('productsSearch/', 'SearchController@index')->name('products.search');
 
         });
     }

@@ -11,6 +11,7 @@
 
 namespace Antvel\Categories\Models;
 
+use Antvel\User\Models\User;
 use Antvel\Product\Models\Product;
 use Illuminate\Database\Eloquent\Model;
 
@@ -34,9 +35,19 @@ class Category extends Model
     ];
 
     /**
+     * A category belongs to an user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * Returns a list of the children categories.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function children()
     {
@@ -46,7 +57,7 @@ class Category extends Model
     /**
      * Returns a parent category.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function parent()
     {
@@ -56,9 +67,9 @@ class Category extends Model
     /**
      * Returns the products list for a given category.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function product()
+    public function products()
     {
         return $this->hasMany(Product::class);
     }
@@ -85,5 +96,25 @@ class Category extends Model
     public function scopeActives($query)
     {
         return $query->where('status', 1);
+    }
+
+     /**
+     * Filter categories by the given request.
+     *
+     * @param  Illuminate\Database\Eloquent\Builder $query
+     * @param  array $request
+     *
+     * @return Illuminate\Database\Eloquent\Builder
+     */
+    public function scopeFilter($query, $request)
+    {
+        $query->actives()->where(function ($query) use ($request) {
+            foreach ($request as $key => $value) {
+                $query->orWhere($key, 'like', '%' . $value . '%');
+            }
+            return $query;
+        });
+
+        return $query;
     }
 }

@@ -125,4 +125,22 @@ class Categories extends Repository
             ->take($limit)
             ->get();
     }
+
+    /**
+     * Filters categories by a given request.
+     *
+     * @param array $request
+     * @param mixed $columns
+     * @param integer $limit
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function havingProducts(array $request = [], $columns = '*', $limit = 10)
+    {
+        return Category::whereHas('products', function($query) {
+            return $query->actives();
+        })->select($columns)->filter($request)
+            ->orderBy('name')->take($limit)
+            ->get();
+    }
 }

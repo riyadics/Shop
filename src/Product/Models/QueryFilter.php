@@ -50,7 +50,7 @@ class QueryFilter
     {
     	$this->request = $this->parseRequest($request);
 
-        // dd('in', $this->request);
+        // dd('__construct', $this->request);
         // $this->request['search'] = 'Seeded'; //while testing
     }
 

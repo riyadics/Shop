@@ -83,7 +83,9 @@ class SuggestionQuery
 		if (count($constraints) > 0) {
 			$this->builder->where(function($query) use ($constraints) {
 				foreach ($constraints as $filter) {
-					$query->orWhere('tags', 'like', '%' . $filter . '%');
+					if (trim($filter) != '') {
+						$query->orWhere('tags', 'like', '%' . $filter . '%');
+					}
 				}
 
 				return $query;

@@ -39,7 +39,9 @@ class EmailChangePetition extends Model
     protected $table = 'email_change_petitions';
 
     /**
-     * Returns user for a given profile.
+     * A petition belongs to an user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {

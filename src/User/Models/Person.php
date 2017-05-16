@@ -59,9 +59,9 @@ class Person extends Model
     protected $hidden = ['user_id'];
 
     /**
-     * Returns the people user.
+     * A person belongs to a user.
      *
-     * @return Illuminate\Database\Eloquent\Relations\Relation
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function user()
     {

@@ -11,6 +11,7 @@
 
 namespace Antvel\Product\Models;
 
+use Antvel\User\Models\User;
 use Antvel\Categories\Models\Category;
 use Illuminate\Database\Eloquent\Model;
 
@@ -49,9 +50,19 @@ class Product extends Model
     protected $hidden = ['details', 'created_at'];
 
     /**
+     * A product belongs to an user.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
      * Returns the category of the product.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
     public function category()
     {
@@ -61,7 +72,7 @@ class Product extends Model
     /**
      * A product has many groups.
      *
-     * @return \Illuminate\Database\Query\Builder
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
     public function group()
     {
@@ -119,6 +130,8 @@ class Product extends Model
         return json_decode($this->attributes['features'], true);
     }
 
+
+
     /////////// while refactoring
     public function getNumOfReviewsAttribute()
     {
@@ -131,15 +144,4 @@ class Product extends Model
             $query->where('type', '<>', 'freeproduct');
         }
     }
-
-    public function scopeSearch($query, $seed)
-    {
-        return $query->where('name', 'like', '%'.$seed.'%')
-            ->orWhere('description', 'like', '%'.$seed.'%')
-            ->orWhere('features', 'like', '%'.$seed.'%')
-            ->orWhere('brand', 'like', '%'.$seed.'%')
-            ->orWhere('tags', 'like', '%'.$seed.'%');
-    }
-
-
 }

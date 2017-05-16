@@ -64,11 +64,12 @@ class Products extends Repository
 	 *
 	 * @return \Illuminate\Database\Eloquent\Collection
 	 */
-	public function filter($request = [], $limit = 10)
+	public function filter($request = [], $limit = null)
 	{
 		$products = $this->getModel()->with('category')
 			->actives()->filter($request)
 			->orderBy('rate_val', 'desc')
+			->take($limit)
 			->get();
 
 		Users::updatePreferences('my_searches', $products);
@@ -96,13 +97,15 @@ class Products extends Repository
 	/**
 	 * Returns a products suggestion based on user's preferences.
 	 *
-	 * @param array $filters
+	 * @param mixed $filters
 	 * @param int $limit
 	 *
 	 * @return array
 	 */
-	public function suggestForPreferences(array $filters = [], $limit = 4, $preferences = null) : array
+	public function suggestForPreferences($filters = [], $limit = 4, $preferences = null) : array
 	{
+		$filters = is_string($filters) ? [$filters] : $filters;
+
 		return ProductsSuggestions::make($filters, $preferences)
 			->take($limit)
 			->all();
