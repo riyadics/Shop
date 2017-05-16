@@ -190,19 +190,23 @@ class CategoriesTest extends TestCase
 
 	public function test_can_filter_by_the_given_request()
 	{
-		factory(Category::class)->create(['name' => 'foo', 'description' => 'aaa']);
+		$foo = factory(Category::class)->create(['name' => 'foo', 'description' => 'aaa']);
 		factory(Category::class)->create(['name' => 'bar', 'description' => 'bbb']);
 		factory(Category::class)->create(['name' => 'biz', 'description' => 'ccc']);
 
-		$categories = $this->repository->filter([
+		factory('Antvel\Product\Models\Product', 2)->create([
+			'category_id' => $foo->id
+		]);
+
+		$categories = $this->repository->havingProducts([
 			'description' => 'bbb',
 			'name' => 'foo',
 		]);
 
-		$this->assertTrue(in_array('bbb', $categories->pluck('description')->all()));
+		$this->assertTrue(in_array('aaa', $categories->pluck('description')->all()));
 		$this->assertTrue(in_array('foo', $categories->pluck('name')->all()));
 		$this->assertTrue($categories->where('name', 'biz')->isEmpty());
-		$this->assertTrue($categories->count() == 2);
+		$this->assertTrue($categories->count() == 1);
 	}
 
 	/**
