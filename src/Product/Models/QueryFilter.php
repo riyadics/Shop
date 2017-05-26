@@ -36,7 +36,9 @@ class QueryFilter
         'conditions' => \Antvel\Product\Filters\Conditions::class,
         'brands' => \Antvel\Product\Filters\Brands::class,
 		'min' => \Antvel\Product\Filters\Prices::class,
-		'max' => \Antvel\Product\Filters\Prices::class
+        'max' => \Antvel\Product\Filters\Prices::class,
+        'inactives' => \Antvel\Product\Filters\Inactives::class,
+		'low_stock' => \Antvel\Product\Filters\LowStock::class,
 	];
 
     /**
@@ -48,9 +50,9 @@ class QueryFilter
      */
     public function __construct(array $request)
     {
-    	$this->request = $this->parseRequest($request);
+        $this->request = $this->parseRequest($request);
 
-        // dd('__construct', $this->request);
+        // dd('__construct', $this->request, $request);
         // $this->request['search'] = 'Seeded'; //while testing
     }
 

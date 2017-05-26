@@ -78,6 +78,27 @@ class Products extends Repository
 	}
 
 	/**
+	 * Filters products by a given request for the logged in user.
+	 *
+	 * @param  array  $request
+	 * @param  int $limit
+	 *
+	 * @return \Illuminate\Database\Eloquent\Collection
+	 */
+	public function userProducts($request = [], $limit = null)
+	{
+		return $this->getModel()->with('category')
+			->when(count($request) == 0, function ($query) {
+				return $query->actives();
+			})
+			->filter($request)
+			->where('user_id', auth()->user()->id)
+			->orderBy('rate_val', 'desc')
+			->take($limit)
+			->paginate(12);
+	}
+
+	/**
 	 * Generates a suggestion based on a given constraints.
 	 *
 	 * @param  Collection $products

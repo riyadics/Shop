@@ -117,17 +117,14 @@ class RoutesRegistrar
         ], function ($router) {
 
             $router->resource('user', 'UsersController');
+            $router->get('user/products/listing', 'UsersProductsController@index')->name('users.products');
 
             $this->router->group([
-
                 'middleware' => ['web', 'auth'],
                 'prefix' => 'user/security'
-
             ], function ($router) {
-
                 $router->get('confirmEmail/{token}/{email}', 'SecurityController@confirmEmail')->name('user.email');
                 $router->patch('{action}/{user?}', 'SecurityController@update')->name('user.action');
-
             });
 
         });
@@ -136,15 +133,11 @@ class RoutesRegistrar
     public function forProduct()
     {
         $this->router->group([
-
             'middleware' => ['web'],
             'namespace' => $this->namespace . '\Product',
-
         ], function ($router) {
-
             $router->get('products', 'Products2Controller@index')->name('products.index');
-            $router->get('productsSearch/', 'SearchController@index')->name('products.search');
-
+            $router->get('productsSearch/', 'SearchController@index')->name('products.search'); ///////////////see if it can be move to search url
         });
     }
 

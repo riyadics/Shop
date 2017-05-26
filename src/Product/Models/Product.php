@@ -133,6 +133,11 @@ class Product extends Model
 
 
     /////////// while refactoring
+    public function details()
+    {
+        return $this->hasMany('App\OrderDetail');
+    }
+
     public function getNumOfReviewsAttribute()
     {
         return $this->rate_count.' '.\Lang::choice('store.review', $this->rate_count);

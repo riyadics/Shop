@@ -12,6 +12,7 @@
 namespace Antvel\Tests\Unit\Products\Filters;
 
 use Antvel\Tests\TestCase;
+use Antvel\User\Models\User;
 use Antvel\Product\Models\Product;
 use Antvel\Categories\Models\Category;
 
@@ -182,6 +183,64 @@ class QueryFilterTest extends TestCase
 		]);
 
 		$this->assertCount(4, $products);
+	}
+
+	public function test_it_can_retrieve_the_logged_in_user_inactive_products()
+	{
+		$user = factory(User::class)->create();
+		$this->be($user);
+
+		$inactives = factory(Product::class)->create(['status' => 0]);
+
+		$userActives = factory(Product::class)->create([
+			'user_id' => auth()->user()->id
+		]);
+
+		$userInactive = factory(Product::class)->create([
+			'user_id' => $user->id,
+			'status' => 0,
+		]);
+
+		$products = $this->repository->userProducts([
+			'inactives' => 1
+		]);
+
+		$this->assertCount(1, $products);
+		$this->assertEquals($user->id, $products->first()->user_id);
+	}
+
+	public function test_it_can_retrieve_the_logged_in_user_low_stock_products()
+	{
+		$user = factory(User::class)->create();
+		$this->be($user);
+
+		//other products
+		factory(Product::class)->create([
+			'stock' => 4,
+			'low_stock' => 5
+		]);
+
+		//user products with enough stock
+		factory(Product::class)->create([
+			'stock' => 10,
+			'low_stock' => 5,
+			'user_id' => auth()->user()->id
+		]);
+
+		//user products with low stock
+		factory(Product::class)->create([
+			'stock' => 5,
+			'low_stock' => 5,
+			'user_id' => auth()->user()->id
+		]);
+
+		$products = $this->repository->userProducts([
+			'low_stock' => 1
+		]);
+
+		$this->assertCount(1, $products);
+		$this->assertEquals($user->id, $products->first()->user_id);
+
 	}
 
 }

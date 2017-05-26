@@ -115,7 +115,7 @@ class Categories extends Repository
      *
      * @return \Illuminate/Database/Eloquent/Collection
      */
-    public function children($idOrModel, $columns = ['id'], int $limit = 50)
+    public function children($idOrModel, $columns = 'id', int $limit = 50)
     {
         $category_id = $idOrModel instanceof Category ? $idOrModel->id : $idOrModel;
 
