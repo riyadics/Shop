@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateEmailChangePetitionsTable extends Migration
+class CreateProductFeatures extends Migration
 {
     /**
      * Run the migrations.
@@ -22,19 +22,16 @@ class CreateEmailChangePetitionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('email_change_petitions', function (Blueprint $table) {
+        Schema::create('products_features', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->string('old_email', 60);
-            $table->string('new_email', 60);
-            $table->string('token', 60);
-            $table->char('confirmed')->default(0);
-            $table->timestamp('expires_at')->nullable();
-            $table->timestamp('confirmed_at')->nullable();
+            $table->string('name', 100);
+            $table->enum('input_type', ['text', 'select'])->default('text');
+            $table->enum('product_type', ['item', 'key'])->default('item');
+            $table->json('default_values')->nullable();
+            $table->json('validation_rules')->nullable();
+            $table->json('help_message')->nullable();
+            $table->boolean('status')->default(1);
             $table->timestamps();
-
-            $table->index(['user_id', 'token']);
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
@@ -45,6 +42,6 @@ class CreateEmailChangePetitionsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('email_change_petitions');
+        Schema::drop('products_features');
     }
 }

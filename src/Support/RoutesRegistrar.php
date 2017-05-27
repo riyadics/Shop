@@ -160,6 +160,7 @@ class RoutesRegistrar
             $router->get('/', 'Categories\CategoriesController@index')->name('foundation.home');
 
             $router->resource('categories', 'Categories\CategoriesController');
+            $router->resource('features', 'Product\Features\FeaturesController');
 
         });
     }

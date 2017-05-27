@@ -12,9 +12,8 @@
 namespace Antvel\Tests\Unit\Products;
 
 use Antvel\Tests\TestCase;
-use Antvel\Product\Models\Product;
-
 use Antvel\User\UsersRepository;
+use Antvel\Product\Models\Product;
 
 class SuggestionsTest extends TestCase
 {
