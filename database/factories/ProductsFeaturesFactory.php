@@ -11,7 +11,7 @@
 
 
 use Faker\Generator as Faker;
-use Antvel\Product\Features\Models\ProductFeatures;
+use Antvel\Product\Models\ProductFeatures;
 
 $factory->define(ProductFeatures::class, function (Faker $faker) use ($factory)
 {
@@ -19,7 +19,6 @@ $factory->define(ProductFeatures::class, function (Faker $faker) use ($factory)
         'product_type'  => 'item',
         'validation_rules' => null,
         'name' => 'Feature Name',
-        'default_values' => null,
         'input_type' => 'text',
         'help_message' => null,
         'status' => true,

@@ -27,11 +27,11 @@ class CreateProductFeatures extends Migration
             $table->string('name', 100);
             $table->enum('input_type', ['text', 'select'])->default('text');
             $table->enum('product_type', ['item', 'key'])->default('item');
-            $table->json('default_values')->nullable();
-            $table->json('validation_rules')->nullable();
-            $table->json('help_message')->nullable();
+            $table->string('validation_rules', 150)->nullable();
+            $table->string('help_message', 150)->nullable();
             $table->boolean('status')->default(1);
             $table->timestamps();
+            $table->unique('name');
         });
     }
 

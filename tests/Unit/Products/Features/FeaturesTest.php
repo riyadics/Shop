@@ -12,7 +12,7 @@
 namespace Antvel\Tests\Unit\Products\Features;
 
 use Antvel\Tests\TestCase;
-use Antvel\Product\Features\Models\ProductFeatures;
+use Antvel\Product\Models\ProductFeatures;
 
 class FeaturesTest extends TestCase
 {
@@ -20,7 +20,7 @@ class FeaturesTest extends TestCase
 	{
 		parent::setUp();
 
-		$this->repository = $this->app->make('Antvel\Product\Features\Features');
+		$this->repository = $this->app->make('Antvel\Product\Features');
 	}
 
 	/** @test */
@@ -41,5 +41,21 @@ class FeaturesTest extends TestCase
 
 		$this->assertCount(1, $features);
 		$this->assertEquals('color', $features->first()->name);
+	}
+
+	/** @test */
+	function it_can_create_a_new_feature()
+	{
+		$feature = $this->repository->create([
+			'name' => 'feature',
+			'input_type' => 'text',
+			'product_type' => 'item',
+			'validation_rules' => '{feature:required|max:100}',
+			'help_message' => '{}',
+			'status' => '{}'
+		]);
+
+		$this->assertTrue($feature->exists());
+		$this->assertEquals('feature', $feature->name);
 	}
 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Product\Features\Models;
+namespace Antvel\Product\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -28,4 +28,14 @@ class ProductFeatures extends Model
      * @var array
      */
     protected $dates = ['created_at', 'updated_at'];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'input_type', 'product_type', 'default_values',
+        'validation_rules', 'help_message', 'status',
+    ];
 }

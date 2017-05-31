@@ -9,10 +9,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Product\Features;
+namespace Antvel\Product;
 
 use Antvel\Support\Repository;
-use Antvel\Product\Features\Models\ProductFeatures;
+use Antvel\Product\Models\ProductFeatures;
+use Antvel\Product\Parsers\FeaturesValidationRulesParser;
 
 class Features extends Repository
 {
@@ -35,7 +36,13 @@ class Features extends Repository
      */
     public function create(array $attributes = [])
     {
-    	//
+        return ProductFeatures::create([
+            'validation_rules' => FeaturesValidationRulesParser::parse($attributes)->toString(),
+            'help_message' => $attributes['help_message'],
+            'input_type' => $attributes['input_type'],
+            'status' => $attributes['status'],
+            'name' => $attributes['name'],
+        ]);
     }
 
     /**
@@ -49,7 +56,15 @@ class Features extends Repository
      */
     public function update(array $attributes, $idOrModel, array $options = [])
     {
-    	//
+    	$feature = $this->modelOrFind($idOrModel);
+
+        $feature->update([
+            'validation_rules' => FeaturesValidationRulesParser::parse($attributes)->toString(),
+            'help_message' => $attributes['help_message'],
+            'input_type' => $attributes['input_type'],
+            'status' => $attributes['status'],
+            'name' => $attributes['name'],
+        ], $options);
     }
 
     /**
@@ -66,6 +81,4 @@ class Features extends Repository
     		->take($limit)
     		->get();
     }
-
-
 }
