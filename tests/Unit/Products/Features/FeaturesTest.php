@@ -50,12 +50,30 @@ class FeaturesTest extends TestCase
 			'name' => 'feature',
 			'input_type' => 'text',
 			'product_type' => 'item',
-			'validation_rules' => '{feature:required|max:100}',
+			'validation_rules' => 'required|max:100',
 			'help_message' => '{}',
 			'status' => '{}'
 		]);
 
 		$this->assertTrue($feature->exists());
 		$this->assertEquals('feature', $feature->name);
+	}
+
+	/** @test */
+	function it_can_update_a_given_feature()
+	{
+		$feature = factory(ProductFeatures::class)->create()->first();
+
+		$this->repository->update([
+			'name' => 'foo',
+			'help_message' => 'bar',
+			'input_type' => 'select',
+			'status' => 1
+		], $feature);
+
+		$this->assertEquals('select', $feature->input_type);
+		$this->assertEquals('bar', $feature->help_message);
+		$this->assertEquals('foo', $feature->name);
+		$this->assertTrue(!! $feature->status);
 	}
 }
