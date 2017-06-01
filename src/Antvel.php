@@ -22,7 +22,7 @@ class Antvel
      *
      * @var string
      */
-    const VERSION = '1.0.12';
+    const VERSION = '1.0.13';
 
     /**
      * The Laravel container component.
