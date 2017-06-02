@@ -116,7 +116,7 @@ class Preferences
 	{
 		$preferences = $this->auth->user()->preferences ?? $this->allowed->all();
 
-		return json_decode($preferences, true);
+		return is_string($preferences) ? json_decode($preferences, true) : $preferences;
 	}
 
 	/**
