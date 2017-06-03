@@ -11,7 +11,6 @@
 
 namespace Antvel\Product;
 
-use Cache;
 use Antvel\Support\Repository;
 use Antvel\Product\Models\ProductFeatures;
 use Antvel\Product\Parsers\FeaturesValidationRulesParser;
@@ -96,12 +95,8 @@ class Features extends Repository
      */
     public function filterable($limit = 5)
     {
-        $month = 43800;
-
-        return Cache::remember('product_features_filterable', $month, function () use ($limit) {
-            return ProductFeatures::where('filterable', true)
+        return ProductFeatures::where('filterable', true)
             ->take($limit)
             ->pluck('name');
-        });
     }
 }

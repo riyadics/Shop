@@ -11,6 +11,7 @@
 
 namespace Antvel\Product\Parsers;
 
+use Cache;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 
@@ -51,9 +52,13 @@ class Filters
 	 */
 	protected function allowed() : array
 	{
-		return Container::getInstance()->make('Antvel\Product\Features')
-			->filterable()
-			->all();
+		$month = 43800;
+
+		return Cache::remember('product_features_filterable', $month, function () {
+			return Container::getInstance()->make('Antvel\Product\Features')
+				->filterable()
+				->all();
+		});
 	}
 
 	/**
