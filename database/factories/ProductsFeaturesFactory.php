@@ -21,6 +21,7 @@ $factory->define(ProductFeatures::class, function (Faker $faker) use ($factory)
         'name' => 'Feature Name',
         'input_type' => 'text',
         'help_message' => null,
+        'filterable' => false,
         'status' => true,
     ];
 });

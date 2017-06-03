@@ -51,4 +51,22 @@ class FeaturesValidationRulesParserTest extends TestCase
 		$this->assertTrue($allowed->contains('min'));
 		$this->assertTrue($allowed->count() > 0);
 	}
+
+	/** @test */
+	function it_can_parse_a_null_rules()
+	{
+	    $rules = FeaturesValidationRulesParser::parse(null);
+
+	   	$this->assertCount(0, $rules->all());
+	    $this->assertNull($rules->toString());
+	}
+
+	/** @test */
+	function it_can_decode_a_false_rules()
+	{
+		$rules = FeaturesValidationRulesParser::decode('');
+
+	    $this->assertNull($rules->toString());
+	    $this->assertCount(0, $rules->all());
+	}
 }

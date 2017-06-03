@@ -36,35 +36,39 @@ class Features extends Repository
      */
     public function create(array $attributes = [])
     {
-        return ProductFeatures::create([
-            'validation_rules' => FeaturesValidationRulesParser::parse($attributes)->toString(),
-            'help_message' => $attributes['help_message'],
-            'input_type' => $attributes['input_type'],
-            'status' => $attributes['status'],
-            'name' => $attributes['name'],
-        ]);
+       return ProductFeatures::create($this->data($attributes));
     }
 
     /**
      * Update a Model in the database.
      *
      * @param array $attributes
-     * @param Category|mixed $idOrModel
+     * @param mixed $idOrModel
      * @param array $options
      *
      * @return bool
      */
-    public function update(array $attributes, $idOrModel, array $options = [])
+    public function update(array $attributes = [], $idOrModel, array $options = [])
     {
     	$feature = $this->modelOrFind($idOrModel);
 
-        $feature->update([
-            'validation_rules' => FeaturesValidationRulesParser::parse($attributes)->toString(),
-            'help_message' => $attributes['help_message'],
-            'input_type' => $attributes['input_type'],
-            'status' => $attributes['status'],
-            'name' => $attributes['name'],
-        ], $options);
+        return $feature->update($this->data($attributes), $options);
+    }
+
+    /**
+     * Returns the data to be updated in the database.
+     *
+     * @param  array $attributes
+     *
+     * @return array
+     */
+    protected function data(array $attributes = []) : array
+    {
+        $attributes['validation_rules'] = $attributes['validation_rules'] ?? null;
+
+        return array_merge($attributes, [
+            'validation_rules' => FeaturesValidationRulesParser::parse($attributes['validation_rules'])->toString()
+        ]);
     }
 
     /**
@@ -80,5 +84,19 @@ class Features extends Repository
     	return ProductFeatures::select($columns)
     		->take($limit)
     		->get();
+    }
+
+    /**
+     * Exposes the features allowed to be in the products filtering.
+     *
+     * @param  integer $limit
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function filterable($limit = 5)
+    {
+        return ProductFeatures::where('filterable', true)
+            ->take($limit)
+            ->get();
     }
 }

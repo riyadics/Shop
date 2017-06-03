@@ -30,6 +30,7 @@ class CreateProductFeatures extends Migration
             $table->string('validation_rules', 150)->nullable();
             $table->string('help_message', 150)->nullable();
             $table->boolean('status')->default(1);
+            $table->boolean('filterable')->default(0);
             $table->timestamps();
             $table->unique('name');
         });

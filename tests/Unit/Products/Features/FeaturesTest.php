@@ -44,19 +44,34 @@ class FeaturesTest extends TestCase
 	}
 
 	/** @test */
-	function it_can_create_a_new_feature()
+	function it_can_create_a_new_feature_with_default_values()
+	{
+		$feature = $this->repository->create(['name' => 'feature']);
+
+		$this->assertTrue($feature->exists());
+		$this->assertEquals('feature', $feature->name);
+	}
+
+	/** @test */
+	function it_can_create_a_new_required_feature()
 	{
 		$feature = $this->repository->create([
 			'name' => 'feature',
 			'input_type' => 'text',
 			'product_type' => 'item',
-			'validation_rules' => 'required|max:100',
-			'help_message' => '{}',
-			'status' => '{}'
+			'help_message' => 'Tooltip message',
+			'status' => 1,
+			'validation_rules' => [
+				'required' => 1
+			]
 		]);
 
-		$this->assertTrue($feature->exists());
 		$this->assertEquals('feature', $feature->name);
+		$this->assertEquals('text', $feature->input_type);
+		$this->assertEquals('item', $feature->product_type);
+		$this->assertEquals('Tooltip message', $feature->help_message);
+		$this->assertTrue(!! $feature->status);
+		$this->assertEquals('required', $feature->validation_rules);
 	}
 
 	/** @test */
@@ -65,15 +80,39 @@ class FeaturesTest extends TestCase
 		$feature = factory(ProductFeatures::class)->create()->first();
 
 		$this->repository->update([
-			'name' => 'foo',
-			'help_message' => 'bar',
-			'input_type' => 'select',
-			'status' => 1
+			'name' => 'foo'
 		], $feature);
 
-		$this->assertEquals('select', $feature->input_type);
-		$this->assertEquals('bar', $feature->help_message);
 		$this->assertEquals('foo', $feature->name);
-		$this->assertTrue(!! $feature->status);
+	}
+
+	/** @test */
+	function it_can_update_a_given_required_feature()
+	{
+		$feature = factory(ProductFeatures::class)->create([
+			'validation_rules' => 'required'
+		])->first();
+
+		$this->repository->update([
+			'name' => 'foo'
+		], $feature);
+
+		$this->assertEquals('foo', $feature->name);
+		$this->assertNull($feature->validation_rules);
+	}
+
+	/** @test */
+	function it_is_able_to_expose_the_features_allowed_to_be_in_products_filtering()
+	{
+		$notAllowed = factory(ProductFeatures::class)->create();
+
+		$allowed = factory(ProductFeatures::class)->create([
+			'name' => 'foo',
+			'filterable' => true
+		]);
+
+	    $features = $this->repository->filterable();
+
+	    $this->assertCount(1, $features);
 	}
 }

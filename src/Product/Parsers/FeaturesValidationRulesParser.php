@@ -33,11 +33,11 @@ class FeaturesValidationRulesParser
 	/**
 	 * Parses the given rules.
 	 *
-	 * @param  array $rules
+	 * @param  mixed $rules
 	 *
 	 * @return self
 	 */
-	public static function parse(array $rules = [])
+	public static function parse($rules)
 	{
 		$parser = new static;
 
@@ -49,15 +49,19 @@ class FeaturesValidationRulesParser
 	/**
 	 * Creates an instance for the given rules.
 	 *
-	 * @param  string $rules
+	 * @param  null|string $rules
 	 *
 	 * @return self
 	 */
-	public static function decode(string $rules)
+	public static function decode($rules = null)
 	{
 		$parser = new static;
 
-		$parser->rules = Collection::make(explode('|', $rules));
+		if (is_string($rules) && trim($rules) !== '') {
+			$parser->rules = Collection::make(explode('|', $rules));
+		} else {
+			$parser->rules = new Collection;
+		}
 
 		return $parser;
 	}
@@ -74,8 +78,8 @@ class FeaturesValidationRulesParser
 		return Collection::make($rules)
 			->only($this->allowed)
 			->flatMap(function ($item, $key) {
-				if ($key == 'required' && $item) {
-					$rule[] = 'required';
+				if ($key == 'required') {
+					$rule[] = $item ? 'required' : '';
 				} else {
 					$rule[] = $key . ':' . $item;
 				}
@@ -86,17 +90,23 @@ class FeaturesValidationRulesParser
 	/**
 	 * Returns the feature validation rules in a json format.
 	 *
-	 * @return string
+	 * @return null|string
 	 */
-	public function toString() : string
+	public function toString()
 	{
-		return $this->rules->implode('|');
+		$rules = $this->rules->implode('|');
+
+		if (trim($rules) == '') {
+			return null;
+		}
+
+		return $rules;
 	}
 
 	/**
 	 * Returns the feature validation rules in a array format.
 	 *
-	 * @return array
+	 * @return Collection
 	 */
 	public function all() : Collection
 	{

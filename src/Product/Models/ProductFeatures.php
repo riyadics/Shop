@@ -37,5 +37,6 @@ class ProductFeatures extends Model
     protected $fillable = [
         'name', 'input_type', 'product_type', 'default_values',
         'validation_rules', 'help_message', 'status',
+        'filterable'
     ];
 }
