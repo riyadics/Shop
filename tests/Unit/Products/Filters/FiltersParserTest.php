@@ -14,6 +14,7 @@ namespace Antvel\Tests\Unit\Products\Filters;
 use Antvel\Tests\TestCase;
 use Antvel\Product\Models\Product;
 use Antvel\Product\Parsers\Filters;
+use Antvel\Product\Models\ProductFeatures;
 
 class FiltersParserTest extends TestCase
 {
@@ -70,6 +71,11 @@ class FiltersParserTest extends TestCase
 		$products = factory(Product::class, 2)->create([
 			'category_id' => $this->category->id,
 			'features' => '{"color": "olive", "weight": "115 Mg", "dimensions": "2 X 19 X 22 inch"}'
+		]);
+
+		factory(ProductFeatures::class)->create([
+			'name' => 'color',
+			'filterable' => true
 		]);
 
 		$filters = Filters::parse($products);

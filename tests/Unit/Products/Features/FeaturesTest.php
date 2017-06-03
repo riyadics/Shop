@@ -113,6 +113,7 @@ class FeaturesTest extends TestCase
 
 	    $features = $this->repository->filterable();
 
+	    $this->assertContains('foo', $features);
 	    $this->assertCount(1, $features);
 	}
 }

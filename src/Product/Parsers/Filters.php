@@ -12,16 +12,16 @@
 namespace Antvel\Product\Parsers;
 
 use Illuminate\Support\Collection;
+use Illuminate\Container\Container;
 
 class Filters
 {
 	/**
-	 * The features to be excluded during a given search.
+	 * The allowed features to be in products listing.
 	 *
 	 * @var array
-	 *
 	 */
-	protected $excludedFilters = ['images', 'dimensions', 'weight', 'brand'];
+	protected $allowed = [];
 
 	/**
 	 * The products list under evaluation.
@@ -40,6 +40,20 @@ class Filters
 	public function __construct($products)
 	{
 		$this->products = $products;
+
+		$this->allowed = $this->allowed();
+	}
+
+	/**
+	 * Returns the allowed features to be in products listing.
+	 *
+	 * @return array
+	 */
+	protected function allowed() : array
+	{
+		return Container::getInstance()->make('Antvel\Product\Features')
+			->filterable()
+			->all();
 	}
 
 	/**
@@ -106,7 +120,9 @@ class Filters
 		$map = [];
 
 		foreach ($features as $feature) {
-            $feature = Collection::make($feature)->except($this->excludedFilters);
+
+			$feature = Collection::make($feature)->only($this->allowed);
+
             foreach ($feature as $key => $value) {
                 $map[$key][] = $value;
             }
