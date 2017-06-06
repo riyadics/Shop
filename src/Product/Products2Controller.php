@@ -60,4 +60,16 @@ class Products2Controller extends Controller
 			'panel' => $this->panel,
 		]);
 	}
+
+	/**
+	 * List the seller products.
+	 *
+	 * @return void
+	 */
+	public function list(Request $request)
+	{
+		return view('foundation.sections.products.list', [
+			'products' => $this->products->userProducts($request->all(), 12),
+		]);
+	}
 }

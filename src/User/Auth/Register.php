@@ -12,6 +12,7 @@
 namespace Antvel\User\Auth;
 
 use Antvel\User\Models\User;
+use Antvel\User\Policies\Roles;
 use Antvel\User\UsersRepository;
 use Illuminate\Session\Store as Session;
 use Antvel\User\Requests\RegisterRequest;
@@ -24,7 +25,7 @@ class Register
      *
      * @var string
      */
-    protected $role = 'person';
+    protected $role = '';
 
     /**
      * The registered user.
@@ -65,6 +66,7 @@ class Register
     {
         $this->users = $users;
         $this->session = $session;
+        $this->role = Roles::default();
     }
 
     /**
@@ -74,18 +76,16 @@ class Register
      *
      * @return self
      */
-    public function store(RegisterRequest $request): self
+    public function store(RegisterRequest $request)
     {
         $this->user = $this->users->create([
+            'first_name' => $request->get('first_name'),
+            'last_name'  => $request->get('last_name'),
+            'nickname' => $request->get('email'),
+            'role' => $this->role,
+            'email' => $request->get('email'),
             'password' => $request->get('password'),
             'confirmation_token' => str_random(60),
-            'nickname' => $request->get('email'),
-            'email' => $request->get('email'),
-            'role' => $this->role,
-            'profile' => [
-                'first_name' => $request->get('first_name'),
-                'last_name'  => $request->get('last_name'),
-            ]
         ]);
 
         return $this;

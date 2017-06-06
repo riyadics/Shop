@@ -161,6 +161,8 @@ class RoutesRegistrar
 
             $router->resource('categories', 'Categories\CategoriesController');
             $router->resource('features', 'Product\FeaturesController');
+            $router->resource('productsF', 'Product\Products2Controller', ['except' => 'index']);
+            $router->get('products', 'Product\Products2Controller@list')->name('products.list');
 
         });
     }

@@ -10,12 +10,15 @@
  */
 
 use Faker\Generator as Faker;
+use Antvel\Company\Models\Company;
 use Antvel\Categories\Models\Category;
 
 $factory->define(Category::class, function (Faker $faker) use ($factory)
 {
+    static $company;
+
     return [
-    	'name' => str_limit($faker->sentence, 50),
+        'name' => str_limit($faker->sentence, 50),
         'description' => str_limit($faker->paragraph, 90),
         'icon' => $faker->randomElement(['glyphicon glyphicon-facetime-video', 'glyphicon glyphicon-bullhorn', 'glyphicon glyphicon-briefcase']),
     ];

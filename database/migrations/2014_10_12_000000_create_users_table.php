@@ -24,25 +24,28 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('first_name', 60);
+            $table->string('last_name', 60);
             $table->string('nickname', 60)->unique();
             $table->string('email', 100)->unique();
             $table->string('password', 60);
+            $table->enum('role', Roles::allowed())->default(Roles::default());
+            $table->string('phone_number', 20)->nullable();
+            $table->enum('gender', ['female', 'male'])->default('male');
+            $table->date('birthday')->nullable();
             $table->string('pic_url', 100)->nullable();
-            $table->string('language', 10)->default('en');
-            $table->string('mobile_phone', 20)->nullable();
-            $table->string('work_phone', 20)->nullable();
-            $table->string('website', 100)->nullable();
-            $table->string('twitter', 100)->nullable();
             $table->string('facebook', 100)->nullable();
-            $table->string('description', 150)->nullable();
+            $table->string('twitter', 100)->nullable();
+            $table->string('website', 100)->nullable();
+            $table->string('language', 10)->default('en');
             $table->string('time_zone', 60)->nullable();
+            $table->string('description', 150)->nullable();
             $table->integer('rate_val')->nullable();
             $table->integer('rate_count')->nullable();
-            $table->enum('role', Roles::allowed())->default(Roles::default());
-            $table->enum('type', ['trusted', 'normal'])->default('normal');
-            $table->enum('verified', ['yes', 'no'])->default('no');
             $table->json('preferences')->nullable();
+            $table->boolean('verified')->default(false);
             $table->string('confirmation_token', 60)->nullable();
+
             $table->rememberToken();
             $table->timestamps();
             $table->timestamp('disabled_at')->nullable();

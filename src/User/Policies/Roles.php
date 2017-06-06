@@ -20,7 +20,7 @@ class Roles
 	 */
 	public static function default()
 	{
-		return 'person';
+		return 'customer';
 	}
 
 	/**
@@ -30,6 +30,6 @@ class Roles
 	 */
 	public static function allowed()
 	{
-		return ['admin', 'business', 'person'];
+		return ['admin', 'seller', 'customer'];
 	}
 }

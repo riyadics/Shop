@@ -18,6 +18,16 @@ trait Presenters
      *
      * @return bool
      */
+    public function getFullNameAttribute()
+    {
+        return ucfirst($this->first_name . ' ' . $this->last_name);
+    }
+
+    /**
+     * Checks whether the user has a phone number.
+     *
+     * @return bool
+     */
     public function getHasPhoneAttribute()
     {
         return ! is_null($this->mobile_phone) || ! is_null($this->work_phone) || ($this->profile() && $this->profile()->has_phone);

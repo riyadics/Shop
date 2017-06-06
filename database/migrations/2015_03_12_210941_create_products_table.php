@@ -24,7 +24,8 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('category_id')->unsigned();
-            $table->integer('user_id')->unsigned();
+            $table->integer('created_by')->unsigned();
+            $table->integer('updated_by')->unsigned()->nullable();
             $table->integer('parent_id')->nullable();
             $table->integer('products_group')->unsigned()->nullable();
             $table->boolean('status')->default(1);
@@ -45,7 +46,8 @@ class CreateProductsTable extends Migration
             $table->integer('view_counts')->default(0)->unsigned();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('created_by')->references('id')->on('users');
+            $table->foreign('updated_by')->references('id')->on('users');
             $table->foreign('category_id')->references('id')->on('categories');
         });
     }

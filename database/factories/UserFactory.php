@@ -12,45 +12,54 @@
 use Carbon\Carbon;
 use Faker\Generator as Faker;
 use Antvel\User\Policies\Roles;
-use Antvel\User\Models\{ User, Person, Business, EmailChangePetition };
+use Antvel\User\Models\{ User, EmailChangePetition };
 
 $factory->define(User::class, function (Faker $faker) use ($factory)
 {
     return [
-        'password' => bcrypt('123456'),
+        'first_name' => str_limit($faker->firstName, 60),
+        'last_name' => str_limit($faker->lastName, 60),
         'nickname' => str_limit($faker->userName, 60),
+        'email' => str_limit($faker->unique()->email, 100),
+        'password' => bcrypt('123456'),
+        'role' => Roles::default(),
+        'phone_number' => str_limit($faker->e164PhoneNumber, 20),
+        'gender' => $faker->randomElement(['male', 'female']),
+        'birthday' => $faker->dateTimeBetween('-40 years', '-16 years'),
+        'pic_url' => '/img/pt-default/'.$faker->numberBetween(1, 20).'.jpg',
         'facebook' => str_limit($faker->userName, 100),
         'twitter' => '@' . str_limit($faker->userName, 100),
-        'email' => str_limit($faker->unique()->email, 100),
-        'role' => array_rand(Roles::allowed(), 1),
-        'pic_url' => '/img/pt-default/'.$faker->numberBetween(1, 20).'.jpg',
         'preferences' => '{"product_viewed":"","product_purchased":"","product_shared":"","product_categories":"","my_searches":""}',
     ];
 });
 
-$factory->define(Person::class, function (Faker $faker) use ($factory)
-{
+$factory->state(User::class, 'admin', function ($faker) {
     return [
-        'user_id' => function () {
-            return factory(User::class)->create(['role' => 'person'])->id;
-        },
-        'last_name' => str_limit($faker->lastName, 60),
-        'first_name' => str_limit($faker->firstName, 60),
-        'home_phone' => str_limit($faker->e164PhoneNumber, 20),
-        'gender' => $faker->randomElement(['male', 'female']),
-        'birthday' => $faker->dateTimeBetween('-40 years', '-16 years')
+        'first_name' => 'Admin',
+        'last_name' => 'Admin',
+        'email' => 'admin@antvel.com',
+        'nickname' => 'antvel',
+        'role' => 'admin',
     ];
 });
 
-$factory->define(Business::class, function (Faker $faker) use ($factory)
-{
+$factory->state(User::class, 'seller', function ($faker) {
     return [
-        'user_id' => function () {
-            return factory(User::class)->create(['role' => 'business'])->id;
-        },
-        'creation_date' => $faker->date(),
-        'business_name' => str_limit($faker->company, 60),
-        'local_phone' => str_limit($faker->e164PhoneNumber, 20),
+        'first_name' => 'Seller',
+        'last_name' => 'Seller',
+        'email' => 'seller@antvel.com',
+        'nickname' => 'seller',
+        'role' => 'seller'
+    ];
+});
+
+$factory->state(User::class, 'customer', function ($faker) {
+    return [
+        'first_name' => 'Customer',
+        'last_name' => 'Customer',
+        'email' => 'customer@antvel.com',
+        'nickname' => 'customer',
+        'role' => 'customer',
     ];
 });
 
@@ -65,6 +74,6 @@ $factory->define(EmailChangePetition::class, function (Faker $faker) use ($facto
         'old_email' => str_limit($faker->email, 60),
         'new_email' => str_limit($faker->email, 60),
         'confirmed_at' => null,
-        'confirmed' => '0',
+        'confirmed' => false,
     ];
 });

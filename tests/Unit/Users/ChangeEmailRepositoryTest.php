@@ -56,22 +56,22 @@ class ChangeEmailRepositoryTest extends UsersTestCase
 
 	public function test_a_repository_can_create_email_petitions()
 	{
-		$business = $this->business();
+		$user = $this->user();
 
 		$request = [
 			'request' => ['email'=>'gustavoocanto@gmail.com'],
-            'old_email' => $business->user->email,
-            'user_id' => $business->user_id,
+            'old_email' => $user->email,
+            'user_id' => $user->id,
 		];
 
 		$petition = $this->repository->create($request);
 
 		$this->assertEquals($petition->new_email, 'gustavoocanto@gmail.com');
-		$this->assertEquals($petition->old_email, $business->user->email);
 		$this->assertInstanceOf(Authenticatable::class, $petition->user);
 		$this->assertInstanceOf(EmailChangePetition::class, $petition);
 		$this->assertTrue($petition->expires_at->gt(Carbon::now()));
-		$this->assertEquals($petition->user_id, $business->user_id);
+		$this->assertEquals($petition->old_email, $user->email);
+		$this->assertEquals($petition->user_id, $user->id);
 	}
 
 	public function test_a_repository_can_refresh_email_petitions()

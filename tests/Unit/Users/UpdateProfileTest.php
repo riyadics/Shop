@@ -20,30 +20,30 @@ class UpdateProfileTest extends UsersTestCase
 {
 	public function test_a_given_user_can_update_his_profile()
 	{
-		$business = $this->business();
+		$user = $this->user();
 
 		$event = new ProfileWasUpdated([
 			'nickname' => 'gocanto'
-		], $business->user);
+		], $user);
 
 		$listener = (new UpdateProfile(
 			$this->getRepo(),
 			$this->getPetitionRepo()
 		))->handle($event);
 
-		$updatedBusiness = $this->getRepo()->profile($business->user_id);
+		$newUser = $this->getRepo()->profile($user->id);
 
-		$this->assertEquals($updatedBusiness->email, $business->user->email);
-		$this->assertEquals($updatedBusiness->nickname, 'gocanto');
+		$this->assertEquals($newUser->email, $user->email);
+		$this->assertEquals($newUser->nickname, 'gocanto');
 	}
 
 	public function test_a_given_user_might_want_to_change_his_email_address()
 	{
-		$business = $this->business();
+		$user = $this->user();
 
 		$event = new ProfileWasUpdated([
 			'email' => 'gocanto@antvel.com'
-		], $business->user);
+		], $user);
 
 		$listener = (new UpdateProfile(
 			$this->getRepo(),
@@ -51,15 +51,15 @@ class UpdateProfileTest extends UsersTestCase
 		))->handle($event);
 
 		$petition = $this->getPetitionRepo()->findBy([
-			'old_email' => $business->user->email,
+			'old_email' => $user->email,
 			'new_email' => 'gocanto@antvel.com',
 			'confirmed' => '0'
 		])->first();
 
-		$updatedBusiness = $this->getRepo()->profile($business->user_id);
+		$newUser = $this->getRepo()->profile($user->id);
 
 		$this->assertTrue($petition->expires_at->gt(Carbon::now()));
-		$this->assertTrue('gocanto@antvel.com' != $updatedBusiness->email);
+		$this->assertTrue('gocanto@antvel.com' != $newUser->email);
 		$this->assertInstanceOf(EmailChangePetition::class, $petition);
 		$this->assertNull($petition->confirmed_at);
 	}

@@ -92,7 +92,7 @@ class Products extends Repository
 				return $query->actives();
 			})
 			->filter($request)
-			->where('user_id', auth()->user()->id)
+			// ->where('user_id', auth()->user()->id)
 			->orderBy('rate_val', 'desc')
 			->take($limit)
 			->paginate(12);

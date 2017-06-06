@@ -23,10 +23,10 @@ class DashBoardController extends Controller
 	 */
 	public function index()
 	{
-		if (! view()->exists('foundation.index')) {
-			return redirect('/');
+		if (view()->exists('foundation.index')) {
+			return view('foundation.index');
 		}
 
-		return view('foundation.index');
+		return redirect('/');
 	}
 }

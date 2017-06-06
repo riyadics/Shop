@@ -59,7 +59,7 @@ class ResetPasswordNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         return (new MailMessage)->view('emails.password', [
-            'name' => ucwords($notifiable->profile->fullName),
+            'name' => ucwords($notifiable->fullName),
             'token' => $this->token
         ]);
     }

@@ -78,7 +78,7 @@ class Confirmation
     	return User::where([
             'confirmation_token' => $this->token,
             'email' => $this->email,
-            'verified' => 'no',
+            'verified' => false,
         ])->firstOrFail();
     }
 
@@ -99,7 +99,7 @@ class Confirmation
      */
     public function activateUser()
     {
-        $this->user->verified = 'yes';
+        $this->user->verified = true;
         $this->user->save();
 
         $this->login();

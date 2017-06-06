@@ -9,23 +9,30 @@
  * file that was distributed with this source code.
  */
 
-use Antvel\User\Models\Person;
+use Antvel\User\Models\User;
 use Faker\Generator as Faker;
 use Antvel\Product\Models\Product;
 use Antvel\Categories\Models\Category;
 
 $factory->define(Product::class, function (Faker $faker) use ($factory)
 {
+    static $user, $category;
+
+    $user = $user ?: function () use ($faker) {
+        return factory(User::class)->states('seller')->create([
+            'email' => $faker->unique()->email,
+            'nickname' => $faker->unique()->userName,
+        ])->first()->id;
+    };
+
+    $category = $category ?: function () {
+        return factory(Category::class)->create()->first()->id;
+    };
+
     return [
-
-        'category_id' => function () {
-            return factory(Category::class)->create()->first()->id;
-        },
-
-        'user_id' => function () {
-            return factory(Person::class)->create()->first()->user_id;
-        },
-
+        'category_id' => $category,
+        'created_by' => $user,
+        'updated_by' => $user,
         'tags' => $faker->word . ',' . $faker->word . ',' . $faker->word,
         'brand' => $faker->randomElement(['Apple', 'Microsoft', 'Samsung', 'Lg']),
         'condition' => $faker->randomElement(['new', 'used', 'refurbished']),

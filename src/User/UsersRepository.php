@@ -111,29 +111,21 @@ class UsersRepository
         }
 
         //we retrieve the user for a given id.
-        return $this->find($user_id, 'profile');
+        return $this->find($user_id);
     }
 
     /**
      * Creates a new user in the database.
      *
-     * @param  array $data
+     * @param  array $attributes
      *
      * @return Authenticatable
      */
-    public function create(array $data) : Authenticatable
+    public function create(array $attributes) : Authenticatable
     {
-        $data = Parser::parse($data);
+        $attributes = Parser::parse($attributes)->all();
 
-        $user = User::create(
-            $data->except('profile')->all()
-        );
-
-        $user->profile()->create(
-            $data->only('profile')->collapse()->all()
-        );
-
-        return $user;
+        return User::create($attributes);
     }
 
     /**
@@ -150,7 +142,6 @@ class UsersRepository
         $data = Parser::parse($data, $user->id)->all();
 
         $user->fill($data)->save();
-        $user->profile->fill($data)->save();
     }
 
     /**

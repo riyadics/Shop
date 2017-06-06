@@ -19,7 +19,7 @@ use Antvel\User\Notifications\ResetPasswordNotification;
 
 class User extends Authenticatable
 {
-    use Notifiable;
+    use Notifiable, Presenters;
 
 	/**
      * The attributes that are mass assignable.
@@ -27,6 +27,7 @@ class User extends Authenticatable
      * @var array
      */
 	protected $fillable = [
+        'first_name', 'last_name',
         'facebook', 'mobile_phone', 'work_phone', 'description',
         'pic_url', 'language', 'website', 'twitter',
         'nickname', 'email', 'password', 'role',
@@ -46,20 +47,6 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = ['password', 'remember_token'];
-
-     /**
-     * A user has a profile.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
-     */
-	public function profile()
-    {
-        if (in_array($this->role, ['business', 'nonprofit'])) {
-            return $this->hasOne(Business::class);
-        }
-
-        return $this->hasOne(Person::class);
-    }
 
     /**
      * An user has an address book.
@@ -117,30 +104,11 @@ class User extends Authenticatable
 
      public function hasRole($role)
     {
-        if (is_array($role)) {
-            return in_array($this->attributes['role'], $role);
-        }
-
-        return $this->attributes['role'] == $role;
+        return in_array($this->attributes['role'], $role);
     }
 
     public function isAdmin()
     {
         return $this->attributes['role'] == 'admin';
     }
-
-    public function isPerson()
-    {
-        return $this->attributes['role'] == 'person';
-    }
-
-    public function isCompany()
-    {
-        return $this->attributes['role'] == 'business';
-    }
-
-   public function isTrusted()
-   {
-       return $this->attributes['type'] == 'trusted';
-   }
 }

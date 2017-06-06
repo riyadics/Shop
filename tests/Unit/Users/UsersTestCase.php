@@ -23,20 +23,6 @@ abstract class UsersTestCase extends TestCase
 			->first();
 	}
 
-	protected function person(array $data = [], int $number = 1)
-	{
-		return factory(Person::class, $number)
-			->create($data)
-			->first();
-	}
-
-	protected function business(array $data = [], int $number = 1)
-	{
-		return factory(Business::class, $number)
-			->create($data)
-			->first();
-	}
-
 	protected function getRepo()
 	{
 		return $this->app->make(\Antvel\User\UsersRepository::class);

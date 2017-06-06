@@ -53,9 +53,9 @@ class SuggestionsTest extends TestCase
 			'category_id' => $this->category->id
 		]);
 
-		$person = factory('Antvel\User\Models\Person')->create();
+		$user = factory('Antvel\User\Models\User')->create();
 
-		$this->actingAs($person->user);
+		$this->actingAs($user);
 
 		UsersRepository::updatePreferences('product_viewed', $tags = $products->first()->tags);
 

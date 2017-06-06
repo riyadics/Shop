@@ -88,7 +88,7 @@ class Registration extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject($this->subject)
             ->view($this->view, [
-                'name' => $notifiable->profile->fullName,
+                'name' => $notifiable->fullName,
                 'route' => $this->route($notifiable),
             ]);
     }
