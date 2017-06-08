@@ -76,9 +76,8 @@ class SecurityController extends Controller
     		return $this->respondsWithError('action not allowed');
     	}
 
-    	$action = mb_strtolower($action);
-
-    	$response = $this->user->$action($user);
+        $action = mb_strtolower($action);
+        $response = $this->users->$action($user);
 
     	if ($response == 'notOk') {
             $message = 'There was an error trying to update your information. Please, Try again!';

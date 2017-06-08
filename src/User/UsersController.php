@@ -13,7 +13,7 @@ namespace Antvel\User;
 
 use Antvel\Http\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Events\Dispatcher;
+use Illuminate\Support\Facades\Event;
 use Antvel\User\Requests\ProfileRequest;
 use Antvel\User\Events\ProfileWasUpdated;
 
@@ -37,23 +37,15 @@ class UsersController extends Controller
     ];
 
     /**
-     * The laravel Dispatcher component.
-     *
-     * @var Dispatcher
-     */
-    protected $event = null;
-
-    /**
      * Creates a new instance.
      *
      * @param UsersRepository $user
-     * @param Dispatcher $event
+     *
      * @return void
      */
-	public function __construct(UsersRepository $user, Dispatcher $event)
+    public function __construct(UsersRepository $user)
     {
         $this->user = $user;
-        $this->event = $event;
     }
 
     /**
@@ -91,10 +83,9 @@ class UsersController extends Controller
     public function update(ProfileRequest $request, $user_id = null)
     {
         $user = $this->user->profile($user_id);
+        $event = new ProfileWasUpdated($request->all(), $user);
 
-        $this->event->fire(
-            new ProfileWasUpdated($request->all(), $user)
-        );
+        Event::fire($event);
 
         if ($request->wantsJson()) {
             return $this->respondsWithSuccess('ok');

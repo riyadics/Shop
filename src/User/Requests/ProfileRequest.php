@@ -60,7 +60,8 @@ class ProfileRequest extends Request
      */
     protected function isAllowed() : bool
     {
-        return in_array($this->request->get('referral'), $this->allowedReferral);
+        return $this->request->has('referral')
+            && in_array($this->request->get('referral'), $this->allowedReferral);
     }
 
     /**

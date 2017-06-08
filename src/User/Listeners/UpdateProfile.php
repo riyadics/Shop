@@ -79,9 +79,9 @@ class UpdateProfile
     {
         $request = $event->request;
 
-        return isset($request['email']) &&
-            $request['email'] != $event->user->email &&
-            $request['email'] !== null;
+        return isset($request['email'])
+            && $request['email'] != $event->user->email
+            && $request['email'] !== null;
     }
 
     /**

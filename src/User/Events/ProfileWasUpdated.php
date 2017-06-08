@@ -19,7 +19,7 @@ class ProfileWasUpdated
     use SerializesModels;
 
     /**
-     * The laravel request component.
+     * The laravel request data.
      *
      * @var array
      */

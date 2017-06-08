@@ -22,14 +22,15 @@ class UpdateProfileTest extends UsersTestCase
 	{
 		$user = $this->user();
 
-		$event = new ProfileWasUpdated([
-			'nickname' => 'gocanto'
-		], $user);
+		$request = [
+			'nickname' => 'gocanto',
+			'work_phone' => 'asasasas' //this field is not taken in account when saving
+		];
 
-		$listener = (new UpdateProfile(
-			$this->getRepo(),
-			$this->getPetitionRepo()
-		))->handle($event);
+		$event = new ProfileWasUpdated($request, $user);
+		$listener = new UpdateProfile($this->getRepo(), $this->getPetitionRepo());
+
+		$listener->handle($event);
 
 		$newUser = $this->getRepo()->profile($user->id);
 
