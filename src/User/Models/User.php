@@ -107,7 +107,11 @@ class User extends Authenticatable
 
      public function hasRole($role)
     {
-        return in_array($this->attributes['role'], $role);
+        if (is_array($role)) {
+            return in_array($this->attributes['role'], $role);
+        }
+
+        return $this->attributes['role'] == $role;
     }
 
     public function isAdmin()

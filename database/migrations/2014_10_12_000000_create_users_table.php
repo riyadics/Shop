@@ -33,7 +33,7 @@ class CreateUsersTable extends Migration
             $table->string('phone_number', 20)->nullable();
             $table->enum('gender', ['female', 'male'])->default('male');
             $table->date('birthday')->nullable();
-            $table->string('pic_url', 100)->nullable();
+            $table->text('pic_url')->nullable();
             $table->string('facebook', 100)->nullable();
             $table->string('twitter', 100)->nullable();
             $table->string('website', 100)->nullable();

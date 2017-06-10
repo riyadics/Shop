@@ -64,8 +64,13 @@ class AddressBookController extends Controller
      */
     public function index(Request $request)
     {
+        $addresses = $this->addressBook->forUser();
+
+        $defaultId = $addresses->where('default', true)->pluck('id')->first();
+
         return view('address.list', [
-            'addresses' => $this->addressBook->forUser()
+            'addresses' => $addresses,
+            'defaultId' => $defaultId,
         ]);
     }
 

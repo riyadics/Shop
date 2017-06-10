@@ -16,23 +16,10 @@ use Antvel\Categories\Models\Category;
 
 $factory->define(Product::class, function (Faker $faker) use ($factory)
 {
-    static $user, $category;
-
-    $user = $user ?: function () use ($faker) {
-        return factory(User::class)->states('seller')->create([
-            'email' => $faker->unique()->email,
-            'nickname' => $faker->unique()->userName,
-        ])->first()->id;
-    };
-
-    $category = $category ?: function () {
-        return factory(Category::class)->create()->first()->id;
-    };
-
     return [
-        'category_id' => $category,
-        'created_by' => $user,
-        'updated_by' => $user,
+        'category_id' => Category::inRandomOrder()->first()->id,
+        'created_by' => $user_id = User::where('nickname', 'seller')->first()->id,
+        'updated_by' => $user_id,
         'tags' => $faker->word . ',' . $faker->word . ',' . $faker->word,
         'brand' => $faker->randomElement(['Apple', 'Microsoft', 'Samsung', 'Lg']),
         'condition' => $faker->randomElement(['new', 'used', 'refurbished']),

@@ -59,7 +59,7 @@ class Parser
 		$parser->data = Collection::make($data);
 
 		$parser->parsePassword();
-		$parser->parseFile($user_id);
+		$parser->parseFile();
 
         return $parser->data;
 	}
@@ -87,10 +87,10 @@ class Parser
 	 *
 	 * @return void
 	 */
-	protected function parseFile($user_id = 0)
+	protected function parseFile()
 	{
 		if ($this->data->has('file') && $this->data->get('file') !== null) {
-            $this->data['pic_url'] = $this->data['file']->store('img/profile/' . $user_id);
+            $this->data['pic_url'] = $this->data['file']->store('images/avatars');
         }
 
         $this->data->forget('file');

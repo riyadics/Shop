@@ -146,10 +146,12 @@ class Filters
 		$counting = $this->categoriesCountValues();
 
 		return $counting->mapWithKeys( function($item, $key) {
+
 			return [
 				$key => [
 					'id' => $key,
-					'name' => $this->categories()[$key],
+					// 'name' => isset($this->categories()[$key]) ? $this->categories()[$key] : '', //need to check this
+					'name' => $this->categories()[$key], //need to check this
 					'qty' => $item
 				]
 			];
