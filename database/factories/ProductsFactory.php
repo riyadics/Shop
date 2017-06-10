@@ -17,8 +17,8 @@ use Antvel\Categories\Models\Category;
 $factory->define(Product::class, function (Faker $faker) use ($factory)
 {
     return [
-        'category_id' => Category::inRandomOrder()->first()->id,
-        'created_by' => $user_id = User::where('nickname', 'seller')->first()->id,
+        'category_id' => products_factory_category()->id,
+        'created_by' => $user_id = products_factory_user()->id,
         'updated_by' => $user_id,
         'tags' => $faker->word . ',' . $faker->word . ',' . $faker->word,
         'brand' => $faker->randomElement(['Apple', 'Microsoft', 'Samsung', 'Lg']),
@@ -48,3 +48,32 @@ $factory->define(Product::class, function (Faker $faker) use ($factory)
         ]),
     ];
 });
+
+if (! function_exists('products_factory_category')) {
+    function products_factory_category()
+    {
+        $category = Category::inRandomOrder()->first();
+
+        if (is_null($category)) {
+            return factory(Category::class)->create()->first();
+        }
+
+        return $category;
+    }
+}
+
+if (! function_exists('products_factory_user')) {
+    function products_factory_user()
+    {
+        $user = User::where('nickname', 'seller')->first();
+
+        if (is_null($user)) {
+            return factory(User::class)->states('seller')->create()->first();
+        }
+
+        return $user;
+    }
+}
+
+
+
