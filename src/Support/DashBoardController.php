@@ -17,14 +17,14 @@ use Illuminate\Http\Request;
 class DashBoardController extends Controller
 {
 	/**
-	 * Loads the foundation dashboard.
+	 * Loads the dashboard.
 	 *
 	 * @return void
 	 */
 	public function index()
 	{
-		if (view()->exists('foundation.index')) {
-			return view('foundation.index');
+		if (view()->exists('dashboard.index')) {
+			return view('dashboard.index');
 		}
 
 		return redirect('/');

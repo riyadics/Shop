@@ -44,7 +44,7 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-    	return view('foundation.sections.categories.create', [
+    	return view('dashboard.sections.categories.create', [
     		'parents' => $this->categories->parents(),
     	]);
     }
@@ -74,7 +74,7 @@ class CategoriesController extends Controller
      */
 	public function index()
 	{
-        return view('foundation.sections.categories.index', [
+        return view('dashboard.sections.categories.index', [
 			'categories' => $this->categories->paginateWith('parent'),
 		]);
 	}
@@ -90,7 +90,7 @@ class CategoriesController extends Controller
 	{
 		$category = $category->load('parent');
 
-		return view('foundation.sections.categories.edit', [
+		return view('dashboard.sections.categories.edit', [
 			'hasParent' => ! is_null($category->parent),
 			'parents' => $this->categories->parents(),
 			'category' => $category,

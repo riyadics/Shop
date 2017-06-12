@@ -76,7 +76,7 @@ class Product extends Model
      */
     public function group()
     {
-        return $this->hasMany('Antvel\Product\Models\Product', 'products_group', 'products_group');
+        return $this->hasMany($this, 'products_group', 'products_group');
     }
 
     /**

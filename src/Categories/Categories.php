@@ -12,7 +12,7 @@
 namespace Antvel\Categories;
 
 use Antvel\Support\Pictures;
-use Antvel\Support\Repository;
+use Antvel\Contracts\Repository;
 use Antvel\Categories\Models\Category;
 
 class Categories extends Repository

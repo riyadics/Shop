@@ -32,4 +32,14 @@ class Roles
 	{
 		return ['admin', 'seller', 'customer'];
 	}
+
+	/**
+	 * The manager roles.
+	 *
+	 * @return array
+	 */
+	public static function managers()
+	{
+		return ['admin', 'seller'];
+	}
 }

@@ -44,7 +44,7 @@ class FeaturesController extends Controller
      */
 	public function index()
 	{
-        return view('foundation.sections.features.index', [
+        return view('dashboard.sections.features.index', [
         	'features' => $this->features->all()
         ]);
 	}
@@ -56,7 +56,7 @@ class FeaturesController extends Controller
      */
     public function create()
     {
-    	return view('foundation.sections.features.create', [
+    	return view('dashboard.sections.features.create', [
             'allowed_rules' => FeaturesValidationRulesParser::allowed(),
             'validation_rules' => collect(),
         ]);
@@ -89,7 +89,7 @@ class FeaturesController extends Controller
      */
     public function edit(ProductFeatures $feature)
     {
-        return view('foundation.sections.features.edit', [
+        return view('dashboard.sections.features.edit', [
             'validation_rules' => FeaturesValidationRulesParser::decode($feature->validation_rules)->all(),
             'allowed_rules' => FeaturesValidationRulesParser::allowed(),
             'feature' => $feature,

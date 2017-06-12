@@ -68,7 +68,7 @@ class Products2Controller extends Controller
 	 */
 	public function list(Request $request)
 	{
-		return view('foundation.sections.products.list', [
+		return view('dashboard.sections.products.list', [
 			'products' => $this->products->userProducts($request->all(), 12),
 		]);
 	}

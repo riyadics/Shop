@@ -42,7 +42,9 @@ class User extends Authenticatable
      *
      * @var array
      */
-    protected $dates = ['deleted_at'];
+    protected $dates = [
+        'created_at', 'updated_at', 'disabled_at', 'deleted_at'
+    ];
 
     /**
      * The attributes excluded from the model's JSON form.

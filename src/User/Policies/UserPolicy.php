@@ -23,7 +23,7 @@ class UserPolicy
      *
      * @var array
      */
-    protected $managers = ['admin', 'business'];
+    protected $managers = [];
 
     /**
      * Create a new policy instance.
@@ -32,7 +32,7 @@ class UserPolicy
      */
     public function __construct()
     {
-        //
+        $this->managers = Roles::managers();
     }
 
     /**

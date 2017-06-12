@@ -25,30 +25,6 @@ class AntvelServiceProvider extends ServiceProvider
     {
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
         $this->loadViewsFrom(__DIR__ . '/../resources/views', 'antvel');
-
-        if ($this->app->runningInConsole()) {
-            $this->publishResources();
-        }
-    }
-
-    /**
-     * Publish the antvel resources files.
-     *
-     * @return void
-     */
-    protected function publishResources()
-    {
-        $this->publishes([
-            __DIR__ . '/../config/' => config_path()
-        ], 'antvel-config');
-
-         $this->publishes([
-            __DIR__ . '/../database/seeds' => database_path('seeds')
-        ], 'antvel-seeds');
-
-        $this->publishes([
-            __DIR__ . '/../resources/lang' => resource_path('lang/vendor/antvel'),
-        ], 'antvel-trans');
     }
 
     /**

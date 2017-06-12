@@ -13,7 +13,7 @@ namespace Antvel\Product;
 
 use Cache;
 use Antvel\User\Preferences;
-use Antvel\Support\Repository;
+use Antvel\Contracts\Repository;
 use Antvel\Product\Models\Product;
 use Illuminate\Support\Collection;
 use Antvel\User\UsersRepository as Users;

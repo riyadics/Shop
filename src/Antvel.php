@@ -11,7 +11,7 @@
 
 namespace Antvel;
 
-use Antvel\Support\RoutesRegistrar;
+use Antvel\Http\Routes\Router;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +22,7 @@ class Antvel
      *
      * @var string
      */
-    const VERSION = '1.1.0';
+    const VERSION = '1.1.1';
 
     /**
      * The Laravel container component.
@@ -64,15 +64,25 @@ class Antvel
     /**
      * Get a Antvel route registrar.
      *
-     * @param  callable $callback
+     * @param  callable|null $callback
      * @param  array $options
      *
      * @return void
      */
-    public static function routes(callable $callback = null, array $options = [])
+    public static function routes($callback = null, array $options = [])
     {
+        $callback = $callback ?: function ($router) {
+            Router::make($router);
+        };
+
+        $defaultOptions = [
+            'namespace' => 'Antvel',
+        ];
+
+        $options = array_merge($defaultOptions, $options);
+
         Route::group($options, function ($router) use ($callback) {
-            RoutesRegistrar::make($router)->routes($callback);
+            $callback($router);
         });
     }
 }

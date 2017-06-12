@@ -12,6 +12,7 @@
 namespace Antvel\Product\Parsers;
 
 use Cache;
+use Antvel\Product\Features;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 
@@ -52,10 +53,10 @@ class Filters
 	 */
 	protected function allowed() : array
 	{
-		$month = 43800;
+		$cacheExpiration = 43800; //one month
 
-		return Cache::remember('product_features_filterable', $month, function () {
-			return Container::getInstance()->make('Antvel\Product\Features')
+		return Cache::remember('product_features_filterable', $cacheExpiration, function () {
+			return Container::getInstance()->make(Features::class)
 				->filterable()
 				->all();
 		});
@@ -145,13 +146,12 @@ class Filters
 	{
 		$counting = $this->categoriesCountValues();
 
-		return $counting->mapWithKeys( function($item, $key) {
+		return $counting->mapWithKeys( function($item, $key) use ($counting) {
 
 			return [
 				$key => [
 					'id' => $key,
-					// 'name' => isset($this->categories()[$key]) ? $this->categories()[$key] : '', //need to check this
-					'name' => $this->categories()[$key], //need to check this
+					'name' => $this->categoryNameFor($key),
 					'qty' => $item
 				]
 			];
@@ -173,14 +173,17 @@ class Filters
 	}
 
 	/**
-	 * The categories array returned by the products query.
+	 * Returns the category name for the given key.
 	 *
-	 * @return Collection
+	 * @param  integer $key
+	 *
+	 * @return string
 	 */
-	protected function categories() : Collection
+	protected function categoryNameFor($key) : string
 	{
-		return $this->products
-			->pluck('category.id', 'category.name')
-			->flip();
+		return $this->products->pluck('category')
+			->where('id', $key)
+			->pluck('name')
+			->first();
 	}
 }

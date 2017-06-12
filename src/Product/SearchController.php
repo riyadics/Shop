@@ -45,7 +45,7 @@ class SearchController extends Controller
 	}
 
 	/**
-	 * Loads the foundation dashboard.
+	 * Loads the products search.
 	 *
 	 * @return void
 	 */

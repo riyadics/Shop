@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Support;
+namespace Antvel\Contracts;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -70,7 +70,7 @@ abstract class Repository
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    abstract public function create(array $attributes = []);
+    abstract public function create(array $attributes);
 
     /**
      * Update a Model in the database.
