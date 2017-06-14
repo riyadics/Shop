@@ -25,6 +25,7 @@ class Router
         ProductsRouter::class,
         UsersRouter::class,
         DashboardRouter::class,
+        UtilitiesRouter::class,
     ];
 
     /**

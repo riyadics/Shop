@@ -18,6 +18,13 @@ use Antvel\Categories\Models\Category;
 class Categories extends Repository
 {
     /**
+     * The files directory.
+     *
+     * @var string
+     */
+    protected $filesDirectory = 'images/categories';
+
+    /**
      * Creates a new instance.
      *
      * @param Category $category
@@ -26,13 +33,6 @@ class Categories extends Repository
     {
         $this->setModel($category);
     }
-
-    /**
-     * The files directory.
-     *
-     * @var string
-     */
-    protected $filesDirectory = 'img/categories';
 
 	/**
 	 * Creates a new category with a given attributes.
