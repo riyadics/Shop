@@ -94,13 +94,13 @@ class CategoriesTest extends TestCase
 	{
 		$category = $this->repository->create([
         	'icon' => 'glyphicon glyphicon-facetime-video',
-			'_pictures_file' => $this->uploadFile('img/categories'),
+			'_pictures_file' => $this->uploadFile('images/categories'),
 			'description' => 'Electronics devices',
 			'name' => 'Electronics',
 		]);
 
 		//upload assertions
-		Storage::disk('img/categories')->assertExists($this->image($category->image));
+		Storage::disk('images/categories')->assertExists($this->image($category->image));
 		$this->assertNotNull($category->image);
 
 		//other assertions
@@ -113,7 +113,7 @@ class CategoriesTest extends TestCase
 		$parent = $this->repository->create([
         	'icon' => 'glyphicon glyphicon-facetime-video',
 			'description' => 'Electronics devices',
-			'_pictures_file' => $this->uploadFile('img/categories'),
+			'_pictures_file' => $this->uploadFile('images/categories'),
 			'name' => 'Electronics',
 		]);
 
@@ -122,7 +122,7 @@ class CategoriesTest extends TestCase
 		]);
 
 		//upload assertions
-		Storage::disk('img/categories')->assertExists($this->image($parent->image));
+		Storage::disk('images/categories')->assertExists($this->image($parent->image));
 		$this->assertNotNull($parent->image);
 
 		//other assertions
