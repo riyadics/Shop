@@ -81,7 +81,7 @@ class Products2Controller extends Controller
 	 *
 	 * @return void
 	 */
-	public function list(Request $request)
+	public function indexDashboard(Request $request)
 	{
 		$products = $this->products->filter(
 			$request->all()
@@ -89,8 +89,13 @@ class Products2Controller extends Controller
 		->with('creator', 'updater')
 		->paginate(20);
 
-		return view('dashboard.sections.products.list', [
+		return view('dashboard.sections.products.index', [
 			'products' => $products,
 		]);
+	}
+
+	public function create()
+	{
+		return view('dashboard.sections.products.create', []);
 	}
 }

@@ -40,7 +40,7 @@ class UsersProductsController extends Controller
     public function index(Request $request)
     {
     	return view('user.myProducts', [
-    		'products' => $this->products->userProducts($request->all(), 12),
+    		'products' => $this->products->filter($request->all())->paginate(20),
     		'filter' => $request->get('filter'),
     		'panel' => $this->panel,
     	]);

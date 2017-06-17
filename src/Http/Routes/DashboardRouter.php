@@ -32,14 +32,61 @@ class DashboardRouter implements ComponentRouter
 
         ], function ($router) {
 
-            $router->get('dashboard', 'Categories\CategoriesController@index')->name('dashboard.home');
-            $router->get('/', 'Categories\CategoriesController@index')->name('dashboard.home');
-
-            $router->resource('categories', 'Categories\CategoriesController');
-            $router->resource('features', 'Product\FeaturesController');
-            $router->resource('productsF', 'Product\Products2Controller', ['except' => 'index']);
-            $router->get('products', 'Product\Products2Controller@list')->name('products.list');
+            $this->forHome($router);
+            $this->forCategories($router);
+            $this->forProductsFeatures($router);
+            $this->forProducts($router);
 
         });
+	}
+
+	/**
+	 * Registers the dashboard routes.
+	 *
+	 * @param  Registrar $router
+	 *
+	 * @return void
+	 */
+	protected function forHome($router)
+	{
+		$router->get('dashboard', 'Categories\CategoriesController@index')->name('dashboard.home');
+        $router->get('/', 'Categories\CategoriesController@index')->name('dashboard.home');
+	}
+
+	/**
+	 * Registers the dashboard categories routes.
+	 *
+	 * @param  Registrar $router
+	 *
+	 * @return void
+	 */
+	protected function forCategories($router)
+	{
+		$router->resource('categories', 'Categories\CategoriesController');
+	}
+
+	/**
+	 * Registers the dashboard products features routes.
+	 *
+	 * @param  Registrar $router
+	 *
+	 * @return void
+	 */
+	protected function forProductsFeatures($router)
+	{
+		$router->resource('features', 'Product\FeaturesController');
+	}
+
+	/**
+	 * Registers the dashboard products routes.
+	 *
+	 * @param  Registrar $router
+	 *
+	 * @return void
+	 */
+	protected function forProducts($router)
+	{
+		$router->resource('products_dashboard', 'Product\Products2Controller');
+        $router->get('products_dashboard', 'Product\Products2Controller@indexDashboard')->name('products_dashboard.index.dashboard');
 	}
 }

@@ -155,17 +155,17 @@ class Render
 
 
         $imginfo = getimagesize($image);
-        ob_start();
         header('Content-type: '.$imginfo['mime']);
-        ob_clean();
-        ob_end_flush();
         readfile($image);
 	}
 
+    /**
+     * Returns the rendered image path for testing purposes.
+     *
+     * @return string
+     */
     public function mock()
     {
-        // dd('in', $this->thumbnail);
-
         $image = is_null($this->thumbnail)
             ? $this->imagePath()
             : $this->thumbnailPath();
