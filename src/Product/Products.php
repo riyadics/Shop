@@ -11,12 +11,11 @@
 
 namespace Antvel\Product;
 
-use Cache;
 use Antvel\User\Preferences;
 use Antvel\Contracts\Repository;
 use Antvel\Product\Models\Product;
 use Illuminate\Support\Collection;
-use Antvel\User\UsersRepository as Users;
+use Illuminate\Support\Facades\Cache;
 
 class Products extends Repository
 {
@@ -66,36 +65,11 @@ class Products extends Repository
 	 */
 	public function filter($request = [], $limit = null)
 	{
-		$products = $this->getModel()->with('category')
-			->actives()->filter($request)
-			->orderBy('rate_val', 'desc')
-			->take($limit)
-			->get();
-
-		Users::updatePreferences('my_searches', $products);
-
-		return $products;
-	}
-
-	/**
-	 * Filters products by a given request for the logged in user.
-	 *
-	 * @param  array  $request
-	 * @param  int $limit
-	 *
-	 * @return \Illuminate\Database\Eloquent\Collection
-	 */
-	public function userProducts($request = [], $limit = null)
-	{
-		return $this->getModel()->with('category')
-			->when(count($request) == 0, function ($query) {
-				return $query->actives();
-			})
+		return $this->getModel()
+			->with('category')
+			->actives()
 			->filter($request)
-			// ->where('user_id', auth()->user()->id)
-			->orderBy('rate_val', 'desc')
-			->take($limit)
-			->paginate(12);
+			->orderBy('rate_val', 'desc');
 	}
 
 	/**

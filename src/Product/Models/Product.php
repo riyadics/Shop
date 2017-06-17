@@ -60,6 +60,26 @@ class Product extends Model
     }
 
     /**
+     * Returns the user who created the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
+    /**
+     * Returns the user who updated the product.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by', 'id');
+    }
+
+    /**
      * Returns the category of the product.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

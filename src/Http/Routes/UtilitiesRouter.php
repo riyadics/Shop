@@ -32,7 +32,7 @@ class UtilitiesRouter implements ComponentRouter
 
         ], function ($router) {
 
-        	$router->get('images/{file?}', 'ShowController@index')->where('file', '(.*)')->name('images2');
+        	$router->get('images/{file?}', 'RenderController@index')->where('file', '(.*)')->name('images2');
 
         });
 	}

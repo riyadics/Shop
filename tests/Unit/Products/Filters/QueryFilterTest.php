@@ -39,7 +39,7 @@ class QueryFilterTest extends TestCase
 
 		$products = $this->repository->filter([
 			'condition' => 'new',
-		]);
+		])->get();
 
 		$this->assertEquals($products->first()->condition, 'new');
 		$this->assertCount(1, $products);
@@ -53,7 +53,7 @@ class QueryFilterTest extends TestCase
 
 		$products = $this->repository->filter([
 			'brand' => 'apple',
-		]);
+		])->get();
 
 		$this->assertEquals($products->first()->brand, 'apple');
 		$this->assertCount(1, $products);
@@ -68,7 +68,7 @@ class QueryFilterTest extends TestCase
 
 		$products = $this->repository->filter([
 			'search' => 'iPhone',
-		]);
+		])->get();
 
 		$this->assertTrue(strpos($products->first()->description, 'iPhone') !== false);
 		$this->assertTrue(strpos($products->first()->name, 'iPhone') !== false);
@@ -81,9 +81,9 @@ class QueryFilterTest extends TestCase
 		factory(Product::class)->create(['price' => 20]);
 		factory(Product::class)->create(['price' => 30]);
 
-		$byMin = $this->repository->filter(['min' => 10]);
-		$byMax = $this->repository->filter(['max' => 20]);
-		$byMaxAndMax = $this->repository->filter(['min' => 22, 'max' => 30]);
+		$byMin = $this->repository->filter(['min' => 10])->get();
+		$byMax = $this->repository->filter(['max' => 20])->get();
+		$byMaxAndMax = $this->repository->filter(['min' => 22, 'max' => 30])->get();
 
 		$this->assertCount(3, $byMin);
 		$this->assertCount(2, $byMax);
@@ -94,7 +94,7 @@ class QueryFilterTest extends TestCase
 	{
 		$product = factory(Product::class, 2)->create();
 
-		$all = $this->repository->filter();
+		$all = $this->repository->filter()->get();
 		$first = $all->first();
 
 		$this->assertInstanceOf('Antvel\Categories\Models\Category', $first->category);
@@ -122,7 +122,7 @@ class QueryFilterTest extends TestCase
 
 		$byTools = $this->repository->filter([
 			'category' => $tools->id . '|' . $tools->name,
-		]);
+		])->get();
 
 		$this->assertCount(2, $byTools);
 		$byTools->each(function ($item) use ($tools) {
@@ -151,7 +151,7 @@ class QueryFilterTest extends TestCase
 
 		$byToolsAndChildren = $this->repository->filter([
 			'category' => $tools->id . '|' . $tools->name,
-		]);
+		])->get();
 
 		$this->assertCount(4, $byToolsAndChildren);
 		$byToolsAndChildren->each(function ($item) use ($tools, $software) {
@@ -180,71 +180,8 @@ class QueryFilterTest extends TestCase
 			'search' => 'Entertainment',
 			'condition' => 'new',
 			'brands' => 'LG',
-		]);
+		])->get();
 
 		$this->assertCount(4, $products);
 	}
-
-	// public function test_it_can_retrieve_the_logged_in_user_inactive_products()
-	// {
-	// 	$user = factory(User::class)->create();
-	// 	$this->be($user);
-
-	// 	$inactives = factory(Product::class)->create(['status' => 0]);
-
-	// 	$userActives = factory(Product::class)->create([
-	// 		'created_by' => auth()->user()->id,
- //        	// 'updated_by' => auth()->user()->id,
-	// 	]);
-
-	// 	$userInactive = factory(Product::class)->create([
-	// 		'created_by' => $user->id,
- //        	// 'updated_by' => $user->id,
-	// 		'status' => 0,
-	// 	]);
-
-	// 	$products = $this->repository->userProducts([
-	// 		'inactives' => 1
-	// 	]);
-
-	// 	dd($products->first());
-
-	// 	$this->assertCount(1, $products);
-	// 	$this->assertEquals($user->id, $products->first()->user_id);
-	// }
-
-	// public function test_it_can_retrieve_the_logged_in_user_low_stock_products()
-	// {
-	// 	$user = factory(User::class)->create();
-	// 	$this->be($user);
-
-	// 	//other products
-	// 	factory(Product::class)->create([
-	// 		'stock' => 4,
-	// 		'low_stock' => 5
-	// 	]);
-
-	// 	//user products with enough stock
-	// 	factory(Product::class)->create([
-	// 		'stock' => 10,
-	// 		'low_stock' => 5,
-	// 		'user_id' => auth()->user()->id
-	// 	]);
-
-	// 	//user products with low stock
-	// 	factory(Product::class)->create([
-	// 		'stock' => 5,
-	// 		'low_stock' => 5,
-	// 		'user_id' => auth()->user()->id
-	// 	]);
-
-	// 	$products = $this->repository->userProducts([
-	// 		'low_stock' => 1
-	// 	]);
-
-	// 	$this->assertCount(1, $products);
-	// 	$this->assertEquals($user->id, $products->first()->user_id);
-
-	// }
-
 }

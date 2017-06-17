@@ -9,14 +9,14 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Support;
+namespace Antvel\Support\Images;
 
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
-class Pictures
+class ImageControl
 {
 	/**
 	 * The upload process information.

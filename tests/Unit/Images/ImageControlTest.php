@@ -9,17 +9,17 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\Unit;
+namespace Antvel\Tests\Images\Unit;
 
 use Antvel\Tests\TestCase;
-use Antvel\Support\Pictures;
+use Antvel\Support\Images\ImageControl;
 use Illuminate\Support\Facades\Storage;
 
-class PituresTest extends TestCase
+class ImageControlTest extends TestCase
 {
 	protected function pictures($attributes = [])
 	{
-		return Pictures::prepare($attributes);
+		return ImageControl::prepare($attributes);
 	}
 
 	/**
@@ -39,7 +39,7 @@ class PituresTest extends TestCase
 	{
 		$pictures = $this->pictures();
 
-		$this->assertInstanceOf(Pictures::class, $pictures);
+		$this->assertInstanceOf(ImageControl::class, $pictures);
 	}
 
 	public function test_it_protects_against_malicious_inputs()
@@ -51,35 +51,37 @@ class PituresTest extends TestCase
 			'_pictures_delete' => 'whether the user wants to deleted a current file from the server',
 		]);
 
-		$this->assertFalse($pictures->data()->has('foo'));
-		$this->assertTrue($pictures->data()->has('_pictures_file'));
-		$this->assertTrue($pictures->data()->has('_pictures_delete'));
-		$this->assertTrue($pictures->data()->has('_pictures_current'));
+		tap($pictures->data(), function($data) {
+			$this->assertFalse($data->has('foo'));
+			$this->assertTrue($data->has('_pictures_file'));
+			$this->assertTrue($data->has('_pictures_delete'));
+			$this->assertTrue($data->has('_pictures_current'));
+		});
 	}
 
 	public function test_it_is_able_to_upload_a_file()
 	{
 		$picture = $this->pictures([
-			'_pictures_file' => $this->uploadFile('img/categories'),
-		])->store('img/categories');
+			'_pictures_file' => $this->uploadFile('images/categories'),
+		])->store('images/categories');
 
-		Storage::disk('img/categories')->assertExists($this->image($picture));
+		Storage::disk('images/categories')->assertExists($this->image($picture));
 	}
 
 	public function test_it_is_able_to_update_a_given_file()
 	{
 		$picture_one = $this->pictures([
-			'_pictures_file' => $this->uploadFile('img/categories'),
-		])->store('img/categories');
+			'_pictures_file' => $this->uploadFile('images/categories'),
+		])->store('images/categories');
 
-		Storage::disk('img/categories')->assertExists($this->image($picture_one));
+		Storage::disk('images/categories')->assertExists($this->image($picture_one));
 
 		$picture_two = $this->pictures([
 			'_pictures_current' => $picture_one,
 			'_pictures_delete' => true,
-		])->store('img/categories');
+		])->store('images/categories');
 
 		$this->assertNull($picture_two);
-		Storage::disk('img/categories')->assertMissing($this->image($picture_one));
+		Storage::disk('images/categories')->assertMissing($this->image($picture_one));
 	}
 }

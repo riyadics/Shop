@@ -13,9 +13,11 @@ namespace Antvel\Product;
 
 use Antvel\Http\Controller;
 use Illuminate\Http\Request;
-use Antvel\Support\Paginator;
+use Antvel\User\UsersRepository as Users;
 use Antvel\Product\Parsers\Filters as FiltersParser;
 use Antvel\Product\Parsers\Breadcrumb as BreadcrumbParser;
+
+use Antvel\Product\Models\Product;
 
 class Products2Controller extends Controller
 {
@@ -50,13 +52,26 @@ class Products2Controller extends Controller
 	 */
 	public function index(Request $request)
 	{
-		$products = $this->products->filter($request->all());
+		//I need to come back in here and check how I can sync the paginated products
+		//with the filters. The issue here is paginated does not contain the whole
+		//result, therefore, the filters count are worng.
+
+		$products = $this->products->filter(
+			$request->all()
+		);
+
+		// this line is required in order for the store to show
+		// the counter on the side bar filters.
+
+		$allProducts = $products->get();
+
+		Users::updatePreferences('my_searches', $allProducts);
 
 		return view('products.index', [
-			'products' => Paginator::trace($request)->paginate($products, 28),
-			'suggestions' => $this->products->suggestFor($products),
+			'suggestions' => $this->products->suggestFor($allProducts),
 			'refine' => BreadcrumbParser::parse($request->all()),
-			'filters' => FiltersParser::parse($products),
+			'filters' => FiltersParser::parse($allProducts),
+			'products' => $products->paginate(28),
 			'panel' => $this->panel,
 		]);
 	}
@@ -68,8 +83,14 @@ class Products2Controller extends Controller
 	 */
 	public function list(Request $request)
 	{
+		$products = $this->products->filter(
+			$request->all()
+		)
+		->with('creator', 'updater')
+		->paginate(20);
+
 		return view('dashboard.sections.products.list', [
-			'products' => $this->products->userProducts($request->all(), 12),
+			'products' => $products,
 		]);
 	}
 }

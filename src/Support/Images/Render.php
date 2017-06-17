@@ -14,7 +14,7 @@ namespace Antvel\Support\Images;
 use Illuminate\Support\Arr;
 use Intervention\Image\ImageManager;
 
-class Image
+class Render
 {
 	/**
 	 * The observable image.
@@ -52,7 +52,7 @@ class Image
 	 *
 	 * @return self
 	 */
-	public static function make($image, $options = [])
+	public static function image($image, $options = [])
 	{
 		$static = new static;
 
@@ -72,7 +72,7 @@ class Image
 	 */
 	protected function normalizeNames()
 	{
-		if (! $this->validFile($this->imagePath())) {
+        if (! $this->validFile($this->imagePath())) {
 			$this->image = $this->default();
 		}
 
@@ -90,7 +90,7 @@ class Image
 	 */
 	protected function validFile($file)
 	{
-		return preg_match('/\.(gif|png|jpe?g)$/', $file) && file_exists($file);
+		return !! (preg_match('/\.(gif|png|jpe?g)$/', $file) && file_exists($file));
 	}
 
 	/**
@@ -147,16 +147,31 @@ class Image
      *
      * @return void
      */
-	public function render()
+	public function cast()
 	{
 		$image = is_null($this->thumbnail)
 			? $this->imagePath()
 			: $this->thumbnailPath();
 
-		$imginfo = getimagesize($image);
+
+        $imginfo = getimagesize($image);
+        ob_start();
         header('Content-type: '.$imginfo['mime']);
+        ob_clean();
+        ob_end_flush();
         readfile($image);
 	}
+
+    public function mock()
+    {
+        // dd('in', $this->thumbnail);
+
+        $image = is_null($this->thumbnail)
+            ? $this->imagePath()
+            : $this->thumbnailPath();
+
+        return $image;
+    }
 
 	/**
      * Returns the requested width.

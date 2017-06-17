@@ -11,9 +11,9 @@
 
 namespace Antvel\Categories;
 
-use Antvel\Support\Pictures;
 use Antvel\Contracts\Repository;
 use Antvel\Categories\Models\Category;
+use Antvel\Support\Images\ImageControl;
 
 class Categories extends Repository
 {
@@ -44,7 +44,7 @@ class Categories extends Repository
     public function create(array $attributes = []) : Category
 	{
         if (isset($attributes['_pictures_file'])) {
-            $attributes['image'] = Pictures::prepare($attributes)->store($this->filesDirectory);
+            $attributes['image'] = ImageControl::prepare($attributes)->store($this->filesDirectory);
         }
 
         return Category::create($attributes);
@@ -63,7 +63,7 @@ class Categories extends Repository
     {
         $category = $this->modelOrFind($idOrModel);
 
-        $picture = Pictures::prepare($attributes);
+        $picture = ImageControl::prepare($attributes);
 
         if ($picture->wasUpdated()) {
            $attributes['image'] = $picture->store($this->filesDirectory);

@@ -11,10 +11,10 @@
 
 namespace Antvel\Product\Parsers;
 
-use Cache;
 use Antvel\Product\Features;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Cache;
 
 class Filters
 {

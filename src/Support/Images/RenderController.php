@@ -11,10 +11,10 @@
 
 namespace Antvel\Support\Images;
 
+use Antvel\Http\Controller;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
-class ShowController extends Controller
+class RenderController extends Controller
 {
 	/**
 	 * Renders the given imagen.
@@ -28,6 +28,6 @@ class ShowController extends Controller
 	{
 		$options = $request->all();
 
-		return Image::make($file, $options)->render();
+		return Render::image($file, $options)->cast();
 	}
 }

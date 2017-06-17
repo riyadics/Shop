@@ -39,7 +39,7 @@ class SuggestionsTest extends TestCase
 
 		$results = $this->repository->filter([
 			'category' => $this->category->id .'|'.$this->category->name
-		]);
+		])->get();
 
 		$suggestion = $this->repository->suggestFor($results);
 
