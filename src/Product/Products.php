@@ -38,7 +38,7 @@ class Products extends Repository
      */
     public function create(array $attributes = [])
     {
-    	//
+    	return Product::create($attributes);
     }
 
     /**

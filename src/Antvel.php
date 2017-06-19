@@ -11,8 +11,8 @@
 
 namespace Antvel;
 
-use Antvel\Http\Routes\Router;
 use Illuminate\Container\Container;
+use Antvel\Http\Routes\AntvelRouter;
 use Illuminate\Support\Facades\Route;
 
 class Antvel
@@ -72,7 +72,7 @@ class Antvel
     public static function routes($callback = null, array $options = [])
     {
         $callback = $callback ?: function ($router) {
-            Router::make($router);
+            AntvelRouter::make($router);
         };
 
         $defaultOptions = [

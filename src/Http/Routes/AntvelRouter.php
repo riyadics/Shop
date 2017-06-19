@@ -13,7 +13,7 @@ namespace Antvel\Http\Routes;
 
 use Illuminate\Contracts\Routing\Registrar as Router;
 
-class Router
+class AntvelRouter
 {
     /**
      * The antvel routers.
