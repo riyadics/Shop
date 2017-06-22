@@ -13,11 +13,13 @@ namespace Antvel\Product;
 
 use Antvel\Http\Controller;
 use Illuminate\Http\Request;
-use Antvel\User\UsersRepository as Users;
+use Antvel\Product\Features;
+use Antvel\Product\Attributes;
+use Antvel\Categories\Categories;
+use Antvel\User\UsersRepository as Users; //
+use Antvel\Product\Requests\ProductsRequest;
 use Antvel\Product\Parsers\Filters as FiltersParser;
 use Antvel\Product\Parsers\Breadcrumb as BreadcrumbParser;
-
-use Antvel\Product\Models\Product;
 
 class Products2Controller extends Controller
 {
@@ -94,8 +96,32 @@ class Products2Controller extends Controller
 		]);
 	}
 
-	public function create()
+	/**
+	 * Show the creation form.
+	 *
+	 * @param  Categories $categories
+	 *
+	 * @return void
+	 */
+	public function create(Categories $categories, Features $features)
 	{
-		return view('dashboard.sections.products.create', []);
+		return view('dashboard.sections.products.create', [
+			'conditions' => Attributes::make('condition')->get(),
+			'categories' => $categories->actives(),
+			'features' => $features->filterable(),
+			'MAX_PICS' => Products::MAX_PICS,
+		]);
+	}
+
+	/**
+	 * Stores a new product.
+	 *
+	 * @param  ProductsRequest $request
+	 *
+	 * @return void
+	 */
+	public function store(ProductsRequest $request)
+	{
+		//
 	}
 }

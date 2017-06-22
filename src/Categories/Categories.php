@@ -143,4 +143,14 @@ class Categories extends Repository
             ->orderBy('name')->take($limit)
             ->get();
     }
+
+    /**
+     * Returns a collection with the active categories.
+     *
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function actives()
+    {
+        return $this->find([ 'status' => true ]);
+    }
 }

@@ -37,28 +37,23 @@ class ProductsTest extends TestCase
 		//it has to belong to a valid category.
 		//features have to be validated throught the ones that are in DB.
 
-		$data = [
-			'category_id',
-			'created_by',
-			'updated_by',
-			'parent_id',
-			'products_group',
-			'status',
-			'type',
-			'name',
-			'description',
-			'price',
-			'stock',
-			'low_stock',
-			'bar_code',
-			'brand',
-			'condition',
-			'tags',
-			'features',
-			'rate_val',
-			'rate_count',
-			'sales_count',
-			'view_counts'
-		];
+		$product = $this->repository->create([
+			'category_id' => 1,
+			'created_by' => 1,
+			'updated_by' => 2,
+			'name' => 'name',
+			'description' => 'des',
+			'cost' => 5,
+			'price' => 10,
+			'stock' => 5,
+			'low_stock' => 1,
+			'bar_code' => 'barcode',
+			'brand' => 'apple',
+			'condition' => 'new',
+			'tags' => 'a,b,c',
+			'features' => '{}',
+		]);
+
+		$this->assertEquals('name', $product->name);
 	}
 }

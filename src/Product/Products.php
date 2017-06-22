@@ -11,14 +11,17 @@
 
 namespace Antvel\Product;
 
-use Antvel\User\Preferences;
 use Antvel\Contracts\Repository;
 use Antvel\Product\Models\Product;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class Products extends Repository
 {
+	/**
+	 * The maximum of pictures files per product.
+	 */
+	const MAX_PICS = 5;
+
 	/**
 	 * Creates a new instance.
 	 *
@@ -75,10 +78,10 @@ class Products extends Repository
 	/**
 	 * Generates a suggestion based on a given constraints.
 	 *
-	 * @param  Collection $products
+	 * @param  \Illuminate\Support\Collection $products
 	 * @param  int $limit
 	 *
-	 * @return Collection
+	 * @return \Illuminate\Support\Collection
 	 */
 	public function suggestFor($products, $key = 'my_searches', int $limit = 8)
 	{

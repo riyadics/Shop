@@ -9,6 +9,7 @@
  * file that was distributed with this source code.
  */
 
+use Antvel\Product\Attributes;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -29,15 +30,16 @@ class CreateProductsTable extends Migration
             $table->integer('parent_id')->nullable();
             $table->integer('products_group')->unsigned()->nullable();
             $table->boolean('status')->default(1);
-            $table->enum('type', ['software_key', 'software', 'item', 'gift_card'])->default('item');
+            $table->enum('type', Attributes::make('type')->keys())->default('item');
             $table->string('name', 100);
             $table->string('description', 500);
-            $table->double('price', 10, 2);
+            $table->integer('cost');
+            $table->integer('price');
             $table->integer('stock')->default(1);
             $table->integer('low_stock')->default(0);
             $table->string('bar_code', 100)->nullable();
             $table->string('brand', 50)->nullable();
-            $table->enum('condition', ['new', 'used', 'refurbished'])->default('new');
+            $table->enum('condition', Attributes::make('condition')->keys())->default('new');
             $table->mediumText('tags')->nullable();
             $table->json('features')->nullable();
             $table->double('rate_val', 10, 2)->default(0)->nullable();

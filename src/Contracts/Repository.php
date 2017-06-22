@@ -152,4 +152,14 @@ abstract class Repository
 
         return $model;
     }
+
+    /**
+     * Returns a null entity.
+     *
+     * @return mixed
+     */
+    public function nullModel()
+    {
+        return new $this->model;
+    }
 }

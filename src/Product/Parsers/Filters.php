@@ -58,6 +58,7 @@ class Filters
 		return Cache::remember('product_features_filterable', $cacheExpiration, function () {
 			return Container::getInstance()->make(Features::class)
 				->filterable()
+				->pluck('name')
 				->all();
 		});
 	}

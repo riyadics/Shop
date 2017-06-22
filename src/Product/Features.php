@@ -93,10 +93,26 @@ class Features extends Repository
      *
      * @return \Illuminate\Database\Eloquent\Collection
      */
-    public function filterable($limit = 5)
+    public function filterable($limit = 5, $pluck = null)
     {
-        return ProductFeatures::where('filterable', true)
+        return ProductFeatures::where('status', true)
+            ->where('filterable', true)
             ->take($limit)
-            ->pluck('name');
+            ->get();
+    }
+
+    /**
+     * Returns an array with the validation rules for the filterable features.
+     *
+     * @return array
+     */
+    public function filterableValidationRules() : array
+    {
+        return $this->filterable()
+            ->filter(function ($item) {
+                return trim($item->validation_rules) != '' && ! is_null($item->validation_rules);
+            })->mapWithKeys(function ($item) {
+                return [$item->name => $item->validation_rules];
+            })->all();
     }
 }

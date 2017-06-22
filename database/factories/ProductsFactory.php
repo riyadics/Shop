@@ -29,7 +29,8 @@ $factory->define(Product::class, function (Faker $faker) use ($factory)
         'stock' => $faker->numberBetween(20, 50),
         'description' => $faker->text(490),
         'name' => $faker->text(90),
-        'price' => 10,
+        'cost' => rand(1, 5),
+        'price' => rand(5, 10),
 
         'features' => json_encode([
             'images' => [

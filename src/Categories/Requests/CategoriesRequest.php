@@ -13,29 +13,9 @@ namespace Antvel\Categories\Requests;
 
 use Antvel\Http\Request;
 use Illuminate\Validation\Rule;
-use Antvel\Categories\Categories;
 
 class CategoriesRequest extends Request
 {
-    /**
-     * The categories repository.
-     *
-     * @var Categories
-     */
-    protected $categories = null;
-
-    /**
-     * Creates a new instance.
-     *
-     * @param Categories $categories
-     *
-     * @return void
-     */
-    public function __construct(Categories $categories)
-    {
-        $this->categories = $categories;
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      *

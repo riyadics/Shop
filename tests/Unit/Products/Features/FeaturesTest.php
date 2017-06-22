@@ -102,18 +102,52 @@ class FeaturesTest extends TestCase
 	}
 
 	/** @test */
-	function it_is_able_to_expose_the_features_allowed_to_be_in_products_filtering()
+	function exposes_the_filterable_features_that_are_used_in_products_listing()
 	{
-		$notAllowed = factory(ProductFeatures::class)->create();
+		$notAllowed = factory(ProductFeatures::class)->create(['name' => 'bar']);
 
 		$allowed = factory(ProductFeatures::class)->create([
 			'name' => 'foo',
-			'filterable' => true
+			'filterable' => true,
 		]);
 
 	    $features = $this->repository->filterable();
 
-	    $this->assertContains('foo', $features);
 	    $this->assertCount(1, $features);
+
+	    tap($features->pluck('name'), function($names) {
+	    	$this->assertTrue($names->contains('foo'));
+	    	$this->assertFalse($names->contains('bar'));
+	    });
+	}
+
+	/** @test */
+	function generates_an_array_with_the_validation_rules_for_the_filterable_features()
+	{
+		$featureOne = factory(ProductFeatures::class)->create([
+			'name' => 'one',
+			'filterable' => true,
+			'validation_rules' => 'required|max:20|min:10',
+		]);
+
+		$featureTwo = factory(ProductFeatures::class)->create([
+			'name' => 'two',
+			'filterable' => true,
+			'validation_rules' => 'required|min:10',
+		]);
+
+		$featureThree = factory(ProductFeatures::class)->create([
+			'name' => 'three',
+			'filterable' => true,
+			'validation_rules' => 'required',
+		]);
+
+		tap($this->repository->filterableValidationRules(), function($validationRules) {
+			$this->assertTrue(is_array($validationRules));
+			$this->assertCount(3, $validationRules);
+			$this->assertEquals($validationRules['one'], 'required|max:20|min:10');
+			$this->assertEquals($validationRules['two'], 'required|min:10');
+			$this->assertEquals($validationRules['three'], 'required');
+		});
 	}
 }
