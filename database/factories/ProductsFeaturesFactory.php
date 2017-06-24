@@ -25,3 +25,11 @@ $factory->define(ProductFeatures::class, function (Faker $faker) use ($factory)
         'status' => true,
     ];
 });
+
+$factory->state(ProductFeatures::class, 'filterable', function ($faker) {
+    return [
+        'validation_rules' => null,
+        'name' => 'Filterable Name',
+        'filterable' => true,
+    ];
+});

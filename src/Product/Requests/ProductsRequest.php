@@ -51,7 +51,7 @@ class ProductsRequest extends Request
     {
         return [
             'name' => 'required|alpha_num',
-            'description' => 'required|alpha_num',
+            'description' => 'required',
             'cost' => 'required|integer',
             'price' => 'required|integer',
             'brand' => 'required|alpha_num',
@@ -88,9 +88,7 @@ class ProductsRequest extends Request
      */
     protected function forPictures() : array
     {
-        // dd($this, $this->all());
-
-        $pictures = Collection::make($this->allFiles())->filter(function($item, $key) {
+        $pictures = Collection::make($this->all())->filter(function($item, $key) {
             return $key == 'pictures';
         })->get('pictures');
 
@@ -99,8 +97,9 @@ class ProductsRequest extends Request
         }
 
         //We check the request taking into account the maximum number of files allowed per product.
-        for ($i=1; $i <= Products::MAX_PICS; $i++) {
+        $rules = [];
 
+        for ($i=1; $i <= Products::MAX_PICS; $i++) {
             //we check whether the request has a picture for the given index. If the index is
             //present in the request files, we create the corresponding rule for it.
             if (isset($pictures[$i])) {
@@ -120,6 +119,18 @@ class ProductsRequest extends Request
      * @return array
      */
     public function messages() : array
+    {
+        return array_merge($this->picturesErrorsMessages(), [
+            'condition.in' => trans('products.validation_errors.condition')
+        ]);
+    }
+
+    /**
+     * Returns the messages errors for given pictures inputs.
+     *
+     * @return array
+     */
+    protected function picturesErrorsMessages()
     {
         $messages = [];
 
