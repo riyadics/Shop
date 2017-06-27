@@ -77,13 +77,13 @@ class QueryFilterTest extends TestCase
 
 	public function test_it_can_retrieve_products_by_price()
 	{
-		factory(Product::class)->create(['price' => 10]);
-		factory(Product::class)->create(['price' => 20]);
-		factory(Product::class)->create(['price' => 30]);
+		factory(Product::class)->create(['price' => 1000]);
+		factory(Product::class)->create(['price' => 2000]);
+		factory(Product::class)->create(['price' => 3000]);
 
-		$byMin = $this->repository->filter(['min' => 10])->get();
-		$byMax = $this->repository->filter(['max' => 20])->get();
-		$byMaxAndMax = $this->repository->filter(['min' => 22, 'max' => 30])->get();
+		$byMin = $this->repository->filter(['min' => 1000])->get();
+		$byMax = $this->repository->filter(['max' => 2000])->get();
+		$byMaxAndMax = $this->repository->filter(['min' => 2200, 'max' => 3000])->get();
 
 		$this->assertCount(3, $byMin);
 		$this->assertCount(2, $byMax);

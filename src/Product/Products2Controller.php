@@ -16,10 +16,10 @@ use Illuminate\Http\Request;
 use Antvel\Product\Features;
 use Antvel\Product\Attributes;
 use Antvel\Categories\Categories;
+use Antvel\Product\Parsers\Filters;
+use Antvel\Product\Parsers\Breadcrumb;
 use Antvel\User\UsersRepository as Users; //
 use Antvel\Product\Requests\ProductsRequest;
-use Antvel\Product\Parsers\Filters as FiltersParser;
-use Antvel\Product\Parsers\Breadcrumb as BreadcrumbParser;
 
 class Products2Controller extends Controller
 {
@@ -71,8 +71,8 @@ class Products2Controller extends Controller
 
 		return view('products.index', [
 			'suggestions' => $this->products->suggestFor($allProducts),
-			'refine' => BreadcrumbParser::parse($request->all()),
-			'filters' => FiltersParser::parse($allProducts),
+			'refine' => Breadcrumb::parse($request->all()),
+			'filters' => Filters::parse($allProducts),
 			'products' => $products->paginate(28),
 			'panel' => $this->panel,
 		]);
@@ -85,11 +85,9 @@ class Products2Controller extends Controller
 	 */
 	public function indexDashboard(Request $request)
 	{
-		$products = $this->products->filter(
-			$request->all()
-		)
-		->with('creator', 'updater')
-		->paginate(20);
+		$products = $this->products->filter($request->all())
+			->with('creator', 'updater')
+			->paginate(20);
 
 		return view('dashboard.sections.products.index', [
 			'products' => $products,
@@ -122,6 +120,10 @@ class Products2Controller extends Controller
 	 */
 	public function store(ProductsRequest $request)
 	{
-		//
+		$this->products->create(
+			$request->all()
+		);
+
+		return back();
 	}
 }

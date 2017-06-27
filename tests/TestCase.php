@@ -61,6 +61,19 @@ abstract class TestCase extends Orchestra
 
         Storage::fake($disk);
 
-        return UploadedFile::fake()->image('avatar.jpg');
+        return UploadedFile::fake()->image($file);
+    }
+
+    /**
+     * Returns a uploaded file name.
+     *
+     * @param  string $fileName
+     * @return string
+     */
+    protected function image($fileName)
+    {
+        $fileName = explode('/', $fileName);
+
+        return end($fileName);
     }
 }

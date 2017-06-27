@@ -208,17 +208,4 @@ class CategoriesTest extends TestCase
 		$this->assertTrue($categories->where('name', 'biz')->isEmpty());
 		$this->assertTrue($categories->count() == 1);
 	}
-
-	/**
-	 * Returns a uploaded file name.
-	 *
-	 * @param  string $fileName
-	 * @return string
-	 */
-	protected function image($fileName)
-	{
-		$fileName = explode('/', $fileName);
-
-		return end($fileName);
-	}
 }

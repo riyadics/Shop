@@ -12,7 +12,7 @@
 namespace Antvel\Tests\Unit\Users;
 
 use Antvel\Tests\TestCase;
-use Antvel\User\Models\{ User, Person, Business };
+use Antvel\User\Models\User;
 
 abstract class UsersTestCase extends TestCase
 {

@@ -29,7 +29,7 @@ class Product extends Model
      *
      * @var array
      */
-    protected $appends = ['num_of_reviews'];
+    protected $appends = ['num_of_reviews']; //while refactoring
 
     /**
      * The attributes that are mass assignable.
@@ -38,7 +38,7 @@ class Product extends Model
      */
     protected $fillable = [
         'category_id', 'created_by', 'updated_by', 'name', 'description', 'price', 'cost',
-        'stock', 'features', 'barcode', 'condition', 'rate_val',
+        'stock', 'features', 'barcode', 'condition', 'rate_val', 'tags',
         'rate_count', 'low_stock', 'status', 'parent_id',
     ];
 
@@ -150,7 +150,18 @@ class Product extends Model
         return json_decode($this->attributes['features'], true);
     }
 
-
+    /**
+     * Set the product tags.
+     *
+     * @param  string  $value
+     * @return void
+     */
+    public function setTagsAttribute($value)
+    {
+        $this->attributes['tags'] = str_replace(' ', ',',
+            mb_strtolower($value)
+        );
+    }
 
     /////////// while refactoring
     public function details()
@@ -161,12 +172,5 @@ class Product extends Model
     public function getNumOfReviewsAttribute()
     {
         return $this->rate_count.' '.\Lang::choice('store.review', $this->rate_count);
-    }
-
-    public function scopeFree($query)
-    {
-        if (! config('app.offering_free_products')) {
-            $query->where('type', '<>', 'freeproduct');
-        }
     }
 }

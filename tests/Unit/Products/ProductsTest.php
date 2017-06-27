@@ -12,7 +12,8 @@
 namespace Antvel\Tests\Unit\Products;
 
 use Antvel\Tests\TestCase;
-use Antvel\Product\Models\Product;
+use Antvel\Product\Products;
+use Illuminate\Support\Facades\Storage;
 
 class ProductsTest extends TestCase
 {
@@ -27,33 +28,55 @@ class ProductsTest extends TestCase
 	function products_repository_implements_the_correct_model()
 	{
 	    $this->assertNotNull($this->repository->getModel());
-		$this->assertInstanceOf(Product::class, $this->repository->getModel());
+		$this->assertInstanceOf('Antvel\Product\Models\Product', $this->repository->getModel());
 	}
 
 	/** @test */
-	function it_can_create_a_new_product()
+	function a_repository_can_create_new_products()
 	{
-		//a user can create a new product.
-		//it has to belong to a valid category.
-		//features have to be validated throught the ones that are in DB.
-
 		$product = $this->repository->create([
 			'category_id' => 1,
 			'created_by' => 1,
-			'updated_by' => 2,
-			'name' => 'name',
-			'description' => 'des',
-			'cost' => 5,
-			'price' => 10,
+			'updated_by' => 1,
+			'name' => 'iPhone Seven',
+			'description' => 'The iPhone 7',
+			'cost' => 64900,
+			'price' => 74900,
 			'stock' => 5,
 			'low_stock' => 1,
-			'bar_code' => 'barcode',
 			'brand' => 'apple',
 			'condition' => 'new',
-			'tags' => 'a,b,c',
-			'features' => '{}',
+			'features' => [
+				'weight' => '10',
+				'dimensions' => '5x5x5',
+				'color' => 'black',
+			],
+			'pictures' => [
+				1 => $this->uploadFile('images/products'),
+				2 => $this->uploadFile('images/products'),
+				3 => $this->uploadFile('images/products'),
+			],
 		]);
 
-		$this->assertEquals('name', $product->name);
+		tap($product->fresh(), function ($product) {
+
+			$this->assertEquals('iPhone Seven', $product->name);
+			$this->assertEquals('The iPhone 7', $product->description);
+			$this->assertEquals('iphone,seven', $product->tags);
+			$this->assertEquals(64900, $product->cost);
+			$this->assertEquals(74900, $product->price);
+
+			//assert whether the product features were parsed right.
+			$this->assertEquals(10, $product->features['weight']);
+			$this->assertEquals('5x5x5', $product->features['dimensions']);
+			$this->assertEquals('black', $product->features['color']);
+
+			//assert whether the product pictures exist.
+			for ($i=0; $i < count($product->features['images']); $i++) {
+				Storage::disk('images/products')->assertExists(
+					$this->image($product->features['images'][$i])
+				);
+			}
+		});
 	}
 }
