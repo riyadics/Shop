@@ -145,9 +145,9 @@ class FeaturesTest extends TestCase
 		tap($this->repository->filterableValidationRules(), function($validationRules) {
 			$this->assertTrue(is_array($validationRules));
 			$this->assertCount(3, $validationRules);
-			$this->assertEquals($validationRules['one'], 'required|max:20|min:10');
-			$this->assertEquals($validationRules['two'], 'required|min:10');
-			$this->assertEquals($validationRules['three'], 'required');
+			$this->assertEquals($validationRules['features.one'], 'required|max:20|min:10');
+			$this->assertEquals($validationRules['features.two'], 'required|min:10');
+			$this->assertEquals($validationRules['features.three'], 'required');
 		});
 	}
 }

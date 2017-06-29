@@ -41,19 +41,6 @@ class ProductsRequestTest extends TestCase
 	}
 
 	/** @test */
-	function the_product_name_has_to_be_alphanumeric()
-	{
-	    $request = $this->submit(['name' => 'foo*']);
-
-		$validator = Validator::make($request->all(), $request->rules());
-
-		tap($validator->messages(), function ($messages) {
-			$this->assertTrue($messages->has('name'));
-			$this->assertEquals('validation.alpha_num', array_first($messages->get('name')));
-		});
-	}
-
-	/** @test */
 	function the_product_description_is_required()
 	{
 		$request = $this->submit(['description' => '']);
@@ -84,7 +71,7 @@ class ProductsRequestTest extends TestCase
 	}
 
 	/** @test */
-	function the_product_cost_has_to_be_integer()
+	function the_product_cost_has_to_be_numeric()
 	{
 	    $request = $this->submit(['cost' => 'bar']);
 
@@ -92,7 +79,7 @@ class ProductsRequestTest extends TestCase
 
 		tap($validator->messages(), function ($messages) {
 			$this->assertTrue($messages->has('cost'));
-			$this->assertEquals('validation.integer', array_first($messages->get('cost')));
+			$this->assertEquals('validation.numeric', array_first($messages->get('cost')));
 		});
 	}
 
@@ -112,7 +99,7 @@ class ProductsRequestTest extends TestCase
 	}
 
 	/** @test */
-	function the_product_price_has_to_be_integer()
+	function the_product_price_has_to_be_numeric()
 	{
 	    $request = $this->submit(['price' => 'bar']);
 
@@ -120,7 +107,7 @@ class ProductsRequestTest extends TestCase
 
 		tap($validator->messages(), function ($messages) {
 			$this->assertTrue($messages->has('price'));
-			$this->assertEquals('validation.integer', array_first($messages->get('price')));
+			$this->assertEquals('validation.numeric', array_first($messages->get('price')));
 		});
 	}
 
@@ -256,6 +243,20 @@ class ProductsRequestTest extends TestCase
 	}
 
 	/** @test */
+	function it_validates_the_product_pictures_dimensions()
+	{
+		$request = $this->submit(['pictures' => [
+			$this->uploadFile('images/products'),
+		]]);
+
+		$validator = Validator::make(
+	    	$request->all(), $request->rules()
+	    );
+
+	    $this->assertFalse($validator->messages()->has('pictures'));
+	}
+
+	/** @test */
 	function it_builds_dynamic_features_rules_based_upon_request()
 	{
 		$featureRequired = factory('Antvel\Product\Models\ProductFeatures')->states('filterable')->create([
@@ -268,11 +269,11 @@ class ProductsRequestTest extends TestCase
 			'validation_rules' => 'max:20|min:10'
 		]);
 
-		$featuresRules = $this->app->make('Antvel\Product\Features')->filterableValidationRules();
-
 		$request = $this->submit([
-			'featureRequired' => '',
-			'featureMaxAndMin' => 2
+			'features' => [
+				'featureRequired' => '',
+				'featureMaxAndMin' => 2
+			],
 		]);
 
 		$validator = Validator::make(
@@ -280,10 +281,10 @@ class ProductsRequestTest extends TestCase
 	    );
 
 		tap($validator->messages(), function ($messages) {
-			$this->assertTrue($messages->has('featureRequired'));
-			$this->assertTrue($messages->has('featureMaxAndMin'));
-			$this->assertEquals('validation.required', array_first($messages->get('featureRequired')));
-			$this->assertEquals('validation.min.string', array_first($messages->get('featureMaxAndMin')));
+			$this->assertTrue($messages->has('features.featureRequired'));
+			$this->assertTrue($messages->has('features.featureMaxAndMin'));
+			$this->assertEquals('validation.required', array_first($messages->get('features.featureRequired')));
+			$this->assertEquals('validation.min.string', array_first($messages->get('features.featureMaxAndMin')));
 		});
 	}
 }

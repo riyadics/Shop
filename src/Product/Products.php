@@ -15,22 +15,10 @@ use Antvel\Contracts\Repository;
 use Antvel\Product\Models\Product;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Antvel\Support\Images\ImageControl;
+use Antvel\Product\Parsers\FeaturesParser;
 
 class Products extends Repository
 {
-	/**
-	 * The maximum of pictures files per product.
-	 */
-	const MAX_PICS = 5;
-
-	/**
-     * The files directory.
-     *
-     * @var string
-     */
-    protected $filesDirectory = 'images/products';
-
 	/**
 	 * Creates a new instance.
 	 *
@@ -48,62 +36,21 @@ class Products extends Repository
      *
      * @return \Illuminate\Database\Eloquent\Model
      */
-    public function create(array $attributes = [])
+    public function create(array $attributes)
     {
-    	$attr = Collection::make($attributes)
-    		->except('features', 'pictures')
-    		->all();
+        $attributes = Collection::make($attributes);
 
-    	$attr['features'] = json_encode(array_merge(
-    		$this->parseFeatures($attributes),
-    		$this->parsePictures($attributes)
-    	));
+        $attr = $attributes->except('features', 'pictures')->merge([
+            'features' => FeaturesParser::parse($attributes->only('pictures', 'features'))->toJson(),
+            'category_id' => $attributes->get('category'),
+            'price' => $attributes->get('price') * 100,
+            'cost' => $attributes->get('cost') * 100,
+            'created_by' => auth()->user()->id,
+            'updated_by' => auth()->user()->id,
+            'tags' => $attributes->get('name'),
+        ])->all();
 
-        $attr['tags'] = $attributes['name'];
-
-    	return Product::create($attr);
-    }
-
-    /**
-     * Parses the product features.
-     *
-     * @param  array $attributes
-     *
-     * @return array
-     */
-    protected function parseFeatures($attributes) : array
-    {
-    	$features = Collection::make($attributes)->only('features')->get('features');
-
-    	if (is_null($features)) {
-    		return [];
-    	}
-
-    	return $features;
-    }
-
-    /**
-     * Parses the product pictures.
-     *
-     * @param  array $attributes
-     *
-     * @return array
-     */
-    protected function parsePictures(array $attributes) : array
-    {
-		$pictures = Collection::make($attributes)->only('pictures')->get('pictures');
-
-		if (is_null($pictures)) {
-			return [];
-		}
-
-    	for ($i=1; $i<=self::MAX_PICS; $i++) {
-    		if (isset($pictures[$i])) {
-    			$pics['images'][] = ImageControl::prepare(['_pictures_file' => $pictures[$i]])->store($this->filesDirectory);
-    		}
-    	}
-
-    	return $pics;
+		return Product::create($attr);
     }
 
     /**

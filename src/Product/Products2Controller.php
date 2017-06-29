@@ -14,11 +14,8 @@ namespace Antvel\Product;
 use Antvel\Http\Controller;
 use Illuminate\Http\Request;
 use Antvel\Product\Features;
-use Antvel\Product\Attributes;
 use Antvel\Categories\Categories;
-use Antvel\Product\Parsers\Filters;
-use Antvel\Product\Parsers\Breadcrumb;
-use Antvel\User\UsersRepository as Users; //
+use Antvel\User\UsersRepository as Users; // needs refactor
 use Antvel\Product\Requests\ProductsRequest;
 
 class Products2Controller extends Controller
@@ -67,12 +64,13 @@ class Products2Controller extends Controller
 
 		$allProducts = $products->get();
 
+		// needs refactor
 		Users::updatePreferences('my_searches', $allProducts);
 
 		return view('products.index', [
+			'refine' => \Antvel\Product\Parsers\Breadcrumb::parse($request->all()),
+			'filters' => \Antvel\Product\Parsers\Filters::parse($allProducts),
 			'suggestions' => $this->products->suggestFor($allProducts),
-			'refine' => Breadcrumb::parse($request->all()),
-			'filters' => Filters::parse($allProducts),
 			'products' => $products->paginate(28),
 			'panel' => $this->panel,
 		]);
@@ -95,19 +93,20 @@ class Products2Controller extends Controller
 	}
 
 	/**
-	 * Show the creation form.
+	 * Show the creating form.
 	 *
 	 * @param  Categories $categories
+	 * @param  Features $features
 	 *
 	 * @return void
 	 */
 	public function create(Categories $categories, Features $features)
 	{
 		return view('dashboard.sections.products.create', [
-			'conditions' => Attributes::make('condition')->get(),
+			'conditions' => \Antvel\Product\Attributes::make('condition')->get(),
+			'MAX_PICS' => \Antvel\Product\Parsers\FeaturesParser::MAX_PICS,
 			'categories' => $categories->actives(),
 			'features' => $features->filterable(),
-			'MAX_PICS' => Products::MAX_PICS,
 		]);
 	}
 
@@ -120,10 +119,31 @@ class Products2Controller extends Controller
 	 */
 	public function store(ProductsRequest $request)
 	{
-		$this->products->create(
+		$product = $this->products->create(
 			$request->all()
 		);
 
-		return back();
+		return redirect()->to(route('items.edit', [
+			'item' => $product->id
+		]));
+	}
+
+	/**
+	 * Show the editing form.
+	 *
+	 * @param  Categories $categories
+	 * @param  Features $features
+	 *
+	 * @return void
+	 */
+	public function edit($item, Categories $categories, Features $features)
+	{
+		return view('dashboard.sections.products.edit', [
+			'conditions' => \Antvel\Product\Attributes::make('condition')->get(),
+			'MAX_PICS' => \Antvel\Product\Parsers\FeaturesParser::MAX_PICS,
+			'item' => $this->products->find($item)->first(),
+			'categories' => $categories->actives(),
+			'features' => $features->filterable(),
+		]);
 	}
 }

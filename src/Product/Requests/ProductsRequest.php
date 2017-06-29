@@ -13,10 +13,10 @@ namespace Antvel\Product\Requests;
 
 use Antvel\Http\Request;
 use Antvel\Product\Features;
-use Antvel\Product\Products;
 use Antvel\Product\Attributes;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
+use Antvel\Product\Parsers\FeaturesParser;
 
 class ProductsRequest extends Request
 {
@@ -50,10 +50,10 @@ class ProductsRequest extends Request
     protected function rulesForBody()
     {
         return [
-            'name' => 'required|alpha_num',
+            'name' => 'required',
             'description' => 'required',
-            'cost' => 'required|integer',
-            'price' => 'required|integer',
+            'cost' => 'required|numeric',
+            'price' => 'required|numeric',
             'brand' => 'required|alpha_num',
             'stock' => 'required|integer',
             'low_stock' => 'required|integer',
@@ -99,7 +99,7 @@ class ProductsRequest extends Request
         //We check the request taking into account the maximum number of files allowed per product.
         $rules = [];
 
-        for ($i=1; $i <= Products::MAX_PICS; $i++) {
+        for ($i=1; $i <= FeaturesParser::MAX_PICS; $i++) {
             //we check whether the request has a picture for the given index. If the index is
             //present in the request files, we create the corresponding rule for it.
             if (isset($pictures[$i])) {
@@ -134,7 +134,7 @@ class ProductsRequest extends Request
     {
         $messages = [];
 
-        for ($i=1; $i <= Products::MAX_PICS; $i++) {
+        for ($i=1; $i <= FeaturesParser::MAX_PICS; $i++) {
             $messages['pictures.' . $i . '.*'] = trans('products.validation_errors.pictures_upload', ['i' => $i]);
         }
 

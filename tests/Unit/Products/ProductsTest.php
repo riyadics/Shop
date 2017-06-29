@@ -13,6 +13,7 @@ namespace Antvel\Tests\Unit\Products;
 
 use Antvel\Tests\TestCase;
 use Antvel\Product\Products;
+use Antvel\Product\Models\Product;
 use Illuminate\Support\Facades\Storage;
 
 class ProductsTest extends TestCase
@@ -32,16 +33,41 @@ class ProductsTest extends TestCase
 	}
 
 	/** @test */
+    function can_get_product_cost_in_dollars()
+    {
+        $product = factory(Product::class)->make([
+            'cost' => 6750,
+        ]);
+
+        $this->assertEquals('67.50', $product->cost_in_dollars);
+    }
+
+	/** @test */
+    function can_get_product_price_in_dollars()
+    {
+        $product = factory(Product::class)->make([
+            'price' => 6750,
+        ]);
+
+        $this->assertEquals('67.50', $product->price_in_dollars);
+    }
+
+
+
+
+
+	/** @test */
 	function a_repository_can_create_new_products()
 	{
+		$user = factory('Antvel\User\Models\User')->states('seller')->create();
+		$this->actingAs($user);
+
 		$product = $this->repository->create([
-			'category_id' => 1,
-			'created_by' => 1,
-			'updated_by' => 1,
+			'category' => 1,
 			'name' => 'iPhone Seven',
 			'description' => 'The iPhone 7',
-			'cost' => 64900,
-			'price' => 74900,
+			'cost' => 649,
+			'price' => 749,
 			'stock' => 5,
 			'low_stock' => 1,
 			'brand' => 'apple',
@@ -52,9 +78,9 @@ class ProductsTest extends TestCase
 				'color' => 'black',
 			],
 			'pictures' => [
-				1 => $this->uploadFile('images/products'),
-				2 => $this->uploadFile('images/products'),
-				3 => $this->uploadFile('images/products'),
+				$this->uploadFile('images/products'),
+				$this->uploadFile('images/products'),
+				$this->uploadFile('images/products'),
 			],
 		]);
 
@@ -67,6 +93,8 @@ class ProductsTest extends TestCase
 			$this->assertEquals(74900, $product->price);
 
 			//assert whether the product features were parsed right.
+			$this->assertTrue(count($product->features['images']) == 3);
+			$this->assertTrue(is_array($product->features['images']));
 			$this->assertEquals(10, $product->features['weight']);
 			$this->assertEquals('5x5x5', $product->features['dimensions']);
 			$this->assertEquals('black', $product->features['color']);

@@ -112,7 +112,7 @@ class Features extends Repository
             ->filter(function ($item) {
                 return trim($item->validation_rules) != '' && ! is_null($item->validation_rules);
             })->mapWithKeys(function ($item) {
-                return [$item->name => $item->validation_rules];
+                return ['features.' . $item->name => $item->validation_rules];
             })->all();
     }
 }

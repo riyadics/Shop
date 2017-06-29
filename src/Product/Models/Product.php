@@ -38,7 +38,7 @@ class Product extends Model
      */
     protected $fillable = [
         'category_id', 'created_by', 'updated_by', 'name', 'description', 'price', 'cost',
-        'stock', 'features', 'barcode', 'condition', 'rate_val', 'tags',
+        'stock', 'features', 'barcode', 'condition', 'rate_val', 'tags', 'brand',
         'rate_count', 'low_stock', 'status', 'parent_id',
     ];
 
@@ -158,9 +158,29 @@ class Product extends Model
      */
     public function setTagsAttribute($value)
     {
-        $this->attributes['tags'] = str_replace(' ', ',',
+        $this->attributes['tags'] = (string) str_replace(' ', ',',
             mb_strtolower($value)
         );
+    }
+
+    /**
+     * Formats the product cost to dollars.
+     *
+     * @return mixed
+     */
+    public function getCostInDollarsAttribute()
+    {
+        return number_format($this->cost / 100, 2);
+    }
+
+    /**
+     * Formats the product price to dollars.
+     *
+     * @return mixed
+     */
+    public function getPriceInDollarsAttribute()
+    {
+        return number_format($this->price / 100, 2);
     }
 
     /////////// while refactoring
