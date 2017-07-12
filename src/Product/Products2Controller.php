@@ -17,6 +17,7 @@ use Antvel\Product\Features;
 use Antvel\Categories\Categories;
 use Antvel\User\UsersRepository as Users; // needs refactor
 use Antvel\Product\Requests\ProductsRequest;
+use Antvel\Support\Images\Manager as Images;
 
 class Products2Controller extends Controller
 {
@@ -61,16 +62,15 @@ class Products2Controller extends Controller
 
 		// this line is required in order for the store to show
 		// the counter on the side bar filters.
-
 		$allProducts = $products->get();
 
 		// needs refactor
 		Users::updatePreferences('my_searches', $allProducts);
 
 		return view('products.index', [
-			'refine' => \Antvel\Product\Parsers\Breadcrumb::parse($request->all()),
-			'filters' => \Antvel\Product\Parsers\Filters::parse($allProducts),
+			'refine' => Parsers\Breadcrumb::parse($request->all()),
 			'suggestions' => $this->products->suggestFor($allProducts),
+			'filters' => Parsers\Filters::parse($allProducts),
 			'products' => $products->paginate(28),
 			'panel' => $this->panel,
 		]);
@@ -103,8 +103,8 @@ class Products2Controller extends Controller
 	public function create(Categories $categories, Features $features)
 	{
 		return view('dashboard.sections.products.create', [
-			'conditions' => \Antvel\Product\Attributes::make('condition')->get(),
-			'MAX_PICS' => \Antvel\Product\Parsers\FeaturesParser::MAX_PICS,
+			'conditions' => Attributes::make('condition')->get(),
+			'MAX_PICS' => Images::MAX_PICS,
 			'categories' => $categories->actives(),
 			'features' => $features->filterable(),
 		]);
@@ -123,27 +123,45 @@ class Products2Controller extends Controller
 			$request->all()
 		);
 
-		return redirect()->to(route('items.edit', [
+		return redirect()->route('items.edit', [
 			'item' => $product->id
-		]));
+		])->with('status', trans('globals.success_text'));
 	}
 
 	/**
 	 * Show the editing form.
 	 *
+	 * @param  Models\Product $item
 	 * @param  Categories $categories
 	 * @param  Features $features
 	 *
 	 * @return void
 	 */
-	public function edit($item, Categories $categories, Features $features)
+	public function edit(Models\Product $item, Categories $categories, Features $features)
 	{
 		return view('dashboard.sections.products.edit', [
-			'conditions' => \Antvel\Product\Attributes::make('condition')->get(),
-			'MAX_PICS' => \Antvel\Product\Parsers\FeaturesParser::MAX_PICS,
-			'item' => $this->products->find($item)->first(),
+			'MAX_PICS' => Images::MAX_PICS - $item->pictures->count(),
+			'conditions' => Attributes::make('condition')->get(),
 			'categories' => $categories->actives(),
 			'features' => $features->filterable(),
+			'item' => $item,
 		]);
+	}
+
+	/**
+     * Updates the given product.
+     *
+     * @param  ProductsRequest $request
+     * @param  integer $item
+     *
+     * @return void
+     */
+	public function update(ProductsRequest $request, $item)
+	{
+		$this->products->update(
+			$request->all(), $item
+		);
+
+		return back()->with('status', trans('globals.success_text'));
 	}
 }

@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Product\Filters;
+namespace Antvel\Product\Models\Filters;
 
 use Cache;
 use Illuminate\Support\Arr;

@@ -9,30 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Product\Filters;
+namespace Antvel\Product\Models\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class LowStock
+class Brands
 {
 	/**
 	 * The requested brand.
 	 *
-	 * @var bool
+	 * @var int
 	 */
-	protected $lowStock = null;
+	protected $brand = null;
 
 	/**
      * Create a new instance.
      *
-     * @param bool $lowStock
+     * @param string $brand
      *
      * @return void
      */
-	public function __construct($lowStock, Builder $builder)
+	public function __construct(string $brand, Builder $builder)
 	{
+		$this->brand = $brand;
 		$this->builder = $builder;
-		$this->lowStock = !! $lowStock;
 	}
 
 	/**
@@ -42,8 +42,8 @@ class LowStock
 	 */
 	public function query() : Builder
 	{
-		if ($this->lowStock) {
-			$this->builder->whereRaw('stock <= low_stock');
+		if (trim($brand = $this->brand) !== '') {
+			$this->builder->where('brand', 'LIKE', $brand);
 		}
 
 		return $this->builder;

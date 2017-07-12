@@ -84,6 +84,19 @@ class ProductsRequestTest extends TestCase
 	}
 
 	/** @test */
+	function the_product_cost_has_to_be_in_the_integers_range()
+	{
+		$request = $this->submit(['cost' => 1000000000]);
+
+		$validator = Validator::make($request->all(), $request->rules());
+
+		tap($validator->messages(), function ($messages) {
+			$this->assertTrue($messages->has('cost'));
+			$this->assertEquals('validation.max.numeric', array_first($messages->get('cost')));
+		});
+	}
+
+	/** @test */
 	function the_product_price_is_required()
 	{
 		$request = $this->submit(['price' => '']);
@@ -108,6 +121,19 @@ class ProductsRequestTest extends TestCase
 		tap($validator->messages(), function ($messages) {
 			$this->assertTrue($messages->has('price'));
 			$this->assertEquals('validation.numeric', array_first($messages->get('price')));
+		});
+	}
+
+		/** @test */
+	function the_product_price_has_to_be_in_the_integers_range()
+	{
+		$request = $this->submit(['price' => 1000000000]);
+
+		$validator = Validator::make($request->all(), $request->rules());
+
+		tap($validator->messages(), function ($messages) {
+			$this->assertTrue($messages->has('price'));
+			$this->assertEquals('validation.max.numeric', array_first($messages->get('price')));
 		});
 	}
 

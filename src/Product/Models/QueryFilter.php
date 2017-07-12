@@ -31,14 +31,14 @@ class QueryFilter
 	 * @var array
 	 */
 	protected $allowed = [
-        'search' => \Antvel\Product\Filters\Search::class,
-        'category' => \Antvel\Product\Filters\Category::class,
-        'conditions' => \Antvel\Product\Filters\Conditions::class,
-        'brands' => \Antvel\Product\Filters\Brands::class,
-		'min' => \Antvel\Product\Filters\Prices::class,
-        'max' => \Antvel\Product\Filters\Prices::class,
-        'inactives' => \Antvel\Product\Filters\Inactives::class,
-		'low_stock' => \Antvel\Product\Filters\LowStock::class,
+        'search' => Filters\Search::class,
+        'category' => Filters\Category::class,
+        'conditions' => Filters\Conditions::class,
+        'brands' => Filters\Brands::class,
+		'min' => Filters\Prices::class,
+        'max' => Filters\Prices::class,
+        'inactives' => Filters\Inactives::class,
+		'low_stock' => Filters\LowStock::class,
 	];
 
     /**

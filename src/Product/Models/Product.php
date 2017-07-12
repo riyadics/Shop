@@ -17,6 +17,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    use Concerns\Pictures;
+
     /**
      * The database table used by the model.
      *
@@ -48,6 +50,13 @@ class Product extends Model
      * @var array
      */
     protected $hidden = ['details', 'created_at'];
+
+    /**
+     * The default relations.
+     *
+     * @var array
+     */
+    protected $with = ['pictures'];
 
     /**
      * A product belongs to an user.

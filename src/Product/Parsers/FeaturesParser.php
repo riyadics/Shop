@@ -12,83 +12,36 @@
 namespace Antvel\Product\Parsers;
 
 use Illuminate\Support\Collection;
-use Antvel\Support\Images\ImageControl;
 
 class FeaturesParser
 {
 	/**
-	 * The maximum of pictures files per product.
-	 */
-	const MAX_PICS = 5;
-
-	/**
-     * The files directory.
-     *
-     * @var string
-     */
-    protected $picturesFolder = 'images/products';
-
-    /**
-     * The pictures to be uploaded.
-     *
-     * @var array
-     */
-    protected $pictures = [];
-
-    /**
-     * The products feature to be stored.
-     *
-     * @var array
-     */
-	protected $features = [];
-
-	/**
 	 * Creates a new instance.
 	 *
-	 * @param  array $attributes
+	 * @param  mixed $features
 	 *
-	 * @return self
+	 * @return mixed
 	 */
-	public static function parse($attributes)
+	public static function parse($features)
 	{
-		$parser = new static;
-
-		$parser->pictures = $attributes->get('pictures') ?: [];
-		$parser->features = $attributes->get('features') ?: [];
-
-		return $parser;
+		return (new static)->normalize($features);
 	}
 
 	/**
-	 * Returns the features of the product in JSON format.
+	 * Normalize the given features.
 	 *
-	 * @return string
+	 * @param  mixed $features
+	 *
+	 * @return mixed
 	 */
-	public function toJson() : string
+	protected function normalize($features)
 	{
-		return  json_encode(array_merge(
-			$this->parsePictures(),
-			$this->features
-		));
-	}
-
-	/**
-	 * Upload the products pictures.
-	 *
-	 * @return array
-	 */
-	public function parsePictures() : array
-    {
-    	if (count($this->pictures) == 0) {
-			return [];
+		if (is_null($features) || count($features) == 0) {
+			return null;
 		}
 
-    	for ($i=0; $i < self::MAX_PICS; $i++) {
-    		if (isset($this->pictures[$i])) {
-    			$pictures['images'][] = ImageControl::prepare(['_pictures_file' => $this->pictures[$i]])->store($this->picturesFolder);
-    		}
-    	}
-
-    	return $pictures;
-    }
+		return Collection::make($features)->filter(function ($item) {
+			return trim($item) != '';
+		})->toJson();
+	}
 }

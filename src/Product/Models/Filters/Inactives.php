@@ -9,30 +9,30 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Product\Filters;
+namespace Antvel\Product\Models\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
 
-class Brands
+class Inactives
 {
 	/**
 	 * The requested brand.
 	 *
-	 * @var int
+	 * @var bool
 	 */
-	protected $brand = null;
+	protected $inactives = null;
 
 	/**
      * Create a new instance.
      *
-     * @param string $brand
+     * @param bool $inactives
      *
      * @return void
      */
-	public function __construct(string $brand, Builder $builder)
+	public function __construct($inactives, Builder $builder)
 	{
-		$this->brand = $brand;
 		$this->builder = $builder;
+		$this->inactives = !! $inactives;
 	}
 
 	/**
@@ -42,8 +42,8 @@ class Brands
 	 */
 	public function query() : Builder
 	{
-		if (trim($brand = $this->brand) !== '') {
-			$this->builder->where('brand', 'LIKE', $brand);
+		if ($this->inactives) {
+			$this->builder->where('status', 0);
 		}
 
 		return $this->builder;

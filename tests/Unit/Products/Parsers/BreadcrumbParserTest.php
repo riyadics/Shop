@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\Unit\Products\Filters;
+namespace Antvel\Tests\Unit\Products\Parsers;
 
 use Antvel\Tests\TestCase;
 use Antvel\Product\Parsers\Breadcrumb;

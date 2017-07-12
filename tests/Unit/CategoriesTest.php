@@ -60,6 +60,11 @@ class CategoriesTest extends TestCase
 
 	public function test_a_repository_can_find_categories_by_a_given_constraints()
 	{
+		factory(Category::class)->create([
+			'name' => 'foo',
+			'description' => 'bar'
+		]);
+
 		$newCategory = factory(Category::class)->create([
 			'name' => 'Games',
 			'description' => 'testing lookup by description'
@@ -69,9 +74,10 @@ class CategoriesTest extends TestCase
 		$byNameAndDes = $this->repository->find([
 			['description', 'like', '%testing%'],
 			['name', 'like', 'Games'],
-		])->first();
+		]);
 
-		$this->assertEquals($byNameAndDes->name, 'Games');
+		$this->assertEquals($byNameAndDes->first()->name, 'Games');
+		$this->assertCount(1, $byNameAndDes);
 	}
 
 	public function test_a_repository_can_lazy_load_model_relationships()
@@ -90,40 +96,20 @@ class CategoriesTest extends TestCase
 		$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $category->children);
 	}
 
-	public function test_a_repository_can_create_categories()
-	{
-		$category = $this->repository->create([
-        	'icon' => 'glyphicon glyphicon-facetime-video',
-			'_pictures_file' => $this->uploadFile('images/categories'),
-			'description' => 'Electronics devices',
-			'name' => 'Electronics',
-		]);
-
-		//upload assertions
-		Storage::disk('images/categories')->assertExists($this->image($category->image));
-		$this->assertNotNull($category->image);
-
-		//other assertions
-		$this->assertInstanceOf(Category::class, $category);
-		$this->assertEquals($category->name, 'Electronics');
-	}
-
 	public function test_a_repository_can_create_a_sub_categories()
 	{
 		$parent = $this->repository->create([
         	'icon' => 'glyphicon glyphicon-facetime-video',
 			'description' => 'Electronics devices',
-			'_pictures_file' => $this->uploadFile('images/categories'),
 			'name' => 'Electronics',
 		]);
 
-		$children = factory(Category::class, 2)->create([
-			'category_id' => $parent->id
+		$children = $this->repository->create([
+			'category_id' => $parent->id,
+			'icon' => 'icon',
+			'description' => 'des',
+			'name' => 'Electronics',
 		]);
-
-		//upload assertions
-		Storage::disk('images/categories')->assertExists($this->image($parent->image));
-		$this->assertNotNull($parent->image);
 
 		//other assertions
 		$this->assertInstanceOf('Illuminate\Database\Eloquent\Collection', $parent->children);
@@ -138,7 +124,11 @@ class CategoriesTest extends TestCase
 
 	public function test_a_repository_can_list_parent_categories()
 	{
-		factory(Category::class, 2)->create();
+		$parents = factory(Category::class, 2)->create();
+
+		factory(Category::class)->create([
+			'category_id' => $parents->first()->id
+		]);
 
 		$parents = $this->repository->parents();
 
@@ -161,24 +151,88 @@ class CategoriesTest extends TestCase
 		$this->assertCount(2, $list);
 	}
 
+	public function test_a_repository_can_create_categories()
+	{
+		$category = $this->repository->create([
+        	'icon' => 'glyphicon glyphicon-facetime-video',
+			'description' => 'Electronics devices',
+			'name' => 'Electronics',
+			'pictures' => [
+				'storing' => $this->uploadFile($disk = 'images/categories/1')
+			],
+		]);
+
+		//upload assertions
+		Storage::disk($disk)->assertExists($this->image($category->image));
+		$this->assertNotNull($category->image);
+
+		//other assertions
+		$this->assertInstanceOf(Category::class, $category);
+		$this->assertEquals($category->name, 'Electronics');
+		$this->cleanDirectory($disk);
+	}
+
 	public function test_a_repository_can_update_a_given_category_by_model()
 	{
-		$category = factory(Category::class)->create(['name' => 'Tools'])->first();
+		$category = $this->repository->create(['name' => 'foo', 'description' => 'bar',
+			'pictures' => [
+				'storing' => [
+					$this->uploadFile($disk = 'images/categories/1'),
+				]
+			],
+		]);
 
-		$wasUpdated = $this->repository->update(['name' => 'Games'], $category);
+		Storage::disk($disk)->assertExists($this->image($category->image));
+		$this->assertNotNull($category->image);
 
-		$updatedCategory = $this->repository->find($category->id)->first();
+		//updating the given category
+		$oldImage = $category->image;
+		$this->repository->update(['name' => 'biz','description' => 'xax',
+			'pictures' => [
+				'storing' => $this->persistentUpload($disk),
+			],
+		], $category);
 
-		$this->assertEquals($updatedCategory->name, 'Games');
-		$this->assertTrue($updatedCategory->name != 'Tools');
-		$this->assertTrue($wasUpdated);
+		Storage::disk($disk)->assertExists($this->image($category->image));
+		Storage::disk($disk)->assertMissing($this->image($oldImage));
+		$this->assertEquals('xax', $category->description);
+		$this->assertEquals('biz', $category->name);
+		$this->assertNotNull($category->image);
+
+		$this->cleanDirectory($disk);
+	}
+
+	/** @test */
+	function a_repository_can_delete_the_category_image()
+	{
+		$category = $this->repository->create(['name' => 'foo', 'description' => 'bar',
+			'pictures' => [
+				'storing' => [
+					$this->uploadFile($disk = 'images/categories/1'),
+				]
+			],
+		]);
+
+		Storage::disk($disk)->assertExists($this->image($category->image));
+		$this->assertNotNull($category->image);
+
+		//updating the given category
+		$oldImage = $category->image;
+		$this->repository->update(['name' => 'biz','description' => 'xax',
+			'pictures' => [
+				'deleting' => true
+			],
+		], $category);
+
+		Storage::disk($disk)->assertMissing($this->image($oldImage));
+		$this->assertNull($category->image);
 	}
 
 	public function test_a_repository_can_update_a_given_category_by_id()
 	{
 		$category = factory(Category::class)->create(['name' => 'byID'])->first();
 
-		$wasUpdated = $this->repository->update(['name' => 'Books'], $category->id);
+		$wasUpdated = $this->repository->update(['name' => 'Books'], $category);
 
 		$updatedCategory = $this->repository->find($category->id)->first();
 
@@ -188,7 +242,7 @@ class CategoriesTest extends TestCase
 
 	}
 
-	public function test_can_filter_by_the_given_request()
+	public function test_can_filter_by_the_ones_having_products()
 	{
 		$foo = factory(Category::class)->create(['name' => 'foo', 'description' => 'aaa']);
 		factory(Category::class)->create(['name' => 'bar', 'description' => 'bbb']);

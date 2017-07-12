@@ -12,13 +12,11 @@
 namespace Antvel\Tests;
 
 use Antvel\Antvel;
-use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Storage;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
 {
-    use Environment;
+    use Environment, InteractWithPictures;
 
     /**
      * Setup the test environment
@@ -30,50 +28,5 @@ abstract class TestCase extends Orchestra
         parent::setUp();
         $this->loadFactories();
         $this->loadMigrations();
-    }
-
-    /**
-     * Swaps the storage folder path.
-     *
-     * @return void
-     */
-    public function withStorageFolder()
-    {
-        $storage = __DIR__ . '/../storage/framework/testing/disks';
-
-        $this->app->make('config')->set(
-            'filesystems.disks.local.root',
-            $storage
-        );
-    }
-
-    /**
-     * Creates a fake file.
-     *
-     * @param  string $disk
-     * @param  string $file
-     *
-     * @return UploadedFile
-     */
-    public function uploadFile($disk = 'avatars', $file = 'antvel.jpg')
-    {
-        $this->withStorageFolder();
-
-        Storage::fake($disk);
-
-        return UploadedFile::fake()->image($file);
-    }
-
-    /**
-     * Returns a uploaded file name.
-     *
-     * @param  string $fileName
-     * @return string
-     */
-    protected function image($fileName)
-    {
-        $fileName = explode('/', $fileName);
-
-        return end($fileName);
     }
 }

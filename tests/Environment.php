@@ -69,4 +69,17 @@ trait Environment
             \Antvel\AntvelServiceProvider::class
         ];
     }
+
+    /**
+     * Swaps the storage folder path.
+     *
+     * @return void
+     */
+    public function withStorageFolder()
+    {
+        $this->app->make('config')->set(
+            'filesystems.disks.local.root',
+            __DIR__ . '/../storage/framework/testing/disks'
+        );
+    }
 }

@@ -12,8 +12,9 @@
 namespace Antvel\Categories;
 
 use Antvel\Contracts\Repository;
+use Illuminate\Support\Collection;
 use Antvel\Categories\Models\Category;
-use Antvel\Support\Images\ImageControl;
+use Antvel\Support\Images\Manager as Images;
 
 class Categories extends Repository
 {
@@ -43,11 +44,13 @@ class Categories extends Repository
 	 */
     public function create(array $attributes = []) : Category
 	{
-        if (isset($attributes['_pictures_file'])) {
-            $attributes['image'] = ImageControl::prepare($attributes)->store($this->filesDirectory);
+        $category = Category::create($this->sanitize($attributes));
+
+        if (isset($attributes['pictures'])) {
+            $this->update($attributes, $category);
         }
 
-        return Category::create($attributes);
+        return $category;
 	}
 
     /**
@@ -63,13 +66,48 @@ class Categories extends Repository
     {
         $category = $this->modelOrFind($idOrModel);
 
-        $picture = ImageControl::prepare($attributes);
-
-        if ($picture->wasUpdated()) {
-           $attributes['image'] = $picture->store($this->filesDirectory);
+        if (isset($attributes['pictures'])) {
+            $attributes['image'] = $this->updatePicturesFor($category, $attributes['pictures']);
         }
 
-        return $category->update($attributes, $options);
+        return $category->update(
+            $this->sanitize($attributes), $options
+        );
+    }
+
+    /**
+     * Sanitize the given attributes
+     * @param  array $attributes
+     *
+     * @return array
+     */
+    protected function sanitize($attributes) : array
+    {
+        return Collection::make($attributes)->except('pictures')->all();
+    }
+
+    /**
+     * Update the image for the given category.
+     *
+     * @param  Category $category
+     * @param  array $attr
+     *
+     * @return string
+     */
+    protected function updatePicturesFor($category, $attr)
+    {
+        $current = $category->image;
+
+        $image = Images::parse($attr)->on($this->filesDirectory . '/' . $category->id);
+
+        if ($image->wantsDeletion()) {
+            $image->delete($current);
+            return null;
+        }
+
+        $picture = $image->update($current);
+
+        return $picture['path'];
     }
 
     /**

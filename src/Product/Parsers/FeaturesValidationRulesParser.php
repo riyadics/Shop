@@ -113,6 +113,11 @@ class FeaturesValidationRulesParser
 		return $this->rules;
 	}
 
+	/**
+	 * Returns the allowed validation rules.
+	 *
+	 * @return Collection
+	 */
 	public static function allowed()
 	{
 		$parser = new static;

@@ -19,6 +19,8 @@ use Antvel\Product\Parsers\FeaturesParser;
 
 class Products extends Repository
 {
+	use InteractWithPictures;
+
 	/**
 	 * Creates a new instance.
 	 *
@@ -41,7 +43,7 @@ class Products extends Repository
         $attributes = Collection::make($attributes);
 
         $attr = $attributes->except('features', 'pictures')->merge([
-            'features' => FeaturesParser::parse($attributes->only('pictures', 'features'))->toJson(),
+            'features' => FeaturesParser::parse($attributes->get('features')),
             'category_id' => $attributes->get('category'),
             'price' => $attributes->get('price') * 100,
             'cost' => $attributes->get('cost') * 100,
@@ -50,21 +52,39 @@ class Products extends Repository
             'tags' => $attributes->get('name'),
         ])->all();
 
-		return Product::create($attr);
+        $product = Product::create($attr);
+
+        $this->createPicturesFor($product, $attributes);
+
+        return $product;
     }
 
     /**
      * Update a Model in the database.
      *
      * @param array $attributes
-     * @param Category|mixed $idOrModel
+     * @param Product|mixed $idOrModel
      * @param array $options
      *
      * @return bool
      */
     public function update(array $attributes, $idOrModel, array $options = [])
     {
-    	//
+    	$product = $this->modelOrFind($idOrModel);
+    	$attributes = Collection::make($attributes);
+
+    	$attr = $attributes->except('features', 'pictures', 'default_picture')->merge([
+            'features' => FeaturesParser::parse($attributes->get('features')),
+            'category_id' => $attributes->get('category'),
+            'price' => $attributes->get('price') * 100,
+            'cost' => $attributes->get('cost') * 100,
+            'updated_by' => auth()->user()->id,
+            'tags' => $attributes->get('name'),
+        ])->all();
+
+    	$this->updatePicturesFor($product, $attributes);
+
+    	return $product->update($attr);
     }
 
 	/**
