@@ -16,7 +16,6 @@ use Antvel\Product\Features;
 use Antvel\Product\Attributes;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Collection;
-use Antvel\Support\Images\Manager as Images;
 
 class ProductsRequest extends Request
 {
@@ -92,25 +91,16 @@ class ProductsRequest extends Request
             return $key == 'pictures';
         })->get('pictures');
 
-        if (is_null($pictures)) {
+        if (is_null($pictures) || empty($pictures['storing'])) {
             return [];
         }
 
-        //We check the request taking into account the maximum number of files allowed per product.
-        $rules = [];
-
-        for ($i=0; $i < Images::MAX_PICS; $i++) {
-            //we check whether the request has a picture for the given index. If the index is
-            //present in the request files, we create the corresponding rule for it.
-            if (isset($pictures[$i])) {
-                $rules['pictures.' . $i] = [
-                    'mimes:jpeg,png,jpg',
-                    Rule::dimensions()->maxWidth(1000)->maxHeight(500)
-                ];
-            }
-        }
-
-        return $rules;
+        return Collection::make($pictures['storing'])->mapWithKeys(function($item, $key) {
+            return ['pictures.storing.' . $key => [
+                'mimes:jpeg,png,jpg',
+                Rule::dimensions()->maxWidth(1000)->maxHeight(500)
+            ]];
+        })->all();
     }
 
     /**
@@ -132,12 +122,8 @@ class ProductsRequest extends Request
      */
     protected function picturesErrorsMessages()
     {
-        $messages = [];
-
-        for ($i = 0; $i < Images::MAX_PICS; $i++) {
-            $messages['pictures.' . $i . '.*'] = trans('products.validation_errors.pictures_upload', ['i' => $i+1]);
-        }
-
-        return $messages;
+        return [
+            'pictures.storing.*' => trans('products.validation_errors.pictures_upload')
+        ];
     }
 }

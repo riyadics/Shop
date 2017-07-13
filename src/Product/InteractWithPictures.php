@@ -33,11 +33,11 @@ trait InteractWithPictures
 	 */
 	protected function createPicturesFor($product, $attr)
     {
-        $pictures = $attr->get('pictures');
+        $pictures = Images::parse($attr->get('pictures'))
+            ->on($this->basePath. '/' . $product->id)
+            ->store();
 
-		$product->pictures()->createMany(
-			Images::parse($pictures)->on($this->basePath. '/' . $product->id)->store()
-		);
+        $product->pictures()->createMany($pictures);
     }
 
     /**
