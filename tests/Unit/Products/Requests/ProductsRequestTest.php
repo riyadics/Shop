@@ -71,6 +71,36 @@ class ProductsRequestTest extends TestCase
 	}
 
 	/** @test */
+	function the_product_status_is_required()
+	{
+		$request = $this->submit(['status' => '']);
+
+		$validator = Validator::make(
+	    	$request->all(), $request->rules()
+	    );
+
+		tap($validator->messages(), function ($messages) {
+			$this->assertTrue($messages->has('status'));
+			$this->assertEquals('validation.required', array_first($messages->get('status')));
+		});
+	}
+
+	/** @test */
+	function the_product_status_has_to_be_boolean()
+	{
+		$request = $this->submit(['status' => 'foo']);
+
+		$validator = Validator::make(
+	    	$request->all(), $request->rules()
+	    );
+
+		tap($validator->messages(), function ($messages) {
+			$this->assertTrue($messages->has('status'));
+			$this->assertEquals('validation.boolean', array_first($messages->get('status')));
+		});
+	}
+
+	/** @test */
 	function the_product_cost_has_to_be_numeric()
 	{
 	    $request = $this->submit(['cost' => 'bar']);

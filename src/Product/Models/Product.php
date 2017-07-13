@@ -59,6 +59,15 @@ class Product extends Model
     protected $with = ['pictures'];
 
     /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'status' => 'boolean',
+    ];
+
+    /**
      * A product belongs to an user.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

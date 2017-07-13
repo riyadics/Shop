@@ -12,7 +12,6 @@
 namespace Antvel\Tests\Unit\Products\Parsers;
 
 use Antvel\Tests\TestCase;
-use Antvel\User\Models\User;
 use Antvel\Product\Models\Product;
 use Antvel\Categories\Models\Category;
 

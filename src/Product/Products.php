@@ -47,6 +47,7 @@ class Products extends Repository
             'category_id' => $attributes->get('category'),
             'price' => $attributes->get('price') * 100,
             'cost' => $attributes->get('cost') * 100,
+            'status' => $attributes->get('status'),
             'created_by' => auth()->user()->id,
             'updated_by' => auth()->user()->id,
             'tags' => $attributes->get('name'),
@@ -78,6 +79,7 @@ class Products extends Repository
             'category_id' => $attributes->get('category'),
             'price' => $attributes->get('price') * 100,
             'cost' => $attributes->get('cost') * 100,
+            'status' => $attributes->get('status'),
             'updated_by' => auth()->user()->id,
             'tags' => $attributes->get('name'),
         ])->all();

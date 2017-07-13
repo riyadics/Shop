@@ -49,13 +49,11 @@ class SuggestionsTest extends TestCase
 
 	public function test_it_can_suggest_products_based_on_an_user_preferences()
 	{
+		$this->signIn();
+
 		$products = factory(Product::class, 3)->create([
 			'category_id' => $this->category->id
 		]);
-
-		$user = factory('Antvel\User\Models\User')->create();
-
-		$this->actingAs($user);
 
 		UsersRepository::updatePreferences('product_viewed', $tags = $products->first()->tags);
 

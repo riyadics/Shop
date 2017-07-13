@@ -56,6 +56,7 @@ class ProductsRequest extends Request
             'brand' => 'required|alpha_num',
             'stock' => 'required|integer',
             'low_stock' => 'required|integer',
+            'status' => 'required|boolean',
 
             'category' => [
                 'required',

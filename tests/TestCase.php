@@ -11,7 +11,6 @@
 
 namespace Antvel\Tests;
 
-use Antvel\Antvel;
 use Orchestra\Testbench\TestCase as Orchestra;
 
 abstract class TestCase extends Orchestra
@@ -28,5 +27,24 @@ abstract class TestCase extends Orchestra
         parent::setUp();
         $this->loadFactories();
         $this->loadMigrations();
+    }
+
+    /**
+     * Sign in a given user.
+     *
+     * @param  string $state
+     * @param  array  $attr
+     *
+     * @return void
+     */
+    protected function signIn($state = null, $attr = [])
+    {
+        if (is_null($state)) {
+            $user = factory('Antvel\User\Models\User')->create($attr);
+        } else {
+            $user = factory('Antvel\User\Models\User')->states($state)->create($attr);
+        }
+
+        $this->actingAs($user);
     }
 }
