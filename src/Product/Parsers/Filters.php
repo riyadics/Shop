@@ -92,99 +92,57 @@ class Filters
 	}
 
 	/**
-	 * Returns the mapped features with their quantities.
-	 *
-	 * @return array
-	 */
-	protected function forFeatures() : array
-	{
-		$filters = [];
-
-		$features = $this->mapFeatures(
-			$this->products->pluck('features')
-		);
-
-		foreach ($features as $key => $value) {
-        	foreach ($features[$key] as $row) {
-				if (is_string($row)) {
-                    $filters[$key][$row] = isset($filters[$key][$row]) ? $filters[$key][$row] + 1 : 1;
-                }
-            }
-        }
-
-        return $filters;
-	}
-
-	/**
-	 * Returns a map with the given features.
-	 *
-	 * @param Illuminate\Support\Collection $features
-	 *
-	 * @return array
-	 */
-	protected function mapFeatures($features) : array
-	{
-		$map = [];
-
-		foreach ($features as $feature) {
-
-			$feature = Collection::make($feature)->only($this->allowed);
-
-            foreach ($feature as $key => $value) {
-                $map[$key][] = $value;
-            }
-        }
-
-        return $map;
-	}
-
-	/**
 	 * Parses the category filter.
 	 *
 	 * @return array
 	 */
 	protected function forCategories() : array
 	{
-		$counting = $this->categoriesCountValues();
+		$categories = $this->products->pluck('category');
 
-		return $counting->mapWithKeys( function($item, $key) use ($counting) {
+		return $categories->mapWithKeys(function ($item) use ($categories) {
 
-			return [
-				$key => [
-					'id' => $key,
-					'name' => $this->categoryNameFor($key),
-					'qty' => $item
-				]
-			];
+				$result[$item->id] = [
+					'id' => $item->id,
+					'name' => $item->name,
+					'qty' => $categories->where('id', $item->id)->count()
+				];
+
+				return $result;
 		})->all();
 	}
 
 	/**
-	 * Map the given categories with the total of products associated with it.
+	 * Returns the mapped features with their quantities.
 	 *
-	 * @return Collection
+	 * @return array
 	 */
-	protected function categoriesCountValues() : Collection
+	protected function forFeatures() : array
 	{
-		$counting = array_count_values(
-			$this->products->pluck('category_id')->all()
-		);
-
-		return Collection::make($counting)->sort();
+        return Collection::make($this->allowed)->mapWithKeys(function ($feature) {
+        	return [
+        		$feature => array_count_values($this->features()[$feature])
+        	];
+        })->all();
 	}
 
 	/**
-	 * Returns the category name for the given key.
+	 * Returns a map with the given features.
 	 *
-	 * @param  integer $key
-	 *
-	 * @return string
+	 * @return array
 	 */
-	protected function categoryNameFor($key) : string
+	protected function features() : array
 	{
-		return $this->products->pluck('category')
-			->where('id', $key)
-			->pluck('name')
-			->first();
+		$features = $this->products->pluck('features');
+
+		return Collection::make($this->allowed)->mapWithKeys(function ($allowed) use ($features) {
+
+			return [
+				$allowed => $features->pluck($allowed)->filter(function ($allowed) {
+					return ! is_null($allowed);
+				})->all()
+			];
+
+		})->all();
 	}
 }
