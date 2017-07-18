@@ -54,7 +54,7 @@ class SearchController extends Controller
 		//filter products by the given query.
 		$response['products']['results'] = $this->products->filter([
 			'search' => $request->get('q')
-		], 4);
+		], 4)->get();
 
 		//filter categories by the given query.
 		$response['products']['categories'] = $this->categories->havingProducts([
@@ -63,7 +63,7 @@ class SearchController extends Controller
 		], ['id', 'name'], 4);
 
 		//products suggestion for searches.
-		$response['products']['suggestions'] = $this->products->suggestForPreferences('my_searches')['my_searches'];
+		$response['products']['suggestions'] = $this->products->suggestForPreferences('my_searches');
 
 		$response['products']['categories_title'] = trans('globals.suggested_categories');
         $response['products']['suggestions_title'] = trans('globals.suggested_products');

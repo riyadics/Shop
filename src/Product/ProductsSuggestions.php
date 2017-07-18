@@ -39,13 +39,6 @@ class ProductsSuggestions
 	protected $except = [];
 
 	/**
-     * The laravel auth component.
-     *
-     * @var Authenticatable
-     */
-    protected $auth = null;
-
-	/**
 	 * Creates a new instance.
 	 *
 	 * @return void
@@ -59,6 +52,7 @@ class ProductsSuggestions
 	 * Creates a new instance for the given constraints.
 	 *
 	 * @param  array  $constraints
+	 * @param  string|null  $preferences
 	 *
 	 * @return self
 	 */
@@ -83,10 +77,10 @@ class ProductsSuggestions
 	{
 		$suggestions = new static;
 
+		$suggestions->except = $items->pluck('id');
+
 		$suggestions->constraints[$key] = $items->map(function ($item, $key) {
-			$tags = str_replace('"', '', $item->tags);
-			$bucket[] = explode(',', $tags);
-			return $bucket;
+			return explode(',', str_replace('"', '', $item->tags));
 		})->flatten()->unique()->all();
 
 		return $suggestions;
@@ -109,9 +103,11 @@ class ProductsSuggestions
 	/**
 	 * Returns the required suggestions.
 	 *
-	 * @return array
+	 * @param string|null $pluck
+	 *
+	 * @return array|Collection
 	 */
-	public function all() : array
+	public function all(string $pluck = null)
 	{
 		$products = [];
 
@@ -138,7 +134,9 @@ class ProductsSuggestions
 			}
 		}
 
-		return $products;
+		return is_null($pluck)
+			? $products
+			: $products[$pluck];
 	}
 
 	/**
@@ -149,7 +147,7 @@ class ProductsSuggestions
 	 *
 	 * @return Collection
 	 */
-	protected function products(string $type, array $constraints) : Collection
+	protected function products(string $type, $constraints) : Collection
 	{
 		return Product::when( $this->except->count() > 0 , function($query) {
 				return $query->whereNotIn('id', $this->except->all());

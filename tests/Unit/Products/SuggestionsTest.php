@@ -12,7 +12,6 @@
 namespace Antvel\Tests\Unit\Products;
 
 use Antvel\Tests\TestCase;
-use Antvel\User\UsersRepository;
 use Antvel\Product\Models\Product;
 
 class SuggestionsTest extends TestCase
@@ -28,76 +27,70 @@ class SuggestionsTest extends TestCase
 
 	public function test_it_can_suggest_products_based_on_a_given_key()
 	{
-		$products = factory(Product::class, 2)->create([
-			'category_id' => $this->category->id,
-			'tags' => 'foo,bar'
-		]);
-
-		$products2 = factory(Product::class, 2)->create([
-			'tags' => 'home,phone,bar'
-		]);
+		factory(Product::class)->create(['category_id' => $this->category->id, 'tags' => 'foo,bar']);
+		factory(Product::class)->create(['category_id' => $this->category->id, 'tags' => 'tar,ring']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'phone,glass']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'phone,mouse']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'foo,biz']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'key,ring']);
 
 		$results = $this->repository->filter([
 			'category' => $this->category->id .'|'.$this->category->name
 		])->get();
 
-		$suggestion = $this->repository->suggestFor($results);
+		$suggestion = $this->repository->suggestFor($results, 'my_searches');
 
-		$this->assertTrue(count($suggestion['my_searches']) == 4);
-		$this->assertTrue($suggestion['my_searches']->pluck('tags')->contains('foo,bar'));
+		$this->assertCount(4, $suggestion);
+		$this->assertCount(0, $suggestion->where('id', $suggestion->pluck('id')->all()));
+
+		$suggestionsTags = explode(',', $suggestion->pluck('tags')->implode(','));
+
+		$this->assertTrue(in_array('foo', $suggestionsTags));
+		$this->assertTrue(in_array('ring', $suggestionsTags));
 	}
 
-	public function test_it_can_suggest_products_based_on_an_user_preferences()
+	public function test_it_can_suggest_products_based_on_an_user_preferences_key()
 	{
-		$this->signIn();
+		factory(Product::class)->create(['category_id' => $this->category->id, 'tags' => 'foo,bar']);
+		factory(Product::class)->create(['category_id' => $this->category->id, 'tags' => 'tar,ring']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'phone,glass']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'phone,mouse']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'foo,biz']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'key,ring']);
 
-		$products = factory(Product::class, 3)->create([
-			'category_id' => $this->category->id
-		]);
+		$suggestion = $this->repository->suggestForPreferences('product_viewed', 2, '{"product_viewed": "foo,ring"}');
 
-		UsersRepository::updatePreferences('product_viewed', $tags = $products->first()->tags);
+		$suggestionsTags = explode(',', $suggestion->pluck('tags')->implode(','));
 
-		$suggestion = $this->repository->suggestForPreferences([
-			'product_viewed'
-		], 4);
-
-		$this->assertInstanceOf('Illuminate\Support\Collection', $suggestion['product_viewed']);
-		$this->assertTrue(in_array(
-			$tags, $suggestion['product_viewed']->pluck('tags')->all()
-		));
+		$this->assertInstanceOf('Illuminate\Support\Collection', $suggestion);
+		$this->assertTrue(in_array('foo', $suggestionsTags));
+		$this->assertTrue(in_array('ring', $suggestionsTags));
+		$this->assertCount(2, $suggestion);
 	}
 
-	public function test_it_can_suggest_products_based_on_a_given_preferences()
+	/** @test */
+	function it_returns_an_array_with_all_the_suggested_product_based_on_given_keys()
 	{
-		$preferences = '{
-			"product_viewed": "foo",
-			"product_purchased": "dolore,explicabo",
-			"product_categories": "2"
-		}';
+		factory(Product::class)->create(['category_id' => $this->category->id, 'tags' => 'foo,bar']);
+		factory(Product::class)->create(['category_id' => $this->category->id, 'tags' => 'tar,ring']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'phone,glass']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'phone,mouse']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'foo,biz']);
+		factory(Product::class)->create(['category_id' => 99, 'tags' => 'key,ring']);
 
-		factory(Product::class)->create([
-			'category_id' => $this->category->id,
-			'tags' => 'foo'
-		]);
+		$preferences = '{"my_searches": "foo", "product_viewed": "ring", "product_categories": "99"}';
 
-		factory(Product::class)->create([
-			'category_id' => $this->category->id,
-			'tags' => 'bar'
-		]);
+		$suggestion = $this->repository->suggestForPreferences(['my_searches', 'product_viewed', 'product_categories'], 2, $preferences);
 
-		factory(Product::class)->create([
-			'category_id' => $this->category->id,
-			'tags' => 'biz'
-		]);
+		$my_searches = explode(',', $suggestion['my_searches']->pluck('tags')->implode(','));
+		$product_viewed = explode(',', $suggestion['product_viewed']->pluck('tags')->implode(','));
 
-		$suggestion = $this->repository->suggestForPreferences([
-			'product_viewed'
-		]);
-
-		$this->assertInstanceOf('Illuminate\Support\Collection', $suggestion['product_viewed']);
-		$this->assertTrue(in_array(
-			'foo', $suggestion['product_viewed']->pluck('tags')->all()
-		));
+		$this->assertTrue(is_array($suggestion));
+		$this->assertTrue(isset($suggestion['my_searches']));
+		$this->assertTrue(isset($suggestion['product_viewed']));
+		$this->assertTrue(in_array('foo', $my_searches));
+		$this->assertTrue(in_array('ring', $product_viewed));
+		$this->assertTrue(in_array(99, $suggestion['product_categories']->pluck('category_id')->all()));
 	}
 
 }

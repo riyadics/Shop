@@ -11,7 +11,7 @@
 
 namespace Antvel\Categories;
 
-use Antvel\Contracts\Repository;
+use Antvel\Support\Repository;
 use Illuminate\Support\Collection;
 use Antvel\Categories\Models\Category;
 use Antvel\Support\Images\Manager as Images;
@@ -177,9 +177,12 @@ class Categories extends Repository
     {
         return Category::whereHas('products', function($query) {
             return $query->actives();
-        })->select($columns)->filter($request)
-            ->orderBy('name')->take($limit)
-            ->get();
+        })
+        ->select($columns)
+        ->filter($request)
+        ->orderBy('name')
+        ->take($limit)
+        ->get();
     }
 
     /**

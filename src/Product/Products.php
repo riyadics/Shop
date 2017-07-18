@@ -11,7 +11,7 @@
 
 namespace Antvel\Product;
 
-use Antvel\Contracts\Repository;
+use Antvel\Support\Repository;
 use Antvel\Product\Models\Product;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -119,7 +119,7 @@ class Products extends Repository
 		return Cache::remember('suggestions_for_searched_products', 5, function () use ($products, $key, $limit) {
 			return ProductsSuggestions::from($key, $products)
 				->take($limit)
-				->all();
+				->all($key);
 		});
 	}
 
@@ -129,14 +129,17 @@ class Products extends Repository
 	 * @param mixed $filters
 	 * @param int $limit
 	 *
-	 * @return array
+	 * @return array|Collection
 	 */
-	public function suggestForPreferences($filters = [], $limit = 4, $preferences = null) : array
+	public function suggestForPreferences($filters = [], $limit = 4, $preferences = null)
 	{
-		$filters = is_string($filters) ? [$filters] : $filters;
+		$pluck = null;
 
-		return ProductsSuggestions::make($filters, $preferences)
-			->take($limit)
-			->all();
+		if (is_string($filters)) {
+			$pluck = $filters;
+			$filters = [$filters];
+		}
+
+		return ProductsSuggestions::make($filters, $preferences)->take($limit)->all($pluck);
 	}
 }

@@ -31,7 +31,10 @@ class Product extends Model
      *
      * @var array
      */
-    protected $appends = ['num_of_reviews']; //while refactoring
+    protected $appends = [
+        'num_of_reviews', //while refactoring
+        'default_picture',
+    ];
 
     /**
      * The attributes that are mass assignable.

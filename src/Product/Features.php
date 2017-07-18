@@ -11,7 +11,7 @@
 
 namespace Antvel\Product;
 
-use Antvel\Contracts\Repository;
+use Antvel\Support\Repository;
 use Antvel\Product\Models\ProductFeatures;
 use Antvel\Product\Parsers\FeaturesValidationRulesParser;
 
