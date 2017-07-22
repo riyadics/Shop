@@ -14,6 +14,7 @@ namespace Antvel\User\Models;
 use Antvel\Product\Models\Product;
 use Antvel\AddressBook\Models\Address;
 use Illuminate\Notifications\Notifiable;
+use Antvel\User\Parsers\PreferencesParser;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Antvel\User\Notifications\ResetPasswordNotification;
 
@@ -95,7 +96,54 @@ class User extends Authenticatable
         $this->notify(new ResetPasswordNotification($token));
     }
 
+    /**
+     * Updates the user's preferences for the given key.
+     *
+     * @param  string $key
+     * @param  mixed $data
+     *
+     * @return void
+     */
+    public function updatePreferences(string $key, $data)
+    {
+        $current = $this->preferences;
 
+        $this->preferences = PreferencesParser::parse($current)->update($key, $data)->toJson();
+
+        $this->save();
+    }
+
+    /**
+     * Set the user's preferences.
+     *
+     * @param  string|array  $value
+     *
+     * @return void
+     */
+    public function setPreferencesAttribute($preferences)
+    {
+        if (is_array($preferences)) {
+            $preferences = json_encode($preferences);
+        }
+
+        $this->attributes['preferences'] = $preferences;
+    }
+
+    /**
+     * Returns the user's preferences.
+     *
+     * @param  string  $value
+     *
+     * @return null|string
+     */
+    public function getPreferencesAttribute($preferences)
+    {
+        if (is_string($preferences)) {
+            return json_decode($preferences, true);
+        }
+
+        return $preferences;
+    }
 
 
     // ======================================= //

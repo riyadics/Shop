@@ -9,7 +9,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\Tests\Unit\Products\Parsers;
+namespace Antvel\Tests\Unit\Products;
 
 use Antvel\Tests\TestCase;
 use Antvel\Product\Models\Product;
@@ -160,5 +160,18 @@ class QueryFilterTest extends TestCase
 		])->get();
 
 		$this->assertCount(1, $products);
+	}
+
+	/** @test */
+	function it_can_filter_products_based_on_their_color()
+	{
+	    factory(Product::class, 2)->create();
+	    $product_01 = factory(Product::class)->create(['features' => '{"color": "black", "weight": "10", "dimensions": "5x5x10"}']);
+	    $product_02 = factory(Product::class)->create(['features' => '{"color": "black", "weight": "10", "dimensions": "5x5x10"}']);
+	    $product_03 = factory(Product::class)->create(['features' => '{"color": "red", "weight": "11", "dimensions": "6x5x10"}']);
+
+	    $products = $this->repository->filter([
+	    	'color' => 'black'
+	    ])->get();
 	}
 }

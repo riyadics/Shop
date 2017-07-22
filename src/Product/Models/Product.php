@@ -134,19 +134,17 @@ class Product extends Model
     }
 
     /**
-     * Returns suggestions for a given constraints.
+     * Returns suggestions for a given tags and type.
      *
      * @param  Illuminate\Database\Eloquent\Builder $query
      * @param  string $type
-     * @param  array $constraints
+     * @param  array $tags
      *
      * @return Illuminate\Database\Eloquent\Builder
      */
-    public function scopeSuggestionsFor($query, string $type, array $constraints)
+    public function scopeSuggestionsFor($query, string $type, array $tags)
     {
-        return (new SuggestionQuery($query))
-            ->type($type)
-            ->apply($constraints);
+        return (new SuggestionQuery($query))->type($type)->apply($tags);
     }
 
     /**

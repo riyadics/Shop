@@ -9,13 +9,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Antvel\User;
+namespace Antvel\User\Parsers;
 
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 
-class Preferences
+class PreferencesParser
 {
+	/**
+	 * The maximum quantity allowed of tags per key.
+	 */
+	const MAX_TAGS = 50;
+
 	/**
 	 * The laravel auth component.
 	 *
@@ -50,7 +55,20 @@ class Preferences
 	 */
 	public function __construct()
 	{
+		$this->allowed = Collection::make($this->allowed);
 		$this->auth = Container::getInstance()->make('auth');
+	}
+
+	/**
+	 * Returns a collection with the allowed keys.
+	 *
+	 * @return Collection
+	 */
+	public static function allowed()
+	{
+		$static = new static;
+
+		return $static->allowed->keys();
 	}
 
 	/**
@@ -64,61 +82,35 @@ class Preferences
 	{
 		$static = new static;
 
-		$static->allowed = Collection::make($static->allowed);
-
-		$static->preferences = $static->prune($preferences);
+		$static->preferences = $static->sanitize($preferences);
 
 		return $static;
 	}
 
 	/**
-	 * Prunes the given preferences.
+	 * Sanitizes the given preferences.
 	 *
-	 * @param  mixed $preferences
+	 * @param  null|string $preferences
 	 *
 	 * @return Collection
 	 */
-	protected function prune($preferences = null) : Collection
+	protected function sanitize($preferences = null) : Collection
 	{
-		$preferences = $this->normalizePref($preferences);
+		if (is_null($preferences) && $this->auth->check()) {
+			return Collection::make($this->auth->user()->preferences);
+		}
+
+		if (is_null($preferences) && ! $this->auth->check()) {
+			return $this->allowed;
+		}
+
+		if (is_string($preferences)) {
+			$preferences = json_decode($preferences, true);
+		}
 
 		return Collection::make($preferences)->filter(function($item, $key) {
 			return $this->allowed->has($key);
 		});
-	}
-
-	/**
-	 * Normalize the given preferences.
-	 *
-	 * @param  mixed $preferences
-	 *
-	 * @return array
-	 */
-	protected function normalizePref($preferences = null) : array
-	{
-		if ($this->auth->check()) {
-			return $this->loggedUserPreferences();
-		}
-
-		if (! is_null($preferences) && is_string($preferences)) {
-			return json_decode($preferences, true);
-		}
-
-		return $this->allowed->all();
-	}
-
-	/**
-	 * Returns the logged user preferences.
-	 *
-	 * @return array
-	 */
-	protected function loggedUserPreferences() : array
-	{
-		$preferences = $this->auth->user()->preferences ?? $this->allowed->all();
-
-		return is_string($preferences)
-			? json_decode($preferences, true)
-			: $preferences;
 	}
 
 	/**
@@ -131,6 +123,10 @@ class Preferences
 	 */
 	public function update(string $key, $data)
 	{
+		if (is_string($data)) {
+			$data = $this->normalizeToCollection($data);
+		}
+
 		if ($this->allowed->has($key)) {
 			$this->updatePreferencesForKey(
 				$key, $this->normalizedTags($data)
@@ -142,6 +138,20 @@ class Preferences
 		}
 
 		return $this;
+	}
+
+	/**
+	 * Returns a formatted collection from the given string.
+	 *
+	 * @param  string $tags
+	 *
+	 * @return Collection
+	 */
+	protected function normalizeToCollection(string $tags) : Collection
+	{
+		return Collection::make([
+			'tags' => explode(',', $tags)
+		]);
 	}
 
 	/**
@@ -168,26 +178,15 @@ class Preferences
 	 */
 	protected function updatePreferencesForKey(string $key, Collection $tags)
 	{
-		$tags = $this->parseTags($tags)
-			->merge($this->preferences[$key])
-			->unique()
-			->implode(',');
-
-		$this->preferences[$key] = trim($tags, ',');
-	}
-
-	/**
-	 * Parse the given tags collection.
-	 *
-	 * @param Collection $tags
-	 *
-	 * @return Collection
-	 */
-	protected function parseTags(Collection $tags) : Collection
-	{
 		$tags = str_replace('"', '', $tags->implode(','));
 
-		return Collection::make(explode(',', $tags))->unique();
+		$tags = Collection::make(explode(',', $tags))
+			->merge(explode(',',$this->preferences[$key]))
+			->unique()
+			->take(self::MAX_TAGS)
+			->implode(',');
+
+		$this->preferences[$key] = rtrim($tags, ',');
 	}
 
 	/**
@@ -199,10 +198,10 @@ class Preferences
 	 */
 	protected function updateCategories(Collection $data)
 	{
-		$categories = Collection::make($this->preferences['product_categories'])
-			->merge($data)
-			->unique()
-			->implode(',');
+		$ids = explode(',', $this->preferences['product_categories']);
+
+		$categories = Collection::make($ids)->merge($data)->unique()
+			->take(self::MAX_TAGS)->implode(',');
 
 		$this->preferences['product_categories'] = trim($categories, ',');
 	}
@@ -248,14 +247,18 @@ class Preferences
 	/**
 	 * Takes the given keys from the preferences array.
 	 *
-	 * @param  array $keys
+	 * @param  string|array $keys
 	 *
 	 * @return Collection
 	 */
-	public function all(array $keys = []) : Collection
+	public function all($keys = []) : Collection
 	{
 		if (count($keys) == 0) {
 			$keys = $this->preferences->keys();
+		}
+
+		if (is_string($keys)) {
+			$keys = [$keys];
 		}
 
 		return Collection::make($keys)->flatMap(function ($item) {

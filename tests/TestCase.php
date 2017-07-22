@@ -37,14 +37,29 @@ abstract class TestCase extends Orchestra
      *
      * @return void
      */
-    protected function signIn($state = null, $attr = [])
+    protected function signIn($attr = [])
     {
-        if (is_null($state)) {
-            $user = factory('Antvel\User\Models\User')->create($attr);
-        } else {
-            $user = factory('Antvel\User\Models\User')->states($state)->create($attr);
-        }
+        $user = factory('Antvel\User\Models\User')->create($attr);
 
         $this->actingAs($user);
+
+        return $user;
+    }
+
+    /**
+     * Sign in an user as given state.
+     *
+     * @param  string $state
+     * @param  array  $attr
+     *
+     * @return void
+     */
+    protected function signInAs($state, $attr = [])
+    {
+        $user = factory('Antvel\User\Models\User')->states($state)->create($attr);
+
+        $this->actingAs($user);
+
+        return $user;
     }
 }

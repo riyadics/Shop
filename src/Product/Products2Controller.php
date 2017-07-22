@@ -15,7 +15,7 @@ use Antvel\Http\Controller;
 use Illuminate\Http\Request;
 use Antvel\Product\Features;
 use Antvel\Categories\Categories;
-use Antvel\User\UsersRepository as Users; // needs refactor
+use Illuminate\Support\Facades\Auth;
 use Antvel\Product\Requests\ProductsRequest;
 use Antvel\Support\Images\Manager as Images;
 
@@ -64,12 +64,13 @@ class Products2Controller extends Controller
 		// the counter on the side bar filters.
 		$allProducts = $products->get();
 
-		// needs refactor
-		Users::updatePreferences('my_searches', $allProducts);
+		if (Auth::check()) {
+			Auth::user()->updatePreferences('my_searches', $allProducts);
+		}
 
 		return view('products.index', [
+			'suggestions' => Suggestions\Suggest::shakeFor($allProducts),
 			'refine' => Parsers\Breadcrumb::parse($request->all()),
-			'suggestions' => $this->products->suggestFor($allProducts),
 			'filters' => Parsers\Filters::parse($allProducts),
 			'products' => $products->paginate(28),
 			'panel' => $this->panel,
@@ -104,9 +105,9 @@ class Products2Controller extends Controller
 	{
 		return view('dashboard.sections.products.create', [
 			'conditions' => Attributes::make('condition')->get(),
-			'MAX_PICS' => Images::MAX_PICS,
 			'categories' => $categories->actives(),
 			'features' => $features->filterable(),
+			'MAX_PICS' => Images::MAX_PICS,
 		]);
 	}
 

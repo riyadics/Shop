@@ -42,7 +42,7 @@ class CreateUsersTable extends Migration
             $table->string('description', 150)->nullable();
             $table->integer('rate_val')->nullable();
             $table->integer('rate_count')->nullable();
-            $table->json('preferences')->nullable();
+            $table->json('preferences')->nullable()->default(null);
             $table->boolean('verified')->default(false);
             $table->string('confirmation_token', 60)->nullable();
 

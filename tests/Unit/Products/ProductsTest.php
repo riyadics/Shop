@@ -46,7 +46,7 @@ class ProductsTest extends ProductsTestCase
 	/** @test */
 	function a_repository_can_create_new_products()
 	{
-		$this->signIn('seller');
+		$this->signInAs('seller');
 
 		$product = $this->repository->create(array_merge($this->data(), [
 			'pictures' => [
@@ -82,7 +82,7 @@ class ProductsTest extends ProductsTestCase
 	/** @test */
 	function a_repository_is_able_to_update_products_data()
 	{
-		$this->signIn('seller');
+		$this->signInAs('seller');
 
 		$product = $this->createProductWithPictures();
 		$old_pictures = $product->pictures;
@@ -131,7 +131,7 @@ class ProductsTest extends ProductsTestCase
 	/** @test */
 	function it_is_able_to_inactivate_a_given_product()
 	{
-		$this->signIn('seller');
+		$this->signInAs('seller');
 
 		$product = factory(Product::class)->create();
 
@@ -145,7 +145,7 @@ class ProductsTest extends ProductsTestCase
 		/** @test */
 	function it_is_able_to_activate_a_given_product()
 	{
-		$this->signIn('seller');
+		$this->signInAs('seller');
 
 		$product = factory(Product::class)->create(['status' => false]);
 

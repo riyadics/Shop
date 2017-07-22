@@ -97,7 +97,7 @@ class ProductsPicturesTest extends ProductsTestCase
     /** @test */
 	function a_repository_can_delete_images_from_a_given_product()
 	{
-        $this->signIn('seller');
+        $this->signInAs('seller');
 
 		$product = $this->createProductWithPictures();
 		$old_pictures = $product->pictures;

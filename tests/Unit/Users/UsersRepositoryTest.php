@@ -11,6 +11,7 @@
 
 namespace Antvel\Tests\Unit\Users;
 
+use Antvel\User\Models\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 
 class UsersRepositoryTest extends UsersTestCase
@@ -121,5 +122,27 @@ class UsersRepositoryTest extends UsersTestCase
 		$this->repository->disable($this->user->id);
 
 		$this->assertNull($this->user->disabled_at);
+	}
+
+	/** @test */
+	function it_is_able_to_update_the_signed_in_user_preferences_for_a_given_key()
+	{
+		$user = $this->signIn([
+			'preferences' => '{"my_searches": "foo", "product_shared": "bar", "product_viewed": "biz", "product_purchased": "tar", "product_categories": "99"}'
+		]);
+
+		$products = factory('Antvel\Product\Models\Product', 2)->create();
+
+		$user->updatePreferences('my_searches', $products);
+
+		$tags = $products->pluck('tags')->implode(',');
+
+		tap($user->fresh()->preferences, function ($preferences) use ($tags, $products) {
+			$this->assertSame($preferences['my_searches'], $tags . ',foo');
+			$this->assertSame($preferences['product_shared'], 'bar');
+			$this->assertSame($preferences['product_viewed'], 'biz');
+			$this->assertSame($preferences['product_purchased'], 'tar');
+			$this->assertSame($preferences['product_categories'], '99,' . $products->first()->id);
+		});
 	}
 }
