@@ -1,6 +1,6 @@
 {
     "license": "MIT",
-    "name": "antvel/shop",
+    "name": "riyadics/shop",
     "homepage": "http://antvel.com",
     "type": "laravel-bundle",
     "description": "The Antvel e-commerce Framework.",
